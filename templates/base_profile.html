@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block stylesheet %}
+    
+{% endblock %}
+
+{% block title %}Mi cuenta{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">Mi cuenta</li>
+{% endblock %}
+
+
+{% block content %}
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'my_account' %}"><i class="glyphicon glyphicon-user"></i>Mi perfil</a></li>
+        <li><a href="{% url 'password_change' %}" ><i class="glyphicon glyphicon-lock"></i> Cambiar contraseña</a></li>
+        <li><a href=""><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
+        {% if request.user.is_superuser %}
+        <li><a href="/admin"><i class="glyphicon glyphicon-certificate"></i>Admin page</a></li>
+        {% endif %}
+        <li><a href="{% url 'logout' %}"><i class="glyphicon glyphicon-log-out"></i> Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="center-block" style="align-content: center;">
+      {% block subcontent %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script type="text/javascript">
+  </script>
+{% endblock %}
