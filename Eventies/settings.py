@@ -181,3 +181,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #APIs codes
 GOOGLE_MAPS_API_KEY = 'AIzaSyAOt21MFO0p-9eB7yNqwSKN76RjAEXNERE'
+
+GEOIP_PATH = '/libarys/'

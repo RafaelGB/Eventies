@@ -20,16 +20,16 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
 from accounts import views as accounts_views, forms
-from events import views
+from events import views as events_views
 
 urlpatterns = [
-    url(r'^$', views.HomeView, name='home'),
+    url(r'^$', events_views.HomeView, name='home'),
+    url(r'^pruebas/$', events_views.new_event, name='pruebas'),
     url(r'^admin/', admin.site.urls,name='admin'),#enlace integrado en django con interfaz para administrar contenido
 #-------------------------------------------------------------------------------------------------------
     url(r'^signup/$', accounts_views.signup, name='signup'),#crear nueva cuenta
     url(r'^login/$', accounts_views.my_login,  name='login'),#loguearse
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),#cerrar sesion
-    url(r'^event/(?P<pk>\d+)/$', views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
 #-------------------------------------------------------------------------------------------------------
     url(r'^reset/$',#formulario para recuperar la password
         auth_views.PasswordResetView.as_view(
@@ -47,12 +47,17 @@ urlpatterns = [
     url(r'^reset/complete/$',
         auth_views.PasswordResetCompleteView.as_view(template_name='accounts/password_reset_complete.html'),
         name='password_reset_complete'),
+#-------------------------------------------------------------------------------------------------------
     url(r'^account/password/$', auth_views.PasswordChangeView.as_view(template_name='accounts/password_change.html'),
         name='password_change'),
     url(r'^account/password/done/$', auth_views.PasswordChangeDoneView.as_view(template_name='accounts/password_change_done.html'),
         name='password_change_done'),
     url(r'^account/$', accounts_views.UserUpdateView.as_view(), name='my_account'),
+#-------------------------------------------------------------------------------------------------------
     url(r'^photologue/', include('photologue.urls', namespace='photologue')),
+#-------------------------------------------------------------------------------------------------------
+    url(r'^event/(?P<pk>\d+)/$', events_views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
+    url(r'^eventFilter/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
     ]
 
 

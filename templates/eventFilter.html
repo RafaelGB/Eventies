@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+	<h1>Búsqueda de eventos</h1>
+{% endblock %}
+
+{% block content %}
+    {% if events %}
+    <ul>
+
+      {% for event in events %}
+      <li>
+        <a href="/event/{{ event.pk }}">{{ event.title }}</a> ({{event.summary}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No se han encontrado coincidencias con su búsqueda</p>
+    {% endif %}       
+{% endblock %}

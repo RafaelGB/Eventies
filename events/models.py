@@ -51,9 +51,18 @@ class Event(models.Model):
     
     """
     gallery = models.OneToOneField(Gallery, related_name='extended')
-    #autogestionado
+    """
+                       Detalles
+    ---------------------------------------------------------
+    
+    """
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
+    """
+                       Relaciones oneToMany
+    ---------------------------------------------------------
+    
+    """
     created_by = models.ForeignKey(User, related_name='events')
     """
     ==========================================================
@@ -98,4 +107,4 @@ class Category(models.Model):
 
     """
     def __str__(self):
-        return self.name_Category
+        return self.name_category

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.forms.widgets import TextInput
 from django_google_maps.widgets import GoogleMapsAddressWidget
 from django_google_maps.fields import AddressField, GeoLocationField
-from .models import Event
+from .models import Event, Tag, Category
 
 class AddressModelAdmin(admin.ModelAdmin):
     formfield_overrides = {
@@ -10,4 +10,6 @@ class AddressModelAdmin(admin.ModelAdmin):
         GeoLocationField: {'widget': TextInput(attrs={'readonly': 'readonly'})},
     }
 
-admin.site.register(Event,AddressModelAdmin)
+myModels = [Event,Tag,Category]
+
+admin.site.register(myModels, AddressModelAdmin)
