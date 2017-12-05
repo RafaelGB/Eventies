@@ -13,6 +13,8 @@ from decouple import config, Csv
 import dj_database_url
 import os
 from photologue import PHOTOLOGUE_APP_DIR
+import dj_database_url
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,13 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     #APIs de developers
     'widget_tweaks',
-    'django_google_maps',
     'photologue',
     'sortedm2m',
     #APPs propias
     'events',
     'accounts',
-
 ]
 
 MIDDLEWARE = [
@@ -97,6 +97,8 @@ DATABASES = {
 }
 """
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+# Database
+# https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -104,7 +106,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -180,6 +181,14 @@ LOGIN_URL = 'login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #APIs codes
-GOOGLE_MAPS_API_KEY = 'AIzaSyAOt21MFO0p-9eB7yNqwSKN76RjAEXNERE'
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 15),
+        ("mapCenterLocationName", "madrid"),
+        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'es'}}),
+        ("markerFitZoom", 12),
+    ),
+    "GOOGLE_MAP_API_KEY": "AIzaSyAOt21MFO0p-9eB7yNqwSKN76RjAEXNERE"
+}
 
 GEOIP_PATH = '/libarys/'

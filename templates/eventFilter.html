@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Búsqueda{% endblock %}
 {% block breadcrumb %}
-	<h1>Búsqueda de eventos</h1>
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+  <li class="breadcrumb-item active">Filtro de eventos</li>
 {% endblock %}
 
 {% block content %}

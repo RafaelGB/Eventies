@@ -1,7 +1,6 @@
 import math
 from django.db import models
 from django.contrib.auth.models import User
-from django_google_maps import fields as map_fields
 from photologue.models import Gallery
 from decimal import Decimal
 from django.core.validators import MinValueValidator
@@ -43,8 +42,7 @@ class Event(models.Model):
     ---------------------------------------------------------
 
     """
-    address = map_fields.AddressField(max_length=200)
-    geolocation = map_fields.GeoLocationField(max_length=100)
+    #geolocalizacion = models.ForeignKey(Address)
     """
                        Galeria photologue
     ---------------------------------------------------------
@@ -72,6 +70,21 @@ class Event(models.Model):
     """
     def __str__(self):
         return self.title
+
+    def for_user(self, user):
+        return self.get_query_set().filter(created_by=user)
+"""
+**********************************************************
+                    modelos geométricos
+**********************************************************
+class Address(gis_models.Model):
+    name = gis_models.CharField(max_length=255)
+    coordinates = gis_models.PointField(help_text="To generate the map for your location")
+    city_hall = gis_models.PointField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+"""
 
 """
 **********************************************************

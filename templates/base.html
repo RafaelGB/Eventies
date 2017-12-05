@@ -6,6 +6,8 @@
     <title>{% block title %}Eventies{% endblock %}</title>
       <link href="https://fonts.googleapis.com/css?family=Peralta" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
+    
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     {% block stylesheet %}<!-- opcion de estilo -->
     {% endblock %} <!-- fin de opcion de estilo -->
@@ -27,6 +29,19 @@
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Calendario</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eventos <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="{% url 'newEvent' %}">Crear evento</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{% url 'updateEvent' pk=1%}">Mis eventos</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{% url 'eventFilter' %}">Buscador de eventos</a></li>
+                </ul>
+              </li>
+            </ul>
             <form action="{% url 'eventFilter' %}" class="navbar-form navbar-left" role="search" novalidate>
               <div class="form-group">
                 <input type="text" class="form-control" name="search" placeholder="Search">

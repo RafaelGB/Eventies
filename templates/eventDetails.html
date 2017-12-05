@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
+
+{% block title %}{{ object.title }}{% endblock %}
+
 {% block breadcrumb %}
-	<h1>{{ object.title }}</h1>
-	<h3>{{ object.summary }}</h3>
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+  <li class="breadcrumb-item active">ver evento: {{ object.title }}</li>
 {% endblock %}
 
 {% block content %}
@@ -52,15 +55,14 @@
     <span class="sr-only">Next</span>
   </a>
 </div>
+  <h1>{{ object.title }}</h1>
+  <h3>{{ object.summary }}</h3>
 	<p>{{ object.description }}</p>
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>
 	<p>visitas: {{ object.views }}</p>
 	<p>gente que asistirá: {{ object.assistants }}</p>
 	<p>gente interesada: {{ object.interested }}</p>
-	<p>votos: {{ object.score }}</p>
-	<p>geoloalizacion: {{ object.geolocation }}</p>
-	<p>Dirección: {{ object.address }}</p>
 	<p>votos: {{ object.score }}</p>
 	<p>Fecha de creación: {{ object.created_at }}</p>
 	<p>Fecha de la última actualización: {{ object.updated_at }}</p>

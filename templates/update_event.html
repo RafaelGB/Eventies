@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Nuevo evento{% endblock %}
+{% block title %}Editar evento{% endblock %}
 
 {% block stylesheet %}
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
@@ -17,14 +17,14 @@
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-  <li class="breadcrumb-item active">Nuevo evento</li>
+  <li class="breadcrumb-item active">Editar evento</li>
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="form-group" novalidate>
+  <form method="post" class="mb-4" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
-    <button type="submit" class="btn btn-success">Crear evento</button>
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-outline-secondary" role="button">Cancelar</a>
   </form>
-
 {% endblock %}

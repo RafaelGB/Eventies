@@ -24,7 +24,6 @@ from events import views as events_views
 
 urlpatterns = [
     url(r'^$', events_views.HomeView, name='home'),
-    url(r'^pruebas/$', events_views.new_event, name='pruebas'),
     url(r'^admin/', admin.site.urls,name='admin'),#enlace integrado en django con interfaz para administrar contenido
 #-------------------------------------------------------------------------------------------------------
     url(r'^signup/$', accounts_views.signup, name='signup'),#crear nueva cuenta
@@ -58,6 +57,8 @@ urlpatterns = [
 #-------------------------------------------------------------------------------------------------------
     url(r'^event/(?P<pk>\d+)/$', events_views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
     url(r'^eventFilter/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
+    url(r'^newEvent/$', events_views.NewEvent, name='newEvent'),
+    url(r'^updateEvent/(?P<pk>\d+)/$', events_views.EventUpdateView.as_view(), name='updateEvent'),
     ]
 
 
