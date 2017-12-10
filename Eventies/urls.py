@@ -54,7 +54,7 @@ urlpatterns = [
     url(r'^account/$', accounts_views.UserUpdateView.as_view(), name='my_account'),
 #-------------------------------------------------------------------------------------------------------
     url(r'^event/(?P<pk>\d+)/$', events_views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
-    url(r'^eventFilter/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
+    url(r'^eventFilter/(?P<type>[0-9A-Za-z_\-]+)/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
     url(r'^newEvent/$', events_views.NewEvent, name='newEvent'),
     url(r'^updateEvent/(?P<pk>\d+)/$', events_views.EventUpdateView.as_view(), name='updateEvent'),
     ]

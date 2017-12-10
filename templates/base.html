@@ -36,13 +36,13 @@
                 <ul class="dropdown-menu" role="menu">
                   <li><a href="{% url 'newEvent' %}">Crear evento</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% url 'updateEvent' pk=1%}">Mis eventos</a></li>
+                  <li><a href="{% url 'eventFilter' type='own' %}">Mis eventos</a></li>
                   <li class="divider"></li>
-                  <li><a href="{% url 'eventFilter' %}">Buscador de eventos</a></li>
+                  <li><a href="{% url 'eventFilter' type='all' %}">Buscador de eventos</a></li>
                 </ul>
               </li>
             </ul>
-            <form action="{% url 'eventFilter' %}" class="navbar-form navbar-left" role="search" novalidate>
+            <form action="{% url 'eventFilter' type='search' %}" class="navbar-form navbar-left" role="search" novalidate>
               <div class="form-group">
                 <input type="text" class="form-control" name="search" placeholder="Search">
               </div>

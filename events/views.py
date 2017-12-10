@@ -49,6 +49,7 @@ class EventFilterView(ListView):
     model = Event
     context_object_name = 'events'
     template_name = 'eventFilter.html'
+
     paginate_by = 8
     """
 	----------------------------------------------------------
@@ -63,11 +64,15 @@ class EventFilterView(ListView):
 
     def get_queryset(self):
         # Comprobamos si hay variable get de búsqueda y si no está vacía
-        if 'search' in self.request.GET and self.request.GET['search']:
+        if self.kwargs['type'] == 'search':
             contains = self.request.GET['search']
             queryset = (
                 Event.objects.filter(title__icontains=contains) | 
                 Event.objects.filter(summary__icontains=contains)
+                )
+        elif self.kwargs['type'] == 'own':
+            queryset = (
+                Event.objects.filter(created_by=self.request.user.pk)
                 )
         else:
             queryset = Event.objects.all()
@@ -96,10 +101,7 @@ class EventUpdateView(UpdateView):
         event.updated_at = timezone.now()
         event.save()
         return redirect('eventDetails', pk=event.pk)
-"""
-, request.FILES,
-                               queryset=Photo.objects.none()
-"""
+
 @login_required
 def NewEvent(request):
      # Create the formset, specifying the form and formset we want to use.
@@ -110,17 +112,12 @@ def NewEvent(request):
         if all([form.is_valid(),formset.is_valid()]):
             event = form.save(commit=False)
             event.created_by = request.user
-            #photos = []
             event.save()
             for subformset in formset.cleaned_data:
                 photo = subformset.get('picture')
                 newphoto = Photo(picture=photo,event=event)  
                 newphoto.save()
-                #photos.append(newphoto)#deberian guardarse al final
-                      
-            
-            #for picture in photos:
-                #picture.save()
+
             return redirect('eventDetails', pk=event.pk)
     else:
         form = EventForm()
