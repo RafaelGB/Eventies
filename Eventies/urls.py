@@ -53,8 +53,6 @@ urlpatterns = [
         name='password_change_done'),
     url(r'^account/$', accounts_views.UserUpdateView.as_view(), name='my_account'),
 #-------------------------------------------------------------------------------------------------------
-    url(r'^photologue/', include('photologue.urls', namespace='photologue')),
-#-------------------------------------------------------------------------------------------------------
     url(r'^event/(?P<pk>\d+)/$', events_views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
     url(r'^eventFilter/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
     url(r'^newEvent/$', events_views.NewEvent, name='newEvent'),

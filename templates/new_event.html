@@ -8,23 +8,37 @@
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
 {% endblock %}
 
-{% block javascript %}
-  <script src="{% static 'js/simplemde.min.js' %}"></script>
-  <script>
-    var simplemde = new SimpleMDE();
-  </script>
-{% endblock %}
-
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
   <li class="breadcrumb-item active">Nuevo evento</li>
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="form-group" novalidate>
+  <form method="post" class="form-group" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
+    {% include 'includes/form_sec1.html' %}
+    <label>Elige fotos:</label>
+    {{ formset.management_form }}
+    {% for subform in formset %}
+	    <div class="link-formset">
+	    	{% include 'includes/formset.html' %}
+	    </div>
+    {% endfor %}
     <button type="submit" class="btn btn-success">Crear evento</button>
   </form>
 
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/simplemde.min.js' %}"></script>
+<script>
+var simplemde = new SimpleMDE();
+</script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+    $('.link-formset').formset({
+        addText: 'nueva foto',
+        deleteText: 'quitar'
+    });
+</script>
 {% endblock %}

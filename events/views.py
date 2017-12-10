@@ -1,14 +1,16 @@
 from django.db.models import Count
+from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import get_object_or_404, redirect, render , reverse
+from django.shortcuts import redirect, render, reverse
 from django.views.generic import ListView, UpdateView
 from django.views.generic.detail import DetailView
 from django.utils import timezone
+from django.forms.formsets import formset_factory
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
-from .models import Event, Tag, Category
-from .forms import EventForm
+from .models import Event, Tag, Category, Photo
+from .forms import EventForm, PhotoForm, BasePhotoFormSet
 
 def HomeView(request):
     return render(request, 'home.html')
@@ -94,18 +96,38 @@ class EventUpdateView(UpdateView):
         event.updated_at = timezone.now()
         event.save()
         return redirect('eventDetails', pk=event.pk)
-
+"""
+, request.FILES,
+                               queryset=Photo.objects.none()
+"""
 @login_required
 def NewEvent(request):
-
+     # Create the formset, specifying the form and formset we want to use.
+    PhotoFormSet = formset_factory(PhotoForm, formset=BasePhotoFormSet)
     if request.method == 'POST':
         form = EventForm(request.POST)
-        if form.is_valid():
+        formset = PhotoFormSet(request.POST or None, request.FILES or None)
+        if all([form.is_valid(),formset.is_valid()]):
             event = form.save(commit=False)
             event.created_by = request.user
+            #photos = []
             event.save()
+            for subformset in formset.cleaned_data:
+                photo = subformset.get('picture')
+                newphoto = Photo(picture=photo,event=event)  
+                newphoto.save()
+                #photos.append(newphoto)#deberian guardarse al final
+                      
+            
+            #for picture in photos:
+                #picture.save()
             return redirect('eventDetails', pk=event.pk)
     else:
         form = EventForm()
-        event = Event()
-    return render(request, 'new_event.html', { 'event':event , 'form': form})
+        formset = PhotoFormSet()
+    print("en el return del render")
+    return render(
+        request,
+        'new_event.html',
+        {'form': form , 'formset':formset}
+        )

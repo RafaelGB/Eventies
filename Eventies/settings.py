@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 from decouple import config, Csv
 import dj_database_url
 import os
-from photologue import PHOTOLOGUE_APP_DIR
-import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     #APIs de developers
     'widget_tweaks',
-    'photologue',
     'sortedm2m',
     #APPs propias
     'events',
@@ -68,7 +65,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
-            PHOTOLOGUE_APP_DIR,
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -77,7 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # Added for photologue
+                # Added for photos
                 'django.template.context_processors.media',
             ],
         },
@@ -163,7 +159,7 @@ STATICFILES_DIRS = [
 ]
 
 #
-# Media added for http://django-photologue.readthedocs.io/en/latest/pages/installation.html
+# Media added for photos
 #
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
