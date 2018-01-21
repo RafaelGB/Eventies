@@ -21,5 +21,6 @@
 	<p>Fecha de creación: {{ object.created_at }}</p>
 	<p>Fecha de la última actualización: {{ object.updated_at }}</p>
 	<p>Creado por: {{ object.created_by }}</p>
+	<p>Localizado en: {{ object.geopos_at.coordinates }}</p>
 
 {% endblock %}

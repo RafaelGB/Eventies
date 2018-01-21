@@ -3,18 +3,17 @@
 {% block title %}Búsqueda{% endblock %}
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-  <li class="breadcrumb-item active">Filtro de eventos</li>
+  <li class="breadcrumb-item active">{% if view.kwargs.type == 'own' %}Mis{% else %}Filtro de{% endif %} eventos</li>
 {% endblock %}
 
 {% block content %}
-<h1>tipo : {{ view.kwargs.type }}</h1>
     {% if events %}
             
     <ul>
 
       {% for event in events %}
       <li>
-        <a href="/event/{{ event.pk }}">{{ event.title }}</a> ({{event.summary}})
+        <a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">{{ event.title }}</a> ({{event.summary}})
       </li>
       {% endfor %}
 

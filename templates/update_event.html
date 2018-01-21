@@ -14,17 +14,31 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" class="mb-4" novalidate>
+  <form method="post" class="mb-4" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
+    <label>Elige fotos:</label>
+    {{ formset.management_form }}
+    {% for subform in formset %}
+      <div class="link-formset">
+        {% include 'includes/formset.html' %}
+      </div>
+    {% endfor %}
     <button type="submit" class="btn btn-success">Guardar cambios</button>
-    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-outline-secondary" role="button">Cancelar</a>
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
   </form>
 {% endblock %}
 
 {% block javascript %}
-  <script src="{% static 'js/simplemde.min.js' %}"></script>
-  <script>
-    var simplemde = new SimpleMDE();
-  </script>
+<script src="{% static 'js/simplemde.min.js' %}"></script>
+<script>
+var simplemde = new SimpleMDE();
+</script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script>
+    $('.link-formset').formset({
+        addText: 'nueva foto',
+        deleteText: 'quitar'
+    });
+</script>
 {% endblock %}

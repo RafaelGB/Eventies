@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import math
 from django.db import models
 from django.contrib.auth.models import User
@@ -6,6 +7,29 @@ from django.core.validators import MinValueValidator
 from django.template.defaultfilters import slugify
 from django.utils.html import mark_safe
 from markdown import markdown
+
+
+
+
+from django.contrib.gis.db import models as gisModels
+from django.contrib.gis.geos import Point
+
+
+"""
+**********************************************************
+                        Geolocation
+**********************************************************
+"""
+class Geolocation(gisModels.Model):
+    coordinates = gisModels.PointField(help_text="Para generar el mapa con la localizacion")
+    """
+    ==========================================================
+                    Servicios de la clase
+    ==========================================================
+
+    """
+    def __unicode__(self):
+        return self.coordinates
 
 
 """
@@ -51,6 +75,16 @@ class Event(models.Model):
     """
     created_by = models.ForeignKey(User, related_name='events')
     """
+                       Relaciones onoToOne
+    ---------------------------------------------------------
+
+    """    
+    geopos_at = models.OneToOneField(
+        Geolocation,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    """
     ==========================================================
                     Servicios de la clase
     ==========================================================
@@ -68,7 +102,7 @@ class Event(models.Model):
 **********************************************************
 """
 def get_image_filename(instance, filename):
-    title = instance.event.title
+    title = instance.event.pk
     print(title)
     slug = slugify(title)
     print(slug)

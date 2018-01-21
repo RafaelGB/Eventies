@@ -1,7 +1,29 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import BaseFormSet
-from .models import Event, Tag, Category, Photo
+from .models import Event, Tag, Category, Photo, Geolocation
+
+from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticMapWidget, GoogleStaticOverlayMapWidget
+
+
+class GeolocationCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Geolocation
+        fields = ("coordinates",)
+        widgets = {
+            'coordinates': GooglePointFieldWidget(settings={"GooglePointFieldWidget": (("zoom", 1),)}),
+        }
+
+
+class GeolocationDetailForm(forms.ModelForm):
+
+    class Meta:
+        model = Geolocation
+        fields = ("coordinates",)
+        widgets = {
+            'coordinates': GoogleStaticMapWidget(zoom=12, size="240x240"),
+        }
 
 
 class EventForm(forms.ModelForm):
