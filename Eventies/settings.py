@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.gis',
     #APIs de developers
-    'jquery',
     'widget_tweaks',
     'sortedm2m',
     'mapwidgets',#mapa dinamico googlemaps

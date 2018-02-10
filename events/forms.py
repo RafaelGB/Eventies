@@ -6,25 +6,17 @@ from .models import Event, Tag, Category, Photo, Geolocation
 from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticMapWidget, GoogleStaticOverlayMapWidget
 
 
-class GeolocationCreateForm(forms.ModelForm):
+class GeolocationForm(forms.ModelForm):
 
     class Meta:
         model = Geolocation
         fields = ("coordinates",)
-        widgets = {
-            'coordinates': GooglePointFieldWidget(settings={"GooglePointFieldWidget": (("zoom", 1),)}),
+        labels = {
+            'coordinates': _('Coordenadas') 
         }
-
-
-class GeolocationDetailForm(forms.ModelForm):
-
-    class Meta:
-        model = Geolocation
-        fields = ("coordinates",)
         widgets = {
-            'coordinates': GoogleStaticMapWidget(zoom=12, size="240x240"),
+            'coordinates': GooglePointFieldWidget
         }
-
 
 class EventForm(forms.ModelForm):
     categories = forms.ModelMultipleChoiceField(
@@ -65,10 +57,12 @@ class EventForm(forms.ModelForm):
             'title': _('Título'),
             'summary': _('Resumen'),
             'budget': _('Precio aproximado'),
-            'duration': _('Duración aproximada')
+            'duration': _('Duración aproximada')  
         }
 
-
+        widgets = {
+            
+        }
 class BasePhotoFormSet(BaseFormSet):
     def clean(self):
         """

@@ -17,6 +17,8 @@
   <form method="post" class="mb-4" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
+    {% include 'includes/formGeo.html' %}
+    <!--
     <label>Elige fotos:</label>
     {{ formset.management_form }}
     {% for subform in formset %}
@@ -24,6 +26,7 @@
         {% include 'includes/formset.html' %}
       </div>
     {% endfor %}
+    -->
     <button type="submit" class="btn btn-success">Guardar cambios</button>
     <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
   </form>

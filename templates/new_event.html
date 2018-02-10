@@ -8,45 +8,15 @@
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
 {% endblock %}
 
+{% block javascript %}
+  {{ formGeo.media }}
+{% endblock %}
+
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
   <li class="breadcrumb-item active">Nuevo evento</li>
 {% endblock %}
 
-
-{% block javascript %}
-
-  {{ formGeo.media }}
-
-  <script type="text/javascript">
-    $(document).on("google_point_map_widget:marker_create", function (e, lat, lng, locationInputElem, mapWrapID) {
-        console.log(locationInputElem); // django widget textarea widget (hidden)
-        console.log(lat, lng); // created marker coordinates
-        console.log(mapWrapID); // map widget wrapper element ID
-    });
-    $(document).on("google_point_map_widget:marker_change", function (e, lat, lng, locationInputElem, mapWrapID) {
-        console.log(locationInputElem); // django widget textarea widget (hidden)
-        console.log(lat, lng);  // changed marker coordinates
-        console.log(mapWrapID); // map widget wrapper element ID
-    });
-    $(document).on("google_point_map_widget:marker_delete", function (e, lat, lng, locationInputElem, mapWrapID) {
-        console.log(locationInputElem); // django widget textarea widget (hidden)
-        console.log(lat, lng);  // deleted marker coordinates
-        console.log(mapWrapID); // map widget wrapper element ID
-    })
-  </script>
-  <script src="{% static 'js/simplemde.min.js' %}"></script>
-  <script>
-    var simplemde = new SimpleMDE();
-  </script>
-  <script src="{% static 'js/jquery.formset.js' %}"></script>
-  <script>
-    $('.link-formset').formset({
-      addText: 'nueva foto',
-      deleteText: 'quitar'
-    });
-  </script>
-{% endblock %}
 
 {% block content %}
   <form method="post" class="form-group" enctype="multipart/form-data" novalidate>
@@ -65,4 +35,16 @@
   </form>
 
 {% endblock %}
-
+{% block javascriptBottom %}
+<script src="{% static 'js/simplemde.min.js' %}"></script>
+  <script>
+    var simplemde = new SimpleMDE();
+  </script>
+  <script src="{% static 'js/jquery.formset.js' %}"></script>
+  <script>
+    $('.link-formset').formset({
+      addText: 'nueva foto',
+      deleteText: 'quitar'
+    });
+  </script>
+{% endblock %}

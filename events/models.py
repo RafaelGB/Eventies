@@ -28,8 +28,8 @@ class Geolocation(gisModels.Model):
     ==========================================================
 
     """
-    def __unicode__(self):
-        return self.coordinates
+    def __str__(self):
+        return u"%i" % self.pk
 
 
 """
