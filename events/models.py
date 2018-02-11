@@ -29,7 +29,7 @@ class Geolocation(gisModels.Model):
 
     """
     def __str__(self):
-        return u"%i" % self.pk
+        return str(self.pk)
 
 
 """

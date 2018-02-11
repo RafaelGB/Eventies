@@ -14,9 +14,10 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
-
+from .decorators import user_is_event_author
 
 def HomeView(request):
     return render(request, 'home.html')
@@ -102,13 +103,14 @@ class EventFilterView(ListView):
         return queryset
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(user_is_event_author, name='dispatch')
 class EventUpdateView(UpdateView):
     model = Event
     template_name = 'update_event.html'
     context_object_name = 'event'
     form_class = EventForm
     formGeo_class = GeolocationForm
-    
+
     """
     ----------------------------------------------------------
         funciones de la clase
@@ -127,16 +129,13 @@ class EventUpdateView(UpdateView):
         super(EventUpdateView, self).get(request, *args, **kwargs)
         form = self.form_class
         formGeo = GeolocationForm
-        print("\n\nStart zona get\n\n")
-        print (formGeo)
-        print("\n\nFin zona get\n\n")
+
         return self.render_to_response(self.get_context_data(
             object=self.object, form=form ,formGeo=formGeo))
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
+        print("\n\nEntramos en POST de actualizar evento\n\n")
         self.object = self.get_object()
-        updateGeo = Geolocation( self.object.geopos_at )
-
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
         #formset = self.formset_class(request.POST or None, request.FILES or None)
@@ -151,10 +150,12 @@ class EventUpdateView(UpdateView):
             'tags'
             """
             self.object.updated_at = timezone.now()
+            updateGeo = Geolocation.objects.get( pk=self.object.geopos_at.pk )           
+            updateGeo.coordinates = formGeo.cleaned_data['coordinates']            
+            updateGeo.save()
             self.object.save()
             #seccion de geolocalizacion
-            updateGeo.coordinates = formGeo.cleaned_data['coordinates']
-            updateGeo.save()
+
             """
             instances = formset.save(commit=False)
             for obj in instances.deleted_objects:
@@ -162,7 +163,7 @@ class EventUpdateView(UpdateView):
             """
             return redirect('eventDetails', pk=self.object.pk)  
         else:
-
+            print("\n\nFallo en POST, recargamos\n\n")
             return self.render_to_response(
               self.get_context_data(form=form,formGeo=formGeo))
 
