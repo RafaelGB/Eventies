@@ -20,5 +20,43 @@
     </ul>
     {% else %}
       <p>No se han encontrado coincidencias con su búsqueda</p>
-    {% endif %}       
+    {% endif %}  
+
+    <form action="" method="GET">
+	    A cuanta distancia? (entre 100 y 50000 (m)):
+  		<input type="number" name="distance" min="100" max="50000">
+
+
+	    <input type="hidden" name="lng"  id="campo_lng">
+	    <input type="hidden" name="lat"  id="campo_lat">
+	    <input type="submit" value="Buscar más cercanos">
+    </form>     
+{% endblock %}
+{% block javascriptBottom %}
+    <script>
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+    	var pos;
+	    navigator.geolocation.getCurrentPosition(function(position) {
+		    pos = {
+		      lat: position.coords.latitude,
+		      lng: position.coords.longitude
+		    };
+		    var getLong = document.getElementById("campo_lng");
+		    var getLat = document.getElementById("campo_lat");
+		    getLong.setAttribute("value", pos.lat /* la posición desde Javascript en el cliente */);
+		    getLat.setAttribute("value", pos.lng /* la posición desde Javascript en el cliente */);
+	  	});
+	    
+    }else{
+    	alert("nada");
+    }
+
+    </script>
 {% endblock %}

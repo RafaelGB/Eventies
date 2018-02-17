@@ -21,7 +21,7 @@ from django.contrib.gis.geos import Point
 **********************************************************
 """
 class Geolocation(gisModels.Model):
-    coordinates = gisModels.PointField(help_text="Para generar el mapa con la localizacion")
+    coordinates = gisModels.PointField(null=False, blank=False, srid=4326,help_text="Para generar el mapa con la localizacion")
     """
     ==========================================================
                     Servicios de la clase

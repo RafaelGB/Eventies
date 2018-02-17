@@ -9,11 +9,14 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.forms.formsets import formset_factory
 from django.contrib.gis.db.models.functions import Distance
-#from django.db.models import F
-#from django.contrib.gis.geos import *
+
+from django.contrib.gis.geos import Point
+
 from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+
+
 
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
@@ -40,10 +43,10 @@ class EventObjectView(DetailView):
     context_object_name = 'event'
     template_name = 'eventDetails.html'
     """
-	----------------------------------------------------------
+    ----------------------------------------------------------
         funciones de la clase
-	----------------------------------------------------------
-	"""
+    ----------------------------------------------------------
+    """
     def get_context_data(self, **kwargs):
         #contador de visitas se incrementa
         self.object.views += 1
@@ -65,10 +68,10 @@ class EventFilterView(ListView):
 
     paginate_by = 8
     """
-	----------------------------------------------------------
+    ----------------------------------------------------------
         funciones de la clase
-	----------------------------------------------------------
-	"""
+    ----------------------------------------------------------
+    """
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(EventFilterView, self).get_context_data(**kwargs)
@@ -90,15 +93,17 @@ class EventFilterView(ListView):
         else:
             queryset = Event.objects.all()
 
+        
         #vamos incluyendo filtros al queryset
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
-            print("**********************\ndistancia cogida por get : "+ distance)
-            ref_location = Point(1.232433, 1.2323232)
-            querysetTMP = (
-                 Person.objects.annotate(distance=Distance('location', ref_location)
-                ).filter(distance__lte=D(mi=10))
-            )      
+
+            print(self.request.GET) 
+
+            distance = int(distance)
+            lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
+            ref_location = Point(lat, lng )
+            queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
             
         return queryset
 
