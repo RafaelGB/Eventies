@@ -1,36 +1,103 @@
 {% extends 'base.html' %}
+{% load assign_tag %}
 
 {% block title %}Búsqueda{% endblock %}
+
+
+{% block stylesheet %}<!-- opcion de estilo -->
+<style type="text/css">
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 1500px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+	    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;} 
+    }
+</style>
+{% endblock %} <!-- fin de opcion de estilo -->
+
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
   <li class="breadcrumb-item active">{% if view.kwargs.type == 'own' %}Mis{% else %}Filtro de{% endif %} eventos</li>
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid">
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <h4>Herramientas de filtrado</h4>
+      <!--
+      <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="#section1">Home</a></li>
+        <li><a href="#section2">Friends</a></li>
+        <li><a href="#section3">Family</a></li>
+        <li><a href="#section3">Photos</a></li>
+      </ul><br>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search Blog..">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+      -->
+      	<form action="" method="GET">
+		    A cuanta distancia? (entre 100 y 50000 (m)):
+	  		<input type="number" name="distance" min="100" max="50000">
+
+
+		    <input type="hidden" name="lng"  id="campo_lng">
+		    <input type="hidden" name="lat"  id="campo_lat">
+		    <input type="submit" value="Buscar más cercanos">
+	    </form> 
+    </div>
+
+    <div class="col-sm-9">
     {% if events %}
             
     <ul>
-
+      {% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
       {% for event in events %}
-      <li>
-        <a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">{{ event.title }}</a> ({{event.summary}})
-      </li>
-      {% endfor %}
+      	{% ifequal count 0 %}
+	      	<div class="container">    
+	  			<div class="row">
+  		{% endifequal %}
+			  		<a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">
 
+			  		<div class="col-sm-3">
+			      		<div class="panel panel-primary"><!-- panel-danger panel-success disponibles -->
+					        <div class="panel-heading">{{ event.title }}</div>
+					        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+					        <div class="panel-footer">{{event.summary}}</div>
+			      		</div>
+			    	</div>
+			    	</a>
+    	{% ifequal count 2 %}
+	    		</div>
+	  		</div>
+  			{% assign count 0 %}<!-- reseteamos contador -->
+  		{% else %}
+  			{% increment count %}<!-- count++ -->
+  		{% endifequal %}
+  		
+      {% endfor %}
+		<br>
     </ul>
     {% else %}
       <p>No se han encontrado coincidencias con su búsqueda</p>
     {% endif %}  
-
-    <form action="" method="GET">
-	    A cuanta distancia? (entre 100 y 50000 (m)):
-  		<input type="number" name="distance" min="100" max="50000">
-
-
-	    <input type="hidden" name="lng"  id="campo_lng">
-	    <input type="hidden" name="lat"  id="campo_lat">
-	    <input type="submit" value="Buscar más cercanos">
-    </form>     
+    </div>
+</div>    
 {% endblock %}
 {% block javascriptBottom %}
     <script>

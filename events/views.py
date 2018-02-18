@@ -79,6 +79,7 @@ class EventFilterView(ListView):
 
 
     def get_queryset(self):
+        print(self.request.GET) 
         # Comprobamos si hay variable get de búsqueda y si no está vacía
         if self.kwargs['type'] == 'search':
             contains = self.request.GET['search']
@@ -97,8 +98,6 @@ class EventFilterView(ListView):
         #vamos incluyendo filtros al queryset
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
-
-            print(self.request.GET) 
 
             distance = int(distance)
             lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
