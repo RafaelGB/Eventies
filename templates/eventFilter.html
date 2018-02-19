@@ -1,28 +1,14 @@
 {% extends 'base.html' %}
+
 {% load assign_tag %}
+{% load staticfiles %}
+{% load static %}
 
 {% block title %}Búsqueda{% endblock %}
 
 
 {% block stylesheet %}<!-- opcion de estilo -->
-<style type="text/css">
-    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
-    .row.content {height: 1500px}
-    
-    /* Set gray background color and 100% height */
-    .sidenav {
-      background-color: #f1f1f1;
-      height: 100%;
-    }
-	    /* On small screens, set height to 'auto' for sidenav and grid */
-    @media screen and (max-width: 767px) {
-      .sidenav {
-        height: auto;
-        padding: 15px;
-      }
-      .row.content {height: auto;} 
-    }
-</style>
+	<link rel="stylesheet" href="{% static 'css/filterEvents.css' %}">	
 {% endblock %} <!-- fin de opcion de estilo -->
 
 {% block breadcrumb %}
@@ -35,7 +21,10 @@
   <div class="row content">
     <div class="col-sm-3 sidenav">
       <h4>Herramientas de filtrado</h4>
-      <!--
+  	    <a href="{% url 'eventFilter' type='all' %}">
+	    	<span class="glyphicon glyphicon-trash"></span>
+	    </a>
+      <!-- barra lateral ejemplo
       <ul class="nav nav-pills nav-stacked">
         <li class="active"><a href="#section1">Home</a></li>
         <li><a href="#section2">Friends</a></li>
@@ -52,14 +41,40 @@
       </div>
       -->
       	<form action="" method="GET">
-		    A cuanta distancia? (entre 100 y 50000 (m)):
-	  		<input type="number" name="distance" min="100" max="50000">
+      	    <button type="submit">
+			   <span class="glyphicon glyphicon-filter"></span>
+			</button>
+			<br>
+			<div class="input-group">
 
 
-		    <input type="hidden" name="lng"  id="campo_lng">
-		    <input type="hidden" name="lat"  id="campo_lat">
-		    <input type="submit" value="Buscar más cercanos">
-	    </form> 
+			<!-- filtro por proximidad  -->
+			<ul class="nav nav-pills nav-stacked">	
+				<li>
+				    <label>Distancia</label>
+			  			<input type="number" name="distance" min="100" max="50000" value="{{ distance }}">
+			  		<label> metros</label>
+				    <input type="hidden" name="lng"  id="campo_lng">
+				    <input type="hidden" name="lat"  id="campo_lat">
+			    </li>
+				<li>
+				    <label>Otra cosa</label>
+			  			<input type="number" name="otracosa" min="100" max="50000" default="1000">
+			  		<label> label</label>
+
+			    </li>
+			</ul><br>
+		    </div>
+            <button type="submit">
+			   <span class="glyphicon glyphicon-filter"></span>
+			</button>
+
+		    
+	    </form>
+	    <br>
+	    <a href="{% url 'eventFilter' type='all' %}">
+	    	<span class="glyphicon glyphicon-trash"></span>
+	    </a>
     </div>
 
     <div class="col-sm-9">
@@ -122,7 +137,7 @@
 	  	});
 	    
     }else{
-    	alert("nada");
+    	alert("no se ha dado permisos de localización");
     }
 
     </script>

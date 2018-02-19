@@ -25,14 +25,6 @@ from .decorators import user_is_event_author
 def HomeView(request):
     return render(request, 'home.html')
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return HttpResponse(ip)
-
 """
 **********************************************************
         Carga los valores de un evento concreto
@@ -54,7 +46,6 @@ class EventObjectView(DetailView):
         #definimos el contexto
         context = super(EventObjectView, self).get_context_data(**kwargs)
         context["coor"] = {"x": str(context["object"].geopos_at.coordinates.x), "y":str(context["object"].geopos_at.coordinates.y) }
-        print(context["object"].geopos_at.coordinates.x)
         return context
 """
 **********************************************************
@@ -73,13 +64,19 @@ class EventFilterView(ListView):
     ----------------------------------------------------------
     """
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(EventFilterView, self).get_context_data(**kwargs)
+
+        if self.request.GET:
+            for getObject in self.request.GET:
+                context[getObject] = self.request.GET[getObject]
+            print(context, "\n\n\n")
+        # Call the base implementation first to get a context
+        
         return context
 
 
     def get_queryset(self):
-        print(self.request.GET) 
+
         # Comprobamos si hay variable get de búsqueda y si no está vacía
         if self.kwargs['type'] == 'search':
             contains = self.request.GET['search']
@@ -98,11 +95,11 @@ class EventFilterView(ListView):
         #vamos incluyendo filtros al queryset
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
-
-            distance = int(distance)
-            lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
-            ref_location = Point(lat, lng )
-            queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
+            if distance:
+                distance = int(distance)
+                lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
+                ref_location = Point(lat, lng )
+                queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
             
         return queryset
 
@@ -138,7 +135,6 @@ class EventUpdateView(UpdateView):
             object=self.object, form=form ,formGeo=formGeo))
 
     def post(self, request, **kwargs):
-        print("\n\nEntramos en POST de actualizar evento\n\n")
         self.object = self.get_object()
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
@@ -167,7 +163,6 @@ class EventUpdateView(UpdateView):
             """
             return redirect('eventDetails', pk=self.object.pk)  
         else:
-            print("\n\nFallo en POST, recargamos\n\n")
             return self.render_to_response(
               self.get_context_data(form=form,formGeo=formGeo))
 
