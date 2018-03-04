@@ -6,6 +6,7 @@
 
 {% block stylesheet %}
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
 {% endblock %}
 
 {% block javascript %}
@@ -31,11 +32,17 @@
 	    	{% include 'includes/formset.html' %}
 	    </div>
     {% endfor %}
+
     <button type="submit" class="btn btn-success">Crear evento</button>
   </form>
-
+  <br><br><br>
+      <input type="text" value="Amsterdam,Washington,Sydney,Beijing,Cairo" data-role="tagsinput" />
+  <br><br><br>
 {% endblock %}
 {% block javascriptBottom %}
+<script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
+
+
 <script src="{% static 'js/simplemde.min.js' %}"></script>
   <script>
     var simplemde = new SimpleMDE();

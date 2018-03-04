@@ -37,7 +37,7 @@ class EventForm(forms.ModelForm):
             attrs={'rows': 5, 'placeholder': 'De que va la cosa?'}
         ),
         max_length=5000,
-        help_text='The max length of the text is 5000.'
+        help_text='maximos caracteres permitidos: 5000.'
     )
 
     class Meta:

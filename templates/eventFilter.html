@@ -40,6 +40,7 @@
         </span>
       </div>
       -->
+      	
       	<form action="" method="GET">
       	    <button type="submit">
 			   <span class="glyphicon glyphicon-filter"></span>
@@ -83,13 +84,12 @@
     <ul>
       {% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
       {% for event in events %}
-      	{% ifequal count 0 %}
-	      	<div class="container">    
+      	{% ifequal count 0 %}    
 	  			<div class="row">
   		{% endifequal %}
 			  		<a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">
 
-			  		<div class="col-sm-3">
+			  		<div class="col-sm-4">
 			      		<div class="panel panel-primary"><!-- panel-danger panel-success disponibles -->
 					        <div class="panel-heading">{{ event.title }}</div>
 					        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
@@ -99,7 +99,6 @@
 			    	</a>
     	{% ifequal count 2 %}
 	    		</div>
-	  		</div>
   			{% assign count 0 %}<!-- reseteamos contador -->
   		{% else %}
   			{% increment count %}<!-- count++ -->

@@ -195,3 +195,6 @@ MAP_WIDGETS = {
 }
 
 GEOIP_PATH = '/libarys/'
+
+#modelo predeterminado de usuario
+AUTH_USER_MODEL = 'accounts.User'

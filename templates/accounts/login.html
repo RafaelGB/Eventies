@@ -1,5 +1,12 @@
 {% extends 'base_accounts.html' %}
 
+{% block title %}Login{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+  <li class="breadcrumb-item active">Login</li>
+{% endblock %}
+
 {% block content %}
   {% if user.is_authenticated %}
     <h3>Ya estás conectado, ¿quieres <a href="{% url 'logout' %}">Salir</a>?</h3>

@@ -3,9 +3,6 @@ from .models import Event
 
 def user_is_event_author(function):
     def wrap(request, *args, **kwargs):
-        print("\n\nStart zona debug\n\n")
-        print(kwargs)
-        print("\n\nFin  zona debug\n\n")
         event = Event.objects.get(pk=kwargs['pk'])
         if event.created_by == request.user:
             return function(request, *args, **kwargs)

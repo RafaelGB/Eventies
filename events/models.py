@@ -1,19 +1,14 @@
 from __future__ import unicode_literals
 import math
 from django.db import models
-from django.contrib.auth.models import User
+from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
 from django.template.defaultfilters import slugify
 from django.utils.html import mark_safe
 from markdown import markdown
-
-
-
-
 from django.contrib.gis.db import models as gisModels
-from django.contrib.gis.geos import Point
-
+from accounts.models import User
 
 """
 **********************************************************
@@ -75,7 +70,7 @@ class Event(models.Model):
     """
     created_by = models.ForeignKey(User, related_name='events')
     """
-                       Relaciones onoToOne
+                       Relaciones oneToOne
     ---------------------------------------------------------
 
     """    
@@ -129,6 +124,11 @@ class Photo(models.Model):
 """
 class Tag(models.Model):
     name_tag = models.CharField(max_length=15, primary_key=True)
+    """
+                       Relaciones ManyToMany
+    ---------------------------------------------------------
+    
+    """
     events_tags = models.ManyToManyField(Event) #relacion many_to_many con Event
     """
     ==========================================================
@@ -146,7 +146,13 @@ class Tag(models.Model):
 class Category(models.Model):
     name_category = models.CharField(max_length=20, primary_key=True)
     description = models.TextField(max_length=280)
+    """
+                       Relaciones ManyToMany
+    ---------------------------------------------------------
+    
+    """
     events_categories = models.ManyToManyField(Event) #relacion many_to_many con Event
+    user_categories = models.ManyToManyField(User)# relacion many_to_many con Usuarios
     """
     ==========================================================
                     Servicios de la clase
