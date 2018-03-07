@@ -123,7 +123,7 @@ class Photo(models.Model):
 **********************************************************
 """
 class Tag(models.Model):
-    name_tag = models.CharField(max_length=15, primary_key=True)
+    name_tag = models.CharField(max_length=25,unique=True)
     """
                        Relaciones ManyToMany
     ---------------------------------------------------------
@@ -151,7 +151,7 @@ class Category(models.Model):
     ---------------------------------------------------------
     
     """
-    events_categories = models.ManyToManyField(Event) #relacion many_to_many con Event
+    events_categories = models.ManyToManyField(Event) #relacionpython manage.py createsuperuser many_to_many con Event
     user_categories = models.ManyToManyField(User)# relacion many_to_many con Usuarios
     """
     ==========================================================

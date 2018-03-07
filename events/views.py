@@ -45,6 +45,12 @@ class EventObjectView(DetailView):
         self.object.save()
         #definimos el contexto
         context = super(EventObjectView, self).get_context_data(**kwargs)
+        #.annotate(q_count=Count('events_tags')).order_by('q_count') ?? para ordenar por veces repetidas???
+        eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+        eventTags_dic ={}
+        for tag in eventTags:
+            eventTags_dic[tag] = Tag.objects.get(name_tag=tag).events_tags.count()             
+        context["eventTags"] = eventTags_dic
         context["coor"] = {"x": str(context["object"].geopos_at.coordinates.x), "y":str(context["object"].geopos_at.coordinates.y) }
         return context
 """
@@ -69,7 +75,6 @@ class EventFilterView(ListView):
         if self.request.GET:
             for getObject in self.request.GET:
                 context[getObject] = self.request.GET[getObject]
-            print(context, "\n\n\n")
         # Call the base implementation first to get a context
         
         return context
@@ -176,21 +181,39 @@ def NewEvent(request):
         formset = PhotoFormSet(request.POST or None, request.FILES or None)
 
         if all([form.is_valid(),formset.is_valid(),formGeo.is_valid()]):
+
+            """
+                               Tratamiento de Event
+            ---------------------------------------------------------
+            
+            """
             myGeo = formGeo.save()
             event = form.save(commit=False)
             event.geopos_at = myGeo
             event.created_by = request.user
             event.save()
-            for subformset in formset.cleaned_data:
-                photo = subformset.get('picture')
-                newphoto = Photo(picture=photo,event=event)  
-                newphoto.save()
+            """
+                               Tratamiento de los Tags
+            ---------------------------------------------------------
+            
+            """
+            myTags = request.POST['myTags']
+            arrayTags = myTags.split(',')
+            for tag in arrayTags:
+                newTag = None
+                if not Tag.objects.filter(name_tag=tag).exists():
+                    newTag = Tag(name_tag=tag)
+                    newTag.save()
+                else:
+                    newTag = Tag.objects.get(name_tag=tag)
+                newTag.events_tags.add(event.pk)
 
             return redirect('eventDetails', pk=event.pk)
     else:
         form = EventForm()
         formGeo = GeolocationForm()
         formset = PhotoFormSet()
+
     return render(
         request,
         'new_event.html',

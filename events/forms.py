@@ -19,18 +19,6 @@ class GeolocationForm(forms.ModelForm):
         }
 
 class EventForm(forms.ModelForm):
-    categories = forms.ModelMultipleChoiceField(
-        queryset=Category.objects.all(),
-        label='Categorías',
-        required=False
-        )
-
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        label='Tags',
-        required=False
-        )
-
     description = forms.CharField(
     	label='Descripción',
         widget=forms.Textarea(
@@ -48,9 +36,7 @@ class EventForm(forms.ModelForm):
         	'description',
         	'summary',
         	'budget',
-        	'duration',
-            'categories',
-            'tags'
+        	'duration'
         ]
         #Cambia el nombre del campo por el que se desea mostrar en html
         labels = {

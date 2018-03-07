@@ -20,7 +20,7 @@
 
 
 {% block content %}
-  <form method="post" class="form-group" enctype="multipart/form-data" novalidate>
+  <form id="mainForm" method="post" class="form-group" enctype="multipart/form-data" novalidate>
     {% csrf_token %}
     {% include 'includes/form.html' %}
     {% include 'includes/formGeo.html' %}
@@ -36,7 +36,8 @@
     <button type="submit" class="btn btn-success">Crear evento</button>
   </form>
   <br><br><br>
-      <input type="text" value="Amsterdam,Washington,Sydney,Beijing,Cairo" data-role="tagsinput" />
+  <label>Etiquetas para este evento</label>
+      <input type="text"  value="" form="mainForm" name="myTags" data-role="tagsinput" />
   <br><br><br>
 {% endblock %}
 {% block javascriptBottom %}
@@ -53,5 +54,6 @@
       addText: 'nueva foto',
       deleteText: 'quitar'
     });
-  </script>
+
+ </script>
 {% endblock %}

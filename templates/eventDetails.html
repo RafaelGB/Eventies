@@ -106,7 +106,7 @@
 </div>
 
 <div class="container text-center">    
-	    <h3>My Google Maps Demo</h3>
+ 	 </h2>Maps Demo</h2>
     <div id="map"></div>
 <hr>
 </div>
@@ -132,6 +132,14 @@
   	</div>
   	<hr>
 </div>
+  <h2>Tags</h2>
+  <div class="panel panel-default">
+    <div class="panel-body">
+    	{% for mykey,myvalue in eventTags.items %}
+    	<a href="#" class="btn btn-info" role="button">{{mykey}} <span class="badge">{{myvalue}}</span></a>
+    	{% endfor %}
+    </div>
+  </div>
 
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>
