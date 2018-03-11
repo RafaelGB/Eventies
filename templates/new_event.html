@@ -35,10 +35,9 @@
 
     <button type="submit" class="btn btn-success">Crear evento</button>
   </form>
-  <br><br><br>
-  <label>Etiquetas para este evento</label>
-      <input type="text"  value="" form="mainForm" name="myTags" data-role="tagsinput" />
-  <br><br><br>
+  <br><br>
+  <label>Etiquetas para este evento</label><br>
+      <input placeholder="nuevoTag (press enter...)" type="text"  value="" form="mainForm" name="myTags" data-role="tagsinput" />
 {% endblock %}
 {% block javascriptBottom %}
 <script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>

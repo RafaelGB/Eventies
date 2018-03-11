@@ -16,8 +16,6 @@ from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 
-
-
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
@@ -47,6 +45,7 @@ class EventObjectView(DetailView):
         context = super(EventObjectView, self).get_context_data(**kwargs)
         #.annotate(q_count=Count('events_tags')).order_by('q_count') ?? para ordenar por veces repetidas???
         eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+        print(eventTags.query)
         eventTags_dic ={}
         for tag in eventTags:
             eventTags_dic[tag] = Tag.objects.get(name_tag=tag).events_tags.count()             
@@ -82,7 +81,11 @@ class EventFilterView(ListView):
 
     def get_queryset(self):
 
-        # Comprobamos si hay variable get de búsqueda y si no está vacía
+        """
+        ----------------------------------------------------------
+            filtro de type
+        ----------------------------------------------------------
+        """
         if self.kwargs['type'] == 'search':
             contains = self.request.GET['search']
             queryset = (
@@ -97,7 +100,11 @@ class EventFilterView(ListView):
             queryset = Event.objects.all()
 
         
-        #vamos incluyendo filtros al queryset
+        """
+        ----------------------------------------------------------
+            filtros extra
+        ----------------------------------------------------------
+        """
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
             if distance:
@@ -105,7 +112,12 @@ class EventFilterView(ListView):
                 lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
                 ref_location = Point(lat, lng )
                 queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
-            
+        
+        if('tags' in self.request.GET):
+            tags = self.request.GET['tags'].split(',')
+            for tag in tags:
+                queryset = queryset.filter(tags__name_tag=tag)
+            print ("query pasado el tags",queryset.query)
         return queryset
 
 @method_decorator(login_required, name='dispatch')
@@ -116,7 +128,6 @@ class EventUpdateView(UpdateView):
     context_object_name = 'event'
     form_class = EventForm
     formGeo_class = GeolocationForm
-
     """
     ----------------------------------------------------------
         funciones de la clase
@@ -124,11 +135,16 @@ class EventUpdateView(UpdateView):
     """
     def get_context_data(self, **kwargs):
         context = super(EventUpdateView, self).get_context_data(**kwargs)
-        context['form'] = self.form_class(instance=self.object)
-
+        context['form'] = self.form_class(instance=self.object)  
         context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
-        #if 'formset' not in context:
-        #context['formset'] = self.formset_class(initial=[{'pk': x.pk} for x in Photo.objects.filter(event=self.object)])
+
+        concatTags = ""
+        eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+        print (eventTags)
+        for tag in eventTags:
+            concatTags = concatTags+tag+','
+        context['valueTags'] = concatTags
+
         return context
 
     def get(self, request, *args, **kwargs):
@@ -143,29 +159,56 @@ class EventUpdateView(UpdateView):
         self.object = self.get_object()
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
-        #formset = self.formset_class(request.POST or None, request.FILES or None)
         if all([form.is_valid(),formGeo.is_valid()]):
+            """
+                               Tratamiento de Event
+            ---------------------------------------------------------
+            
+            """
             self.object.title = form.cleaned_data['title']
             self.object.description = form.cleaned_data['description']
             self.object.summary = form.cleaned_data['summary']
             self.object.budget = form.cleaned_data['budget']
             self.object.duration = form.cleaned_data['duration']
-            """
-            'categories',
-            'tags'
-            """
             self.object.updated_at = timezone.now()
+            #tratamiento interno de geolocalización
             updateGeo = Geolocation.objects.get( pk=self.object.geopos_at.pk )           
             updateGeo.coordinates = formGeo.cleaned_data['coordinates']            
             updateGeo.save()
             self.object.save()
-            #seccion de geolocalizacion
-
             """
-            instances = formset.save(commit=False)
-            for obj in instances.deleted_objects:
-                obj.delete()
+                               Tratamiento de Tags
+            ---------------------------------------------------------
+            
             """
+            primalTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+            myTags = request.POST["myTags"]
+            arrayTags = myTags.split(',')
+            for tag in arrayTags:
+                newTag = None
+                tagExist = Tag.objects.filter(name_tag=tag).exists()
+                if not tagExist:
+                    print ("Creando nuevo tag:",tag)
+                    newTag = Tag(name_tag=tag)
+                    newTag.save()
+                    newTag.events_tags.add(self.object.pk)
+                   
+                elif tag not in primalTags:
+                    print("add a event_tags de",tag)
+                    newTag = Tag.objects.get(name_tag=tag)
+                    newTag.events_tags.add(self.object.pk)
+                else:
+                    primalTags = primalTags.exclude(name_tag=tag)
+                    print("tag sin cambio",tag)
+            print (primalTags)
+            for tag in primalTags:
+                removeTag = Tag.objects.get(name_tag=tag)
+                if removeTag.events_tags.count()   == 1:
+                    print("borrando",tag)
+                    removeTag.delete()
+                else:
+                    print("remove a event_tags de",tag)
+                    removeTag.events_tags.remove(self.object.pk)
             return redirect('eventDetails', pk=self.object.pk)  
         else:
             return self.render_to_response(

@@ -136,7 +136,7 @@
   <div class="panel panel-default">
     <div class="panel-body">
     	{% for mykey,myvalue in eventTags.items %}
-    	<a href="#" class="btn btn-info" role="button">{{mykey}} <span class="badge">{{myvalue}}</span></a>
+    	<a href="{% url 'eventFilter' type='all' %}?tags={{ mykey }}" class="btn btn-info" role="button">{{mykey}} <span class="badge">{{myvalue}}</span></a>
     	{% endfor %}
     </div>
   </div>

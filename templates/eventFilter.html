@@ -9,6 +9,7 @@
 
 {% block stylesheet %}<!-- opcion de estilo -->
 	<link rel="stylesheet" href="{% static 'css/filterEvents.css' %}">	
+	<link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
 {% endblock %} <!-- fin de opcion de estilo -->
 
 {% block breadcrumb %}
@@ -24,24 +25,8 @@
   	    <a href="{% url 'eventFilter' type='all' %}">
 	    	<span class="glyphicon glyphicon-trash"></span>
 	    </a>
-      <!-- barra lateral ejemplo
-      <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="#section1">Home</a></li>
-        <li><a href="#section2">Friends</a></li>
-        <li><a href="#section3">Family</a></li>
-        <li><a href="#section3">Photos</a></li>
-      </ul><br>
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search Blog..">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button">
-            <span class="glyphicon glyphicon-search"></span>
-          </button>
-        </span>
-      </div>
-      -->
       	
-      	<form action="" method="GET">
+      	<form action="" id="filterForm" method="GET">
       	    <button type="submit">
 			   <span class="glyphicon glyphicon-filter"></span>
 			</button>
@@ -59,10 +44,6 @@
 				    <input type="hidden" name="lat"  id="campo_lat">
 			    </li>
 				<li>
-				    <label>Otra cosa</label>
-			  			<input type="number" name="otracosa" min="100" max="50000" default="1000">
-			  		<label> label</label>
-
 			    </li>
 			</ul><br>
 		    </div>
@@ -72,6 +53,9 @@
 
 		    
 	    </form>
+	    <label>Etiquetas</label>
+  		<input placeholder="<etiqueta> (pulsa enter...)" type="text"  value="" form="filterForm" name="tags" data-role="tagsinput" />
+
 	    <br>
 	    <a href="{% url 'eventFilter' type='all' %}">
 	    	<span class="glyphicon glyphicon-trash"></span>
@@ -114,6 +98,7 @@
 </div>    
 {% endblock %}
 {% block javascriptBottom %}
+	<script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
     <script>
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service

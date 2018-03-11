@@ -110,7 +110,7 @@ class Photo(models.Model):
             )
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     """
-    ==========================================================
+    =============================================unique model =============
                     Servicios de la clase
     ==========================================================
 
@@ -129,7 +129,7 @@ class Tag(models.Model):
     ---------------------------------------------------------
     
     """
-    events_tags = models.ManyToManyField(Event) #relacion many_to_many con Event
+    events_tags = models.ManyToManyField(Event,related_name='tags') #relacion many_to_many con Event
     """
     ==========================================================
                     Servicios de la clase
