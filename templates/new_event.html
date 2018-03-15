@@ -5,6 +5,8 @@
 {% block title %}Nuevo evento{% endblock %}
 
 {% block stylesheet %}
+
+<link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}">
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
 {% endblock %}
@@ -35,14 +37,21 @@
 
     <button type="submit" class="btn btn-success">Crear evento</button>
   </form>
-  <br><br>
-  <label>Etiquetas para este evento</label><br>
-      <input placeholder="nuevoTag (press enter...)" type="text"  value="" form="mainForm" name="myTags" data-role="tagsinput" />
+  <hr>
+  <h2>Etiquetas para este evento</h2><br>
+      <input placeholder="nuevoTag (press enter...)" type="text"  value="" form="mainForm" name="myTags" id="tags_input" data-role="tagsinput" />
+
+  <hr>
+  <h2>Selecciona las categorías del evento</h2><br>
+  <select class="selectpicker" multiple data-max-options="2">
+    <option>Mustard</option>
+    <option>Ketchup</option>
+    <option>Relish</option>
+  </select>
 {% endblock %}
 {% block javascriptBottom %}
+<script src="{% static 'js/bootstrap-select.js' %}"></script>
 <script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
-
-
 <script src="{% static 'js/simplemde.min.js' %}"></script>
   <script>
     var simplemde = new SimpleMDE();
@@ -55,4 +64,25 @@
     });
 
  </script>
+
+
+<script src="{% static 'js/typeahead.bundle.js' %}"></script>
+<script>
+  var tags = new Bloodhound({
+  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name_tag); },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  local:{{allTags|safe}}
+});
+
+  tags.initialize();
+
+  $('#tags_input').tagsinput({
+    typeaheadjs: {
+    name: 'tags',
+    displayKey: 'name_tag',
+    source: tags.ttAdapter()
+    }
+  });
+</script>
 {% endblock %}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>

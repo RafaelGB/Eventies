@@ -1,6 +1,7 @@
 from django.db.models import Count
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render, reverse
 from django.views.generic import ListView, UpdateView
@@ -19,6 +20,7 @@ from django.http import HttpResponse
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
+
 
 def HomeView(request):
     return render(request, 'home.html')
@@ -113,11 +115,10 @@ class EventFilterView(ListView):
                 ref_location = Point(lat, lng )
                 queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
         
-        if('tags' in self.request.GET):
+        if 'tags' in self.request.GET and self.request.GET['tags']:
             tags = self.request.GET['tags'].split(',')
             for tag in tags:
                 queryset = queryset.filter(tags__name_tag=tag)
-            print ("query pasado el tags",queryset.query)
         return queryset
 
 @method_decorator(login_required, name='dispatch')
@@ -134,17 +135,26 @@ class EventUpdateView(UpdateView):
     ----------------------------------------------------------
     """
     def get_context_data(self, **kwargs):
+        #recuperamos argumentos ya inicializados
         context = super(EventUpdateView, self).get_context_data(**kwargs)
         context['form'] = self.form_class(instance=self.object)  
         context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
-
+        """
+            obtencion de los tags relacionados con el evento
+        .........................................................
+            
+        """
         concatTags = ""
         eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
-        print (eventTags)
         for tag in eventTags:
             concatTags = concatTags+tag+','
         context['valueTags'] = concatTags
 
+        #obtencion y dar formato a tags para fucion de autocompletado
+        if not 'autoTags' in context:
+            allTags = list(Tag.objects.values('name_tag'))
+            allTags = str(allTags).replace("'name_tag'","name_tag")
+            context['autoTags'] = allTags
         return context
 
     def get(self, request, *args, **kwargs):
@@ -162,7 +172,7 @@ class EventUpdateView(UpdateView):
         if all([form.is_valid(),formGeo.is_valid()]):
             """
                                Tratamiento de Event
-            ---------------------------------------------------------
+            .........................................................
             
             """
             self.object.title = form.cleaned_data['title']
@@ -178,7 +188,7 @@ class EventUpdateView(UpdateView):
             self.object.save()
             """
                                Tratamiento de Tags
-            ---------------------------------------------------------
+            .........................................................
             
             """
             primalTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
@@ -188,26 +198,26 @@ class EventUpdateView(UpdateView):
                 newTag = None
                 tagExist = Tag.objects.filter(name_tag=tag).exists()
                 if not tagExist:
-                    print ("Creando nuevo tag:",tag)
+                    #crear nuevo tag
                     newTag = Tag(name_tag=tag)
                     newTag.save()
                     newTag.events_tags.add(self.object.pk)
                    
                 elif tag not in primalTags:
-                    print("add a event_tags de",tag)
+                    #add evento al maytomany del tag
                     newTag = Tag.objects.get(name_tag=tag)
                     newTag.events_tags.add(self.object.pk)
                 else:
+                    #borramos de la lista si existe y ya esta en los originales
                     primalTags = primalTags.exclude(name_tag=tag)
-                    print("tag sin cambio",tag)
             print (primalTags)
             for tag in primalTags:
                 removeTag = Tag.objects.get(name_tag=tag)
                 if removeTag.events_tags.count()   == 1:
-                    print("borrando",tag)
+                    #este tag solo se usaba na vez y queda borrado
                     removeTag.delete()
                 else:
-                    print("remove a event_tags de",tag)
+                    #este tag existe en otros eventos por lo que solo se elimina de este
                     removeTag.events_tags.remove(self.object.pk)
             return redirect('eventDetails', pk=self.object.pk)  
         else:
@@ -227,7 +237,7 @@ def NewEvent(request):
 
             """
                                Tratamiento de Event
-            ---------------------------------------------------------
+            .........................................................
             
             """
             myGeo = formGeo.save()
@@ -237,7 +247,7 @@ def NewEvent(request):
             event.save()
             """
                                Tratamiento de los Tags
-            ---------------------------------------------------------
+            .........................................................
             
             """
             myTags = request.POST['myTags']
@@ -250,15 +260,22 @@ def NewEvent(request):
                 else:
                     newTag = Tag.objects.get(name_tag=tag)
                 newTag.events_tags.add(event.pk)
-
+            """
+                               Tratamiento de las Categorias
+            .........................................................
+            
+            """
             return redirect('eventDetails', pk=event.pk)
-    else:
-        form = EventForm()
-        formGeo = GeolocationForm()
-        formset = PhotoFormSet()
+    
+    form = EventForm()
+    formGeo = GeolocationForm()
+    formset = PhotoFormSet()
+    #obtencion y dar formato a tags para fucion de autocompletado
+    allTags = list(Tag.objects.values('name_tag'))
+    allTags = str(allTags).replace("'name_tag'","name_tag")
 
     return render(
         request,
         'new_event.html',
-        {'form': form , 'formGeo':formGeo, 'formset':formset}
+        {'form': form , 'formGeo':formGeo, 'formset':formset, 'allTags':allTags }
         )

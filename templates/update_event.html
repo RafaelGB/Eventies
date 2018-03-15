@@ -28,7 +28,7 @@
   </form>
   <hr>
   <h2>Tags</h2><br>
-  <input placeholder="nuevoTag (press enter...)" value = "{{valueTags}}" type="text"  value="" form="mainForm" name="myTags" data-role="tagsinput" />
+  <input placeholder="nuevoTag (press enter...)" value = "{{valueTags}}" type="text"  value="" form="mainForm" name="myTags" id="tags_input" data-role="tagsinput" />
 {% endblock %}
 
 {% block javascriptBottom %}
@@ -43,5 +43,24 @@ var simplemde = new SimpleMDE();
         addText: 'nueva foto',
         deleteText: 'quitar'
     });
+</script>
+
+<script src="{% static 'js/typeahead.bundle.js' %}"></script>
+<script>
+  var tags = new Bloodhound({
+  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name_tag); },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  local:{{autoTags|safe}}
+});
+
+  tags.initialize();
+
+  $('#tags_input').tagsinput({
+    typeaheadjs: {
+    name: 'tags',
+    displayKey: 'name_tag',
+    source: tags.ttAdapter()
+    }
+  });
 </script>
 {% endblock %}
