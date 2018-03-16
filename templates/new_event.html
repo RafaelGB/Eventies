@@ -6,13 +6,15 @@
 
 {% block stylesheet %}
 
-<link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}">
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
+
 {% endblock %}
 
 {% block javascript %}
   {{ formGeo.media }}
+  <script src="{% static 'js/bootstrap-select.js' %}"></script>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -42,15 +44,17 @@
       <input placeholder="nuevoTag (press enter...)" type="text"  value="" form="mainForm" name="myTags" id="tags_input" data-role="tagsinput" />
 
   <hr>
-  <h2>Selecciona las categorías del evento</h2><br>
-  <select class="selectpicker" multiple data-max-options="2">
-    <option>Mustard</option>
-    <option>Ketchup</option>
-    <option>Relish</option>
+  <select form="mainForm" name="myCategories" id="first-disabled2" class="selectpicker" multiple data-hide-disabled="true" data-size="5">
+    {% for category in allCategories %}
+      <option>{{ category }}</option>
+    {% endfor %}
   </select>
+  <br><br>
+  <button id="special" class="btn btn-default">Volvemos a empezar...</button>
+  <button id="special2" class="btn btn-default">¡un momento! quería las de antes</button>
+
 {% endblock %}
 {% block javascriptBottom %}
-<script src="{% static 'js/bootstrap-select.js' %}"></script>
 <script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
 <script src="{% static 'js/simplemde.min.js' %}"></script>
   <script>
@@ -84,5 +88,28 @@
     }
   });
 </script>
+
+
+<script>
+  $(document).ready(function () {
+    var mySelect = $('#first-disabled2');
+
+    $('#special').on('click', function () {
+      mySelect.find('option:selected').prop('disabled', true);
+      mySelect.selectpicker('refresh');
+    });
+
+    $('#special2').on('click', function () {
+      mySelect.find('option:disabled').prop('disabled', false);
+      mySelect.selectpicker('refresh');
+    });
+
+    $('#basic2').selectpicker({
+      liveSearch: true,
+      maxOptions: 1
+    });
+  });
+</script>
+
 {% endblock %}
 <script src="{% static 'js/bootstrap.min.js' %}"></script>

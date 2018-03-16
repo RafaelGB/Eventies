@@ -265,17 +265,30 @@ def NewEvent(request):
             .........................................................
             
             """
+            myCategories = request.POST['myCategories']
+            arrayCategories = myCategories.split(',')
+            for category in arrayCategories:
+                newCategory = Category.objects.get(name_category=category)
+                newCategory.events_categories.add(event.pk)
             return redirect('eventDetails', pk=event.pk)
     
     form = EventForm()
     formGeo = GeolocationForm()
     formset = PhotoFormSet()
-    #obtencion y dar formato a tags para fucion de autocompletado
+    #obtencion de tags y darles formato para funcion de autocompletado
     allTags = list(Tag.objects.values('name_tag'))
     allTags = str(allTags).replace("'name_tag'","name_tag")
-
+    #obtencion de categorias
+    allCategories = Category.objects.values_list('name_category',flat=True)
+    print(allCategories)
     return render(
-        request,
-        'new_event.html',
-        {'form': form , 'formGeo':formGeo, 'formset':formset, 'allTags':allTags }
+            request,
+            'new_event.html',
+            {
+            'form': form ,
+            'formGeo':formGeo,
+            'formset':formset,
+            'allTags':allTags,
+            'allCategories':allCategories 
+            }
         )
