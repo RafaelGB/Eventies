@@ -132,14 +132,22 @@
   	</div>
   	<hr>
 </div>
-  <h2>Tags</h2>
-  <div class="panel panel-default">
-    <div class="panel-body">
-    	{% for mykey,myvalue in eventTags.items %}
-    	<a href="{% url 'eventFilter' type='all' %}?tags={{ mykey }}" class="btn btn-info" role="button">{{mykey}} <span class="badge">{{myvalue}}</span></a>
-    	{% endfor %}
-    </div>
+<h2>Categorías</h2>
+<div class="panel panel-default">
+  <div class="panel-body">
+    {% for category in eventCategories %}
+    <a href="{% url 'eventFilter' type='all' %}?categories={{ category }}" class="btn btn-info" role="button">{{category}} </a>
+    {% endfor %}
   </div>
+</div>
+<h2>Palabras clave</h2>
+<div class="panel panel-default">
+  <div class="panel-body">
+  	{% for mykey,myvalue in eventTags.items %}
+  	<a href="{% url 'eventFilter' type='all' %}?tags={{ mykey }}" class="btn btn-info" role="button">{{mykey}} <span class="badge">{{myvalue}}</span></a>
+  	{% endfor %}
+  </div>
+</div>
 
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>

@@ -10,6 +10,8 @@
 {% block stylesheet %}<!-- opcion de estilo -->
 	<link rel="stylesheet" href="{% static 'css/filterEvents.css' %}">	
 	<link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
+	<link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
 {% endblock %} <!-- fin de opcion de estilo -->
 
 {% block breadcrumb %}
@@ -54,7 +56,7 @@
 		    
 	    </form>
 	    <label>Etiquetas</label>
-  		<input placeholder="<etiqueta> (pulsa enter...)" type="text"  value="" form="filterForm" name="tags" data-role="tagsinput" />
+  		<input placeholder="<etiqueta> (pulsa enter...)" type="text"  id="tags_input" value="" form="filterForm" name="tags" data-role="tagsinput" />
 
 	    <br>
 	    <a href="{% url 'eventFilter' type='all' %}">
@@ -100,15 +102,28 @@
 {% block javascriptBottom %}
 	<script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
 	
+	<script src="{% static 'js/typeahead.bundle.js' %}"></script>
+	
+	<script>
+	  var tags = new Bloodhound({
+	  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name_tag); },
+	  queryTokenizer: Bloodhound.tokenizers.whitespace,
+	  local:{{autoTags|safe}}
+	});
+
+	  tags.initialize();
+
+	  $('#tags_input').tagsinput({
+	    typeaheadjs: {
+	    name: 'tags',
+	    displayKey: 'name_tag',
+	    source: tags.ttAdapter()
+	    }
+	  });
+	</script>
+
 	
     <script>
-      // Note: This example requires that you consent to location sharing when
-      // prompted by your browser. If you see the error "The Geolocation service
-      // failed.", it means you probably did not give permission for the browser to
-      // locate you.
-
-
-    // Try HTML5 geolocation.
     if (navigator.geolocation) {
     	var pos;
 	    navigator.geolocation.getCurrentPosition(function(position) {

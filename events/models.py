@@ -151,7 +151,7 @@ class Category(models.Model):
     ---------------------------------------------------------
     
     """
-    events_categories = models.ManyToManyField(Event) #relacionpython manage.py createsuperuser many_to_many con Event
+    events_categories = models.ManyToManyField(Event,related_name='categories') #relacionpython manage.py createsuperuser many_to_many con Event
     user_categories = models.ManyToManyField(User)# relacion many_to_many con Usuarios
     """
     ==========================================================

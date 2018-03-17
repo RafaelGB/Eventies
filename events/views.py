@@ -45,13 +45,27 @@ class EventObjectView(DetailView):
         self.object.save()
         #definimos el contexto
         context = super(EventObjectView, self).get_context_data(**kwargs)
-        #.annotate(q_count=Count('events_tags')).order_by('q_count') ?? para ordenar por veces repetidas???
+        """
+            obtencion de las categorías relacionadas
+        .........................................................
+            
+        """
+        context["eventCategories"] = Category.objects.filter(events_categories=self.object).values_list('name_category', flat=True)
+        """
+            obtencion de las etiquetas relacionadas
+        .........................................................
+            
+        """
         eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
-        print(eventTags.query)
         eventTags_dic ={}
         for tag in eventTags:
             eventTags_dic[tag] = Tag.objects.get(name_tag=tag).events_tags.count()             
         context["eventTags"] = eventTags_dic
+        """
+            tratamiento de la localizacion para su correcta visualizacion
+        .........................................................
+            
+        """
         context["coor"] = {"x": str(context["object"].geopos_at.coordinates.x), "y":str(context["object"].geopos_at.coordinates.y) }
         return context
 """
@@ -77,7 +91,10 @@ class EventFilterView(ListView):
             for getObject in self.request.GET:
                 context[getObject] = self.request.GET[getObject]
         # Call the base implementation first to get a context
-        
+        if not 'autoTags' in context:
+            allTags = list(Tag.objects.values('name_tag'))
+            allTags = str(allTags).replace("'name_tag'","name_tag")
+            context['autoTags'] = allTags
         return context
 
 
@@ -119,6 +136,11 @@ class EventFilterView(ListView):
             tags = self.request.GET['tags'].split(',')
             for tag in tags:
                 queryset = queryset.filter(tags__name_tag=tag)
+
+        if 'categories' in self.request.GET and self.request.GET['categories']:
+            categories = self.request.GET['categories'].split(',')
+            for category in categories:
+                queryset = queryset.filter(categories__name_category=category)
         return queryset
 
 @method_decorator(login_required, name='dispatch')
@@ -140,7 +162,18 @@ class EventUpdateView(UpdateView):
         context['form'] = self.form_class(instance=self.object)  
         context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
         """
+            obtencion de las categorías relacionadas con el evento
+                                        +
+                        obtencion del resto de categorias
+        .........................................................
+            
+        """
+        context['allCategories'] = Category.objects.values_list('name_category',flat=True)
+        context['myCategories'] = Category.objects.filter(events_categories=self.object).values_list('name_category', flat=True)
+        """
             obtencion de los tags relacionados con el evento
+                                    +
+                        tratamiento para autocompletado
         .........................................................
             
         """
@@ -150,7 +183,7 @@ class EventUpdateView(UpdateView):
             concatTags = concatTags+tag+','
         context['valueTags'] = concatTags
 
-        #obtencion y dar formato a tags para fucion de autocompletado
+        #obtencion y dar formato a tags para funcion de autocompletado
         if not 'autoTags' in context:
             allTags = list(Tag.objects.values('name_tag'))
             allTags = str(allTags).replace("'name_tag'","name_tag")
@@ -191,7 +224,7 @@ class EventUpdateView(UpdateView):
             .........................................................
             
             """
-            primalTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+            primalTags = list(Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True))
             myTags = request.POST["myTags"]
             arrayTags = myTags.split(',')
             for tag in arrayTags:
@@ -209,8 +242,7 @@ class EventUpdateView(UpdateView):
                     newTag.events_tags.add(self.object.pk)
                 else:
                     #borramos de la lista si existe y ya esta en los originales
-                    primalTags = primalTags.exclude(name_tag=tag)
-            print (primalTags)
+                    primalTags.remove(tag)
             for tag in primalTags:
                 removeTag = Tag.objects.get(name_tag=tag)
                 if removeTag.events_tags.count()   == 1:
@@ -219,6 +251,26 @@ class EventUpdateView(UpdateView):
                 else:
                     #este tag existe en otros eventos por lo que solo se elimina de este
                     removeTag.events_tags.remove(self.object.pk)
+            """
+                               Tratamiento de Categorias
+            .........................................................
+            
+            """
+            arrayCategories = request.POST.getlist('myCategories')
+            primalCategories= list(Category.objects.filter(events_categories=self.object).values_list('name_category', flat=True))
+            
+            for category in arrayCategories:
+                if category not in primalCategories:
+                    #si no estaba antes se añade al manytomany
+                    updateCategory = Category.objects.get(name_category=category)
+                    updateCategory.events_categories.add(self.object.pk)
+                else:
+                    #si estaba se descarta
+                    primalCategories.remove(category)
+            for category in primalCategories:
+                #todos los no descartados quiere decir que se eliman del many to many
+                updateCategory = Category.objects.get(name_category=category)
+                updateCategory.events_categories.remove(self.object.pk)   
             return redirect('eventDetails', pk=self.object.pk)  
         else:
             return self.render_to_response(
@@ -265,8 +317,7 @@ def NewEvent(request):
             .........................................................
             
             """
-            myCategories = request.POST['myCategories']
-            arrayCategories = myCategories.split(',')
+            arrayCategories = request.POST.getlist('myCategories')
             for category in arrayCategories:
                 newCategory = Category.objects.get(name_category=category)
                 newCategory.events_categories.add(event.pk)
@@ -276,11 +327,10 @@ def NewEvent(request):
     formGeo = GeolocationForm()
     formset = PhotoFormSet()
     #obtencion de tags y darles formato para funcion de autocompletado
-    allTags = list(Tag.objects.values('name_tag'))
-    allTags = str(allTags).replace("'name_tag'","name_tag")
+    autoTags = list(Tag.objects.values('name_tag'))
+    autoTags = str(allTags).replace("'name_tag'","name_tag")
     #obtencion de categorias
     allCategories = Category.objects.values_list('name_category',flat=True)
-    print(allCategories)
     return render(
             request,
             'new_event.html',
@@ -288,7 +338,7 @@ def NewEvent(request):
             'form': form ,
             'formGeo':formGeo,
             'formset':formset,
-            'allTags':allTags,
+            'autoTags':autoTags,
             'allCategories':allCategories 
             }
         )
