@@ -15,6 +15,7 @@ class SignUpForm(UserCreationForm):
         labels = {
             'birth_date': _('Edad') 
         }
+
 class CustomAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
         if not user.is_active:
@@ -22,3 +23,19 @@ class CustomAuthenticationForm(AuthenticationForm):
                 _("Esta cuenta esta inactiva"),
                 code='inactive',
             )
+
+class UserForm(forms.ModelForm):
+    email = forms.CharField(max_length=254, required=True, widget=forms.EmailInput())
+    class Meta:
+        model = User
+        fields = ('first_name','last_name','email', 'bio', 'birth_date', 'location')
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+        labels = {
+            'first_name': _('Nombre'),
+            'last_name': _('Apellidos'),
+            'bio': _('Breve descripcion tuya'),
+            'birth_date': _('Edad'),
+            'location': _('Ciudad')
+        }

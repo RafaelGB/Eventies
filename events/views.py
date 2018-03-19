@@ -328,7 +328,7 @@ def NewEvent(request):
     formset = PhotoFormSet()
     #obtencion de tags y darles formato para funcion de autocompletado
     autoTags = list(Tag.objects.values('name_tag'))
-    autoTags = str(allTags).replace("'name_tag'","name_tag")
+    autoTags = str(autoTags).replace("'name_tag'","name_tag")
     #obtencion de categorias
     allCategories = Category.objects.values_list('name_category',flat=True)
     return render(
