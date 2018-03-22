@@ -14,8 +14,8 @@
     <div class="container-fluid">
       <ul class="nav navbar-nav">
         <li><a href="{% url 'my_account' %}"><i class="glyphicon glyphicon-user"></i>Mi perfil</a></li>
+        <li><a href="{% url 'my_preferences' %}"><i class="glyphicon glyphicon-heart"></i>Preferencias</a></li>
         <li><a href="{% url 'password_change' %}" ><i class="glyphicon glyphicon-lock"></i> Cambiar contraseña</a></li>
-        <li><a href=""><i class="glyphicon glyphicon-cog"></i> Settings</a></li>
         {% if request.user.is_superuser %}
         <li><a href="/admin"><i class="glyphicon glyphicon-certificate"></i>Admin page</a></li>
         {% endif %}

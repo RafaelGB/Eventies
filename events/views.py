@@ -77,8 +77,8 @@ class EventFilterView(ListView):
     model = Event
     context_object_name = 'events'
     template_name = 'eventFilter.html'
-
-    paginate_by = 8
+    ordering = ['views']
+    paginate_by = 9
     """
     ----------------------------------------------------------
         funciones de la clase
@@ -86,7 +86,7 @@ class EventFilterView(ListView):
     """
     def get_context_data(self, **kwargs):
         context = super(EventFilterView, self).get_context_data(**kwargs)
-
+        
         if self.request.GET:
             for getObject in self.request.GET:
                 context[getObject] = self.request.GET[getObject]
@@ -95,6 +95,12 @@ class EventFilterView(ListView):
             allTags = list(Tag.objects.values('name_tag'))
             allTags = str(allTags).replace("'name_tag'","name_tag")
             context['autoTags'] = allTags
+
+        if not 'allCategories' in context:
+            context['allCategories'] = Category.objects.values_list('name_category',flat=True)
+        
+        if not 'type' in context:
+            context['type'] = self.kwargs['type'] 
         return context
 
 
@@ -138,7 +144,8 @@ class EventFilterView(ListView):
                 queryset = queryset.filter(tags__name_tag=tag)
 
         if 'categories' in self.request.GET and self.request.GET['categories']:
-            categories = self.request.GET['categories'].split(',')
+            print(self.request.GET.getlist('categories'))
+            categories = self.request.GET.getlist('categories')
             for category in categories:
                 queryset = queryset.filter(categories__name_category=category)
         return queryset

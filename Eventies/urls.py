@@ -52,6 +52,7 @@ urlpatterns = [
     url(r'^account/password/done/$', auth_views.PasswordChangeDoneView.as_view(template_name='accounts/password_change_done.html'),
         name='password_change_done'),
     url(r'^account/$', accounts_views.UserUpdateView.as_view(), name='my_account'),
+    url(r'^account/preferences$', accounts_views.UserPreferences, name='my_preferences'),
 #-------------------------------------------------------------------------------------------------------
     url(r'^event/(?P<pk>\d+)/$', events_views.EventObjectView.as_view(template_name='eventDetails.html'), name='eventDetails'),
     url(r'^eventFilter/(?P<type>[0-9A-Za-z_\-]+)/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),

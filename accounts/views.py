@@ -31,8 +31,14 @@ def my_login(request):
     #Cuando se comete un error en el login se repinta con un login mas grande
     else:
         form = CustomAuthenticationForm()
+
     return render(request, 'accounts/login.html', {'form': form})
-    
+   
+@login_required
+def UserPreferences(request):
+    form = "hola mundo"
+    return render(request, 'accounts/preferences.html', {'form': form})
+
 
 @method_decorator(login_required, name='dispatch')
 class UserUpdateView(UpdateView):
@@ -65,11 +71,14 @@ class UserUpdateView(UpdateView):
         self.object = self.get_object()
         form = self.form_class(request.POST)
         if all([form.is_valid()]):
+            """
+                               Tratamiento del Usuario
+            .........................................................
             
+            """
             self.object.first_name = form.cleaned_data['first_name']
             self.object.last_name = form.cleaned_data['last_name']
             self.object.email = form.cleaned_data['email']
-            print(form.cleaned_data['birth_date'])
             self.object.birth_date = form.cleaned_data['birth_date']
             self.object.bio = form.cleaned_data['bio']
             self.object.location = form.cleaned_data['location']

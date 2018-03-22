@@ -67,8 +67,8 @@
 							{% endfor %}  
 							<div class="form-group">
 							  	<tr>
-							  		<td></td>
-									<td><button type="submit" class="btn btn-success">Guardar cambios</button></td>
+							  		<td><button type="button" id="enable_diable_button" class="btn" onclick="enable_disableForm()">Habilitar edicion</button></td>
+									<td><button type="submit" id="save_button" class="btn btn-success">Guardar cambios</button></td>
 								</tr>
 							</div>                           
 	                    </tbody>
@@ -83,10 +83,28 @@
 <script>
 //para inicializar la fecha en el input de Date
 $(document).ready(function() {
-	var str = '{{ form.birth_date.value|date:"Y-m-d" }}'     
+	var str = '{{ form.instance.birth_date|date:"Y-m-d" }}'     
     $("#id_birth_date").attr("value", str);
 });
 </script>
-{% endblock %}
 
-<!-- <a class="dropdown-item" href="{% url 'password_change' %}">Cambiar password</a>  -->
+<script>
+	var enable = true;
+	function enable_disableForm(){
+		var button = document.getElementById("enable_diable_button");
+		if(enable){
+			button.innerHTML ="Habilitar edición";
+			document.getElementById("save_button").style.visibility = 'hidden';
+		}
+		else{
+			button.innerHTML ="Deshabilitar edición";
+			document.getElementById("save_button").style.visibility = 'visible';
+		}
+			{% for field in form.visible_fields %}
+				document.getElementById("id_{{field.name}}").disabled = !document.getElementById("id_{{field.name}}").disabled;
+			{% endfor %}
+		enable = !enable;
+	}
+	enable_disableForm();
+</script>
+{% endblock %}
