@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import math
-from django.db import models
+from django.db import models, transaction
+from django.db.models import F
 from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
@@ -88,9 +89,16 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+    @classmethod
+    #Llama a los eventos creados por un usuario en concreto
     def for_user(self, user):
-        return self.get_query_set().filter(created_by=user)
+        return self.objects.filter(created_by=user)
 
+    @classmethod
+    @transaction.atomic
+    #aumenta el contador de visitas en 1
+    def increment_view(self,pk):
+        self.objects.filter(pk=pk).update(views=F('views')+1)
 """
 **********************************************************
                         Photo
@@ -98,9 +106,7 @@ class Event(models.Model):
 """
 def get_image_filename(instance, filename):
     title = instance.event.pk
-    print(title)
     slug = slugify(title)
-    print(slug)
     return "Events/%s/%s" % (slug, filename) 
 
 class Photo(models.Model):
@@ -138,6 +144,16 @@ class Tag(models.Model):
     """
     def __str__(self):
         return self.name_tag
+
+    @classmethod
+    #Llama a las etiquetas asignadas a un evento en concreto
+    def for_event(self, event):
+        return self.objects.filter(events_tags=event).values_list('name_tag', flat=True)
+
+    @classmethod
+    #Llama a las etiquetas asignadas a un evento en concreto
+    def count_for_events(self, tag):
+        return self.objects.get(name_tag=tag).events_tags.count()
 """
 **********************************************************
                         Category
@@ -151,8 +167,8 @@ class Category(models.Model):
     ---------------------------------------------------------
     
     """
-    events_categories = models.ManyToManyField(Event,related_name='categories') #relacionpython manage.py createsuperuser many_to_many con Event
-    user_categories = models.ManyToManyField(User)# relacion many_to_many con Usuarios
+    events_categories = models.ManyToManyField(Event,related_name='categories') 
+    user_categories = models.ManyToManyField(User)
     """
     ==========================================================
                     Servicios de la clase
@@ -161,3 +177,8 @@ class Category(models.Model):
     """
     def __str__(self):
         return self.name_category
+
+    @classmethod
+    #Llama a las categorías asignadas a un evento en concreto
+    def for_event(self, event):
+        return self.objects.filter(events_categories=event).values_list('name_category', flat=True)

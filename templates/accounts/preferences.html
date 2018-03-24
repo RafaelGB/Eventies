@@ -1,6 +1,16 @@
+
 {% extends 'base_profile.html' %}
 
+{% load staticfiles %}
+{% load static %}
+
 {% load form_tags widget_tweaks %}
+
+{% block title %}Preferencias{% endblock %}
+
+{% block stylesheet %}<!-- opcion de estilo -->
+	<link rel="stylesheet" href="{% static 'css/preferencesAccount.css' %}">
+{% endblock %}
 
 {% block breadcrumb %}
  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
@@ -10,38 +20,25 @@
 
 {% block subcontent %}
 <div class="panel panel-info">
-	<div class="panel-heading">
-		<h3 class="panel-title">{{form}}</h3>
+<div class="container-fluid">
+	<div class="row text-center">
+		<h3 style="color:white;font-family:verdana;">Snap Tight Image Tiles (Responisve)<br><small><a href="http://www.nandiraju.com">Srikanth Nandiraju</small></h3>
+	</div>
+	<div class="row">
+		<div class="cover-card col-sm-6" style="background: url(http://lorempixel.com/300/200/city/7) no-repeat center top;background-size:cover;">
+			<p>
+				Text Caption
+			</p>
+		</div>
+		<div class="cover-card col-sm-6" style="background: url(http://lorempixel.com/300/200/city/8) no-repeat center top;background-size:cover;">
+			<p>
+				Text Caption
+			</p>
+		</div>
 	</div>
 </div>
 {% endblock %}
 
 {% block javascriptBottom %}
-<script>
-//para inicializar la fecha en el input de Date
-$(document).ready(function() {
-	var str = '{{ form.instance.birth_date|date:"Y-m-d" }}'     
-    $("#id_birth_date").attr("value", str);
-});
-</script>
 
-<script>
-	var enable = true;
-	function enable_disableForm(){
-		var button = document.getElementById("enable_diable_button");
-		if(enable){
-			button.innerHTML ="Habilitar edición";
-			document.getElementById("save_button").style.visibility = 'hidden';
-		}
-		else{
-			button.innerHTML ="Deshabilitar edición";
-			document.getElementById("save_button").style.visibility = 'visible';
-		}
-			{% for field in form.visible_fields %}
-				document.getElementById("id_{{field.name}}").disabled = !document.getElementById("id_{{field.name}}").disabled;
-			{% endfor %}
-		enable = !enable;
-	}
-	enable_disableForm();
-</script>
 {% endblock %}

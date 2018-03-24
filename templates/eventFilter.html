@@ -68,7 +68,7 @@
 		    <hr>
 
 		    <label>Etiquetas</label>
-	  		<input placeholder="<etiqueta> (pulsa enter...)" type="text"  id="tags_input" value="" form="filterForm" name="tags" data-role="tagsinput" />
+	  		<input placeholder="<etiqueta> (pulsa enter...)" type="text"  id="tags_input" value = "{{tags}}" form="filterForm" name="tags" data-role="tagsinput" />
 
 
 	  		<hr>
@@ -169,6 +169,13 @@
 	<script>
 	  $(document).ready(function () {
 	    var mySelect = $('#first-disabled2');
+
+
+	    mySelect.selectpicker('val',[
+	      {% for myCategory in categories %}
+	        '{{ myCategory }}'{% if not forloop.last %},{% endif %}
+	      {% endfor %}
+	    ]);
 
 	  });
 	</script>

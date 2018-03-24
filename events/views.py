@@ -41,8 +41,7 @@ class EventObjectView(DetailView):
     """
     def get_context_data(self, **kwargs):
         #contador de visitas se incrementa
-        self.object.views += 1
-        self.object.save()
+        Event.increment_view(self.object.pk)
         #definimos el contexto
         context = super(EventObjectView, self).get_context_data(**kwargs)
         """
@@ -50,16 +49,16 @@ class EventObjectView(DetailView):
         .........................................................
             
         """
-        context["eventCategories"] = Category.objects.filter(events_categories=self.object).values_list('name_category', flat=True)
+        context["eventCategories"] = Category.for_event(self.object)
         """
             obtencion de las etiquetas relacionadas
         .........................................................
             
         """
-        eventTags = Tag.objects.filter(events_tags=self.object).values_list('name_tag', flat=True)
+        eventTags = Tag.for_event(self.object)
         eventTags_dic ={}
         for tag in eventTags:
-            eventTags_dic[tag] = Tag.objects.get(name_tag=tag).events_tags.count()             
+            eventTags_dic[tag] = Tag.count_for_events(tag)       
         context["eventTags"] = eventTags_dic
         """
             tratamiento de la localizacion para su correcta visualizacion
@@ -90,7 +89,11 @@ class EventFilterView(ListView):
         if self.request.GET:
             for getObject in self.request.GET:
                 context[getObject] = self.request.GET[getObject]
-        # Call the base implementation first to get a context
+
+        if 'categories' in self.request.GET and self.request.GET['categories']:
+            print(self.request.GET.getlist('categories'))
+            context['categories'] = self.request.GET.getlist('categories')
+
         if not 'autoTags' in context:
             allTags = list(Tag.objects.values('name_tag'))
             allTags = str(allTags).replace("'name_tag'","name_tag")
@@ -101,6 +104,8 @@ class EventFilterView(ListView):
         
         if not 'type' in context:
             context['type'] = self.kwargs['type'] 
+
+
         return context
 
 
@@ -119,7 +124,7 @@ class EventFilterView(ListView):
                 )
         elif self.kwargs['type'] == 'own':
             queryset = (
-                Event.objects.filter(created_by=self.request.user.pk)
+                Event.for_user(self.request.user)
                 )
         else:
             queryset = Event.objects.all()
@@ -144,7 +149,6 @@ class EventFilterView(ListView):
                 queryset = queryset.filter(tags__name_tag=tag)
 
         if 'categories' in self.request.GET and self.request.GET['categories']:
-            print(self.request.GET.getlist('categories'))
             categories = self.request.GET.getlist('categories')
             for category in categories:
                 queryset = queryset.filter(categories__name_category=category)

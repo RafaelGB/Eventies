@@ -85,11 +85,13 @@ var simplemde = new SimpleMDE();
 <script>
   $(document).ready(function () {
     var mySelect = $('#first-disabled2');
+
     mySelect.selectpicker('val',[
       {% for myCategory in myCategories %}
         '{{myCategory}}'{% if not forloop.last %},{% endif %}
       {% endfor %}
     ]);
+    
     $('#special').on('click', function () {
       mySelect.find('option:selected').prop('disabled', true);
       mySelect.selectpicker('refresh');
