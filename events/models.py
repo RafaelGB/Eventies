@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import math
 from django.db import models, transaction
-from django.db.models import F
+from django.db.models import F , Q
 from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
@@ -99,6 +99,13 @@ class Event(models.Model):
     #aumenta el contador de visitas en 1
     def increment_view(self,pk):
         self.objects.filter(pk=pk).update(views=F('views')+1)
+
+    @classmethod
+    #Busca los eventos que contengan una cadena dada en diferentes campos
+    def search_string(self,string):
+        return Event.objects.filter(
+            Q(title__icontains=string)  | 
+            Q(summary__icontains=string))
 """
 **********************************************************
                         Photo

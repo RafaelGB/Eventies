@@ -118,14 +118,9 @@ class EventFilterView(ListView):
         """
         if self.kwargs['type'] == 'search':
             contains = self.request.GET['search']
-            queryset = (
-                Event.objects.filter(title__icontains=contains) | 
-                Event.objects.filter(summary__icontains=contains)
-                )
-        elif self.kwargs['type'] == 'own':
-            queryset = (
-                Event.for_user(self.request.user)
-                )
+            queryset = Event.search_string(contains)
+        if self.kwargs['type'] == 'own':
+            queryset = Event.for_user(self.request.user)
         else:
             queryset = Event.objects.all()
 
@@ -135,6 +130,10 @@ class EventFilterView(ListView):
             filtros extra
         ----------------------------------------------------------
         """
+        if('search' in self.request.GET and self.request.GET['search']):
+            contains = self.request.GET['search']
+            queryset = (queryset & Event.search_string(contains))
+
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
             if distance:
@@ -152,6 +151,7 @@ class EventFilterView(ListView):
             categories = self.request.GET.getlist('categories')
             for category in categories:
                 queryset = queryset.filter(categories__name_category=category)
+
         return queryset
 
 @method_decorator(login_required, name='dispatch')

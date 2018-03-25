@@ -22,3 +22,7 @@
   }
   .row.content {height: auto;} 
 }
+
+.slider.slider-horizontal {
+    max-width: 60%;
+}

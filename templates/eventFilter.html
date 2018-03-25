@@ -8,11 +8,13 @@
 
 
 {% block stylesheet %}<!-- opcion de estilo -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap-slider.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/filterEvents.css' %}">	
 	<link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
 	<link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}">
+	
 {% endblock %} <!-- fin de opcion de estilo -->
 
 {% block javascript %}
@@ -37,15 +39,22 @@
 				   <span class="glyphicon glyphicon-filter"></span>
 				</button>
 				
+				
 				<hr>
 				
 				<div class="input-group">
 
 
 				<!-- filtro por proximidad  -->
-				<ul class="nav nav-pills nav-stacked">	
+				<ul class="nav nav-pills nav-stacked">
 					<li>
-					    <label>Distancia</label>
+						<label>Presupuesto</label><br>
+						0<span class="glyphicon glyphicon-euro"></span>
+						<input id="budgetEvent" type="text" class="span2" value="{{ budget }}" name="budget" data-slider-min="0" data-slider-max="200" data-slider-step="5" data-slider-value="[0,200]"/> 
+						200<span class="glyphicon glyphicon-euro"></span>
+					</li>
+					<li>
+					    <label>Distancia</label><br>
 				  			<input type="number" name="distance" min="100" max="50000" value="{{ distance }}">
 				  		<label> metros</label>
 					    <input type="hidden" name="lng"  id="campo_lng">
@@ -127,7 +136,7 @@
 	<script src="{% static 'js/bootstrap-tagsinput.js' %}"></script>
 	
 	<script src="{% static 'js/typeahead.bundle.js' %}"></script>
-	
+	<script src="{% static 'js/bootstrap-slider.min.js' %}">	</script>
 	<script>
 	  var tags = new Bloodhound({
 	  datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name_tag); },
@@ -180,4 +189,7 @@
 	  });
 	</script>
 
+	<script>
+	$("#budgetEvent").slider({});
+	</script>
 {% endblock %}
