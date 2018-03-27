@@ -140,7 +140,7 @@ class EventFilterView(ListView):
                 distance = int(distance)
                 lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
                 ref_location = Point(lat, lng )
-                queryset = queryset.filter(geopos_at__coordinates__distance_lt=(ref_location, D(m=distance))).order_by('-geopos_at__coordinates')
+                queryset = (queryset & Event.distance_range(ref_location,distance))
         
         if 'tags' in self.request.GET and self.request.GET['tags']:
             tags = self.request.GET['tags'].split(',')
@@ -151,6 +151,11 @@ class EventFilterView(ListView):
             categories = self.request.GET.getlist('categories')
             for category in categories:
                 queryset = queryset.filter(categories__name_category=category)
+
+        if 'budget' in self.request.GET and self.request.GET['budget']:
+            budget = self.request.GET['budget'].split(',')
+            queryset = (queryset & Event.range_prices(budget[0],budget[1]))
+            print(queryset.query)
 
         return queryset
 

@@ -55,8 +55,10 @@
 					</li>
 					<li>
 					    <label>Distancia</label><br>
-				  			<input type="number" name="distance" min="100" max="50000" value="{{ distance }}">
-				  		<label> metros</label>
+
+						100m<input id="distanceSlider" type="text" data-slider-min="100" data-slider-max="20000" name="distance" data-slider-step="1" data-slider-value="{{distance|default:'1000' }}"/>20km<br>
+						<span id="ex6CurrentSliderValLabel"> <span id="distanceMeters">{{distance|default:'1000' }}</span> Metros</span>
+
 					    <input type="hidden" name="lng"  id="campo_lng">
 					    <input type="hidden" name="lat"  id="campo_lat">
 				    </li>
@@ -191,5 +193,11 @@
 
 	<script>
 	$("#budgetEvent").slider({});
+
+	$("#distanceSlider").slider();
+	$("#distanceSlider").on("slide", function(slideEvt) {
+		$("#distanceMeters").text(slideEvt.value);
+	});
+
 	</script>
 {% endblock %}

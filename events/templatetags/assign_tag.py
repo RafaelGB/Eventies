@@ -48,6 +48,13 @@ def increment_var(parser, token):
         raise template.TemplateSyntaxError("'increment' tag must be of the form:  {% increment <var_name> %}")
     return IncrementVarNode(parts[1])
 
+"""
+ejemplo de uso: {% ifequal forloop.counter0|modulo:4 0 %}
+si el contador modulo 4 es igual a 0 cumple la condicion
+"""
+@register.filter
+def mod(num, val):
+    return num % val
 
 
 

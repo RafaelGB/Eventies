@@ -9,6 +9,7 @@ from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
 from .forms import SignUpForm, CustomAuthenticationForm, UserForm
 from .models import User
+from events.models import Category
 
 def signup(request):
     if request.method == 'POST':
@@ -36,8 +37,13 @@ def my_login(request):
    
 @login_required
 def UserPreferences(request):
-    form = "hola mundo"
-    return render(request, 'accounts/preferences.html', {'form': form})
+    all_categories = Category.objects.all()
+    my_categories = Category.for_user(request.user)
+    return render(request, 'accounts/preferences.html', 
+        {
+        'all_categories': all_categories,
+        'my_categories': my_categories
+        })
 
 
 @method_decorator(login_required, name='dispatch')

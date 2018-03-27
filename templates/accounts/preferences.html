@@ -1,6 +1,7 @@
 
 {% extends 'base_profile.html' %}
 
+{% load assign_tag %}
 {% load staticfiles %}
 {% load static %}
 
@@ -10,7 +11,13 @@
 
 {% block stylesheet %}<!-- opcion de estilo -->
 	<link rel="stylesheet" href="{% static 'css/preferencesAccount.css' %}">
+	<link rel="stylesheet" href="{% static 'css/image-picker.css' %}">
 {% endblock %}
+
+{% block javascript %}
+	<script src="{% static 'js/image-picker.js' %}"></script>
+{% endblock %}
+image-picker.js
 
 {% block breadcrumb %}
  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
@@ -19,26 +26,43 @@
 {% endblock %}
 
 {% block subcontent %}
-<div class="panel panel-info">
+
+
+
+
 <div class="container-fluid">
-	<div class="row text-center">
-		<h3 style="color:white;font-family:verdana;">Snap Tight Image Tiles (Responisve)<br><small><a href="http://www.nandiraju.com">Srikanth Nandiraju</small></h3>
-	</div>
-	<div class="row">
-		<div class="cover-card col-sm-6" style="background: url(http://lorempixel.com/300/200/city/7) no-repeat center top;background-size:cover;">
-			<p>
-				Text Caption
-			</p>
+	<select id="selectImage"  multiple="multiple" class="image-picker show-html">
+	{% for category in all_categories %}
+ 		{% ifequal forloop.counter|mod:2 0 %}
+		<div class="row">
+		{% endifequal %}
+			<option data-img-label='{{category.name_category}}' data-img-src='{{category.photo.url}}' value='{{category.pk}}'>	
+				
+			</option>
+			</div>
+		{% ifequal forloop.counter|mod:2 0 %}
 		</div>
-		<div class="cover-card col-sm-6" style="background: url(http://lorempixel.com/300/200/city/8) no-repeat center top;background-size:cover;">
-			<p>
-				Text Caption
-			</p>
-		</div>
-	</div>
+		{% endifequal %}	
+	{% endfor %}
+	</select>
 </div>
 {% endblock %}
 
 {% block javascriptBottom %}
+<script>
+$(document).ready(function () {
+    $("#selectImage").imagepicker({
+        hide_select: true
+    });
 
+    var $container = $('.image_picker_selector');
+    // initialize
+    $container.imagesLoaded(function () {
+        $container.masonry({
+            columnWidth: 30,
+            itemSelector: '.thumbnail'
+        });
+    });
+});
+</script>
 {% endblock %}

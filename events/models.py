@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 import math
 from django.db import models, transaction
-from django.db.models import F , Q
+from django.db.models import F , Q 
+from django.contrib.gis.measure import D
 from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
@@ -106,6 +107,18 @@ class Event(models.Model):
         return Event.objects.filter(
             Q(title__icontains=string)  | 
             Q(summary__icontains=string))
+
+    @classmethod
+    #Busca los eventos que se encuentren en un rango de n metros de la posición actual , ambas pasadas por parametro
+    def distance_range(self,location,meters):
+        return Event.objects.filter(geopos_at__coordinates__distance_lt=(location, D(m=meters))).order_by('-geopos_at__coordinates')
+
+    @classmethod
+    #Busca los eventos que contengan una cadena dada en diferentes campos
+    def range_prices(self,min_price,max_price):
+        return Event.objects.filter(
+            Q(budget__lte=max_price) & 
+            Q(budget__gte=min_price) )
 """
 **********************************************************
                         Photo
@@ -123,7 +136,7 @@ class Photo(models.Model):
             )
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     """
-    =============================================unique model =============
+    ==========================================================
                     Servicios de la clase
     ==========================================================
 
@@ -169,13 +182,14 @@ class Tag(models.Model):
 class Category(models.Model):
     name_category = models.CharField(max_length=20, primary_key=True)
     description = models.TextField(max_length=280)
+    photo  = models.ImageField(upload_to='Categories',blank=True, null=True)
     """
                        Relaciones ManyToMany
     ---------------------------------------------------------
     
     """
-    events_categories = models.ManyToManyField(Event,related_name='categories') 
-    user_categories = models.ManyToManyField(User)
+    events_categories = models.ManyToManyField(Event,related_name='categories',blank=True) 
+    user_categories = models.ManyToManyField(User,related_name='preferences',blank=True)
     """
     ==========================================================
                     Servicios de la clase
@@ -189,3 +203,8 @@ class Category(models.Model):
     #Llama a las categorías asignadas a un evento en concreto
     def for_event(self, event):
         return self.objects.filter(events_categories=event).values_list('name_category', flat=True)
+
+    @classmethod
+    #Llama a las categorías asignadas a un usuario en concreto
+    def for_user(self, user):
+        return self.objects.filter(user_categories=user).values_list('name_category', flat=True)
