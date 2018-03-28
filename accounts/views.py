@@ -24,7 +24,6 @@ def signup(request):
 
 def my_login(request):
     if request.method == 'POST':
-        form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
@@ -37,13 +36,25 @@ def my_login(request):
    
 @login_required
 def UserPreferences(request):
-    all_categories = Category.objects.all()
-    my_categories = Category.for_user(request.user)
+    if request.method == 'POST':
+        picked_categories = request.POST.getlist('my_categories')
+        user = User.objects.get(pk=request.user.pk)
+        for category in picked_categories:
+            picked_category = Category.objects.get(name_category=category)
+            user.preferences.add(picked_category.pk)
+        user.save()
+        return redirect('my_preferences')
+    else:
+        all_categories = Category.objects.all()
+        my_categories = Category.for_user(request.user)
+
     return render(request, 'accounts/preferences.html', 
         {
         'all_categories': all_categories,
         'my_categories': my_categories
         })
+
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -59,13 +70,12 @@ class UserUpdateView(UpdateView):
     ----------------------------------------------------------
     """
     def get_object(self, queryset=None):
-        #funcion calve para identificar al usuario
+        #funcion clave para identificar al usuario
         return self.request.user
 
     def get_context_data(self, **kwargs):
         #recuperamos argumentos ya inicializados
         context = super(UserUpdateView, self).get_context_data(**kwargs)
-        print (context)
         return context
 
     def get(self, request, *args, **kwargs):

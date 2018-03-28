@@ -17,7 +17,6 @@
 {% block javascript %}
 	<script src="{% static 'js/image-picker.js' %}"></script>
 {% endblock %}
-image-picker.js
 
 {% block breadcrumb %}
  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
@@ -29,23 +28,27 @@ image-picker.js
 
 
 
-
-<div class="container-fluid">
-	<select id="selectImage"  multiple="multiple" class="image-picker show-html">
-	{% for category in all_categories %}
- 		{% ifequal forloop.counter|mod:2 0 %}
-		<div class="row">
-		{% endifequal %}
-			<option data-img-label='{{category.name_category}}' data-img-src='{{category.photo.url}}' value='{{category.pk}}'>	
-				
-			</option>
+<form  method="post" id="mainForm" class="mb-4"  novalidate>
+	{% csrf_token %}
+	<button type="submit" id="save_button" class="btn btn-success">Guardar preferencias</button><br><br>
+	<div class="container-fluid">
+		<select name="my_categories" id="selectImage"  multiple="multiple" class="image-picker show-html">
+		{% for category in all_categories %}
+	 		{% ifequal forloop.counter|mod:2 0 %}
+			<div class="row">
+			{% endifequal %}
+				<option data-img-id='{{category.pk}}' data-img-src='{{category.photo.url}}' value='{{category.name_category}}'>	
+				</option>
+				</div>
+			{% ifequal forloop.counter|mod:2 0 %}
 			</div>
-		{% ifequal forloop.counter|mod:2 0 %}
-		</div>
-		{% endifequal %}	
-	{% endfor %}
-	</select>
-</div>
+			{% endifequal %}	
+		{% endfor %}
+		</select>
+	</div>
+
+	<button type="submit" id="save_button" class="btn btn-success">Guardar preferencias</button>
+</form>
 {% endblock %}
 
 {% block javascriptBottom %}
@@ -53,15 +56,6 @@ image-picker.js
 $(document).ready(function () {
     $("#selectImage").imagepicker({
         hide_select: true
-    });
-
-    var $container = $('.image_picker_selector');
-    // initialize
-    $container.imagesLoaded(function () {
-        $container.masonry({
-            columnWidth: 30,
-            itemSelector: '.thumbnail'
-        });
     });
 });
 </script>

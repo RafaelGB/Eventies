@@ -25,6 +25,25 @@ ul.thumbnails.image_picker_selector {
       -moz-user-select: none;
       -ms-user-select: none; }
       ul.thumbnails.image_picker_selector li .thumbnail img {
-        -webkit-user-drag: none; }
+        -webkit-user-drag: none; 
+        max-width:517px;
+        min-width:517px;
+        max-height:260px;
+        min-height:260px;
+        }
+      
+            ul.thumbnails.image_picker_selector li .thumbnail img {
+        -webkit-user-drag: none; 
+        max-width:517px;
+        min-width:517px;
+        max-height:260px;
+        min-height:260px;
+        }
+        
+                    ul.thumbnails.image_picker_selector li .thumbnail img:hover {
+			visibility: visible;
+			opacity: 0.5;
+        }
+        
     ul.thumbnails.image_picker_selector li .thumbnail.selected {
       background: #0088cc; }
