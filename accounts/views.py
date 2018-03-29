@@ -17,7 +17,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('home')
+            return redirect('my_preferences')
     else:
         form = SignUpForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -38,10 +38,21 @@ def my_login(request):
 def UserPreferences(request):
     if request.method == 'POST':
         picked_categories = request.POST.getlist('my_categories')
+        previous_categories = request.POST.getlist('previous_categories')
         user = User.objects.get(pk=request.user.pk)
         for category in picked_categories:
+            if category not in previous_categories:
+                #añadimos los que no estaban selecionados previamente y se clickean
+                picked_category = Category.objects.get(name_category=category)
+                user.preferences.add(picked_category.pk)
+            else:
+                #descartamos los que no se han modificado
+                previous_categories.remove(category)
+        #borramos los que se han deseleccionado y estaban previamente
+        for category in previous_categories:
             picked_category = Category.objects.get(name_category=category)
-            user.preferences.add(picked_category.pk)
+            user.preferences.remove(picked_category.pk)
+
         user.save()
         return redirect('my_preferences')
     else:

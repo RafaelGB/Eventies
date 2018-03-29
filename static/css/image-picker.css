@@ -30,20 +30,47 @@ ul.thumbnails.image_picker_selector {
         min-width:517px;
         max-height:260px;
         min-height:260px;
+        opacity: 1;
+		display: block;
+	    transition: .5s ease;
+		backface-visibility: hidden;
         }
       
-            ul.thumbnails.image_picker_selector li .thumbnail img {
-        -webkit-user-drag: none; 
-        max-width:517px;
-        min-width:517px;
-        max-height:260px;
-        min-height:260px;
-        }
         
-                    ul.thumbnails.image_picker_selector li .thumbnail img:hover {
-			visibility: visible;
-			opacity: 0.5;
-        }
         
     ul.thumbnails.image_picker_selector li .thumbnail.selected {
       background: #0088cc; }
+
+
+
+
+ul.thumbnails.image_picker_selector li .thumbnail {
+    position: relative;
+}
+
+
+ul.thumbnails.image_picker_selector li .thumbnail .middle {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+ul.thumbnails.image_picker_selector li .thumbnail:hover .image {
+  opacity: 0.3;
+}
+
+ul.thumbnails.image_picker_selector li .thumbnail:hover .middle {
+  opacity: 1;
+}
+
+ul.thumbnails.image_picker_selector li .thumbnail .text {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  padding: 16px 32px;
+}

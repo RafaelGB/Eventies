@@ -32,14 +32,19 @@
 	{% csrf_token %}
 	<button type="submit" id="save_button" class="btn btn-success">Guardar preferencias</button><br><br>
 	<div class="container-fluid">
-		<select name="my_categories" id="selectImage"  multiple="multiple" class="image-picker show-html">
+		<select name="my_categories" id="selectImage"  multiple="multiple" class="image-picker"  >
 		{% for category in all_categories %}
 	 		{% ifequal forloop.counter|mod:2 0 %}
 			<div class="row">
 			{% endifequal %}
-				<option data-img-id='{{category.pk}}' data-img-src='{{category.photo.url}}' value='{{category.name_category}}'>	
+				<option data-img-src='{{category.photo.url}}' value='{{category.name_category}}'>	
+				{{category.name_category}}--{{category.description}}
+				  	<!--
+				  	<div class="middle">
+   					 	<div class="text">{{category.description}}</div>
+  					</div>
+					-->
 				</option>
-				</div>
 			{% ifequal forloop.counter|mod:2 0 %}
 			</div>
 			{% endifequal %}	
@@ -48,6 +53,10 @@
 	</div>
 
 	<button type="submit" id="save_button" class="btn btn-success">Guardar preferencias</button>
+	{% for category in my_categories %}
+		<input type="hidden" name="previous_categories" value="{{category}}">
+	{% endfor %}
+
 </form>
 {% endblock %}
 
@@ -55,8 +64,15 @@
 <script>
 $(document).ready(function () {
     $("#selectImage").imagepicker({
-        hide_select: true
+        hide_select: true,
+        show_label  : true
     });
 });
+
+//inizializa las que ya entran dentro de mis categorías
+{% for category in my_categories %}
+	$("#selectImage").find('option[value="{{category}}"]').prop('selected',true);
+{% endfor %}
+
 </script>
 {% endblock %}
