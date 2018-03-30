@@ -35,7 +35,8 @@
     {{ formset.management_form }}
     {% for subform in formset %}
 	    <div class="link-formset">
-	    	{% include 'includes/formset.html' %}
+      {{subform}}
+	    	<!--{% include 'includes/formset.html' %}-->
 	    </div>
     {% endfor %}
   </form>

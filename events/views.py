@@ -9,6 +9,7 @@ from django.views.generic.detail import DetailView
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.forms.formsets import formset_factory
+from django.forms import modelformset_factory
 from django.contrib.gis.db.models.functions import Distance
 
 from django.contrib.gis.geos import Point
@@ -294,11 +295,13 @@ class EventUpdateView(UpdateView):
 
 @login_required
 def NewEvent(request):
-     # Create the formset, specifying the form and formset we want to use.
-    PhotoFormSet = formset_factory(PhotoForm, formset=BasePhotoFormSet)
+    # se crea el formSet con el objeto y formulario deseado + configuraciones extra
+    PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm, extra=3)
+    #formset=BasePhotoFormSet
     if request.method == 'POST':
         form = EventForm(request.POST)
         formGeo = GeolocationForm(request.POST)
+
         formset = PhotoFormSet(request.POST or None, request.FILES or None)
 
         if all([form.is_valid(),formset.is_valid(),formGeo.is_valid()]):
@@ -313,6 +316,16 @@ def NewEvent(request):
             event.geopos_at = myGeo
             event.created_by = request.user
             event.save()
+            """
+                               Tratamiento de Photos
+            .........................................................
+            
+            """
+            for form in formset.cleaned_data:
+                picture = form['picture']
+                photo = Photo(event=event, picture=picture)
+                print(photo)
+                photo.save()
             """
                                Tratamiento de los Tags
             .........................................................
@@ -341,7 +354,7 @@ def NewEvent(request):
     
     form = EventForm()
     formGeo = GeolocationForm()
-    formset = PhotoFormSet()
+    formset = PhotoFormSet(queryset=Photo.objects.none())
     #obtencion de tags y darles formato para funcion de autocompletado
     autoTags = list(Tag.objects.values('name_tag'))
     autoTags = str(autoTags).replace("'name_tag'","name_tag")

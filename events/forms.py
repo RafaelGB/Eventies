@@ -84,7 +84,7 @@ class PhotoForm(forms.ModelForm):
         model = Photo
 
         fields = [
-            'picture'
+            'picture',
         ]
 
         labels = {

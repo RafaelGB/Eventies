@@ -1,4 +1,4 @@
-name_category,description
-Deportes,si te apetece hacer ejercicio y desconectar de la semana
-Fiesta,para darlo todo y buscar nuevas anécdotas
-Familiar,planes tranquilos con los tuyos
+name_category,description,photo
+Deportes,Para despejarnos a la vez que nos cuidamos un poco,Categories/deporte.png
+Fiesta,Si quieres darlo todo,Categories/party2.png
+Cultura,Para los que aprenden algo nuevo cada día,Categories/culture.png

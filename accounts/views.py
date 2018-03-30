@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
+from django_gravatar.helpers import get_gravatar_url, has_gravatar, get_gravatar_profile_url, calculate_gravatar_hash
+
 from .forms import SignUpForm, CustomAuthenticationForm, UserForm
 from .models import User
 from events.models import Category
@@ -24,13 +26,11 @@ def signup(request):
 
 def my_login(request):
     if request.method == 'POST':
+        form = CustomAuthenticationForm(request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
             return redirect('home')
-    #Cuando se comete un error en el login se repinta con un login mas grande
-    else:
-        form = CustomAuthenticationForm()
 
     return render(request, 'accounts/login.html', {'form': form})
    
@@ -92,6 +92,10 @@ class UserUpdateView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = super(UserUpdateView, self).get_context_data(**kwargs)
+        #sacamos la url de la foto de perfil del correo
+        url = get_gravatar_url(self.request.user.email, size=180)
+        context["photo_user"] = url
+
         return self.render_to_response(context=context)
 
     def post(self, request, **kwargs):

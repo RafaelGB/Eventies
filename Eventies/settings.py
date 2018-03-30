@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'sortedm2m',
     'mapwidgets',#mapa dinamico googlemaps
+    'django_gravatar',#adquiere foto del correo
     #APPs propias
     'events',
     'accounts',

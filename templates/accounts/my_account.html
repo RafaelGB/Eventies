@@ -1,6 +1,7 @@
 {% extends 'base_profile.html' %}
 
 {% load form_tags widget_tweaks %}
+{% load gravatar %}
 
 {% block breadcrumb %}
  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
@@ -14,7 +15,7 @@
             </div>
             <div class="panel-body">
               <div class="row">
-                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="https://placeholdit.co//i/180x180" class="img-circle img-responsive"> </div>
+                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="{{photo_user}}" class="img-circle img-responsive"> </div>
 				<form  method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
 	                <div class=" col-md-9 col-lg-9 "> 
 	                  <table class="table table-user-information">
@@ -85,6 +86,21 @@
 $(document).ready(function() {
 	var str = '{{ form.instance.birth_date|date:"Y-m-d" }}'     
     $("#id_birth_date").attr("value", str);
+    $("#id_birth_date").attr("min", "1900-12-31");
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear()-12;
+    
+    if(dd<10){
+        dd='0'+dd
+    } 
+    if(mm<10){
+        mm='0'+mm
+    } 
+
+    today = yyyy+'-'+mm+'-'+dd;
+    $("#id_birth_date").attr("max", today);
 });
 </script>
 
