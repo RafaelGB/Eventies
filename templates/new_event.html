@@ -10,11 +10,20 @@
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
   <link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
+  <link rel="stylesheet" href="{% static 'css/previewUploadImages.css' %}">
 {% endblock %}
 
 {% block javascript %}
   {{ formGeo.media }}
+  
+  <script src="{% static 'js/jquery.uploadPreview.js' %}"></script>
   <script src="{% static 'js/bootstrap-select.js' %}"></script>
+
+
+<script type="text/javascript">
+
+</script>
+
 {% endblock %}
 
 {% block breadcrumb %}
@@ -24,6 +33,8 @@
 
 
 {% block content %}
+
+
   <button form="mainForm" type="submit" class="btn btn-success">Crear evento</button>
     <br><br>
   <form id="mainForm" method="post" class="form-group" enctype="multipart/form-data" novalidate>
@@ -34,9 +45,24 @@
     <label>Elige fotos:</label>
     {{ formset.management_form }}
     {% for subform in formset %}
+   <!-- 
+    de la manera que funciona el preview
+
+    <div id="image-preview">
+      <label for="image-upload" id="image-label">Elige una imagen</label>
+      <input type="file" name="image" id="image-upload" />
+    </div>
+
+    de la manera que se genera el codigo con el queryset
+    <div class="link-formset dynamic-form">
+      <input type="file" name="form-0-picture" id="id_form-0-picture"><input type="hidden" name="form-0-id" id="id_form-0-id">
+      <a class="delete-row" href="javascript:void(0)">quitar</a>
+    </div>
+    -->
+
+
 	    <div class="link-formset">
       {{subform}}
-	    	<!--{% include 'includes/formset.html' %}-->
 	    </div>
     {% endfor %}
   </form>

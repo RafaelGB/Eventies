@@ -67,6 +67,13 @@ class EventObjectView(DetailView):
             
         """
         context["coor"] = {"x": str(context["object"].geopos_at.coordinates.x), "y":str(context["object"].geopos_at.coordinates.y) }
+        """
+            tratamiento de las imágenes del evento
+        .........................................................
+            
+        """
+        eventPhotos = Photo.objects.filter(event=self.object.pk)
+        context["photos"] = eventPhotos
         return context
 """
 **********************************************************
@@ -92,7 +99,6 @@ class EventFilterView(ListView):
                 context[getObject] = self.request.GET[getObject]
 
         if 'categories' in self.request.GET and self.request.GET['categories']:
-            print(self.request.GET.getlist('categories'))
             context['categories'] = self.request.GET.getlist('categories')
 
         if not 'autoTags' in context:
@@ -156,7 +162,6 @@ class EventFilterView(ListView):
         if 'budget' in self.request.GET and self.request.GET['budget']:
             budget = self.request.GET['budget'].split(',')
             queryset = (queryset & Event.range_prices(budget[0],budget[1]))
-            print(queryset.query)
 
         return queryset
 
@@ -210,16 +215,22 @@ class EventUpdateView(UpdateView):
     def get(self, request, *args, **kwargs):
         super(EventUpdateView, self).get(request, *args, **kwargs)
         form = self.form_class
-        formGeo = GeolocationForm
-
+        formGeo = self.formGeo_class
+        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm)
+        formset = PhotoFormSet(queryset=Photo.objects.filter(event=self.object))
         return self.render_to_response(self.get_context_data(
-            object=self.object, form=form ,formGeo=formGeo))
+            object=self.object, form=form ,formGeo=formGeo ,formset=formset))
 
     def post(self, request, **kwargs):
         self.object = self.get_object()
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
-        if all([form.is_valid(),formGeo.is_valid()]):
+        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm,can_delete=True)
+        print("\n\nrequest.POST",request.POST)
+        print("\n\nrequest.FILES",request.FILES)
+        formset = PhotoFormSet(request.POST or None, request.FILES or None)
+        if all([form.is_valid(),formGeo.is_valid(),formset.is_valid()]):
+            print("\n\nentro en el tratamiento de datos\n\n")
             """
                                Tratamiento de Event
             .........................................................
@@ -274,7 +285,7 @@ class EventUpdateView(UpdateView):
             
             """
             arrayCategories = request.POST.getlist('myCategories')
-            primalCategories= list(Category.objects.filter(events_categories=self.object).values_list('name_category', flat=True))
+            primalCategories= list(Category.for_event(self.object))
             
             for category in arrayCategories:
                 if category not in primalCategories:
@@ -287,16 +298,40 @@ class EventUpdateView(UpdateView):
             for category in primalCategories:
                 #todos los no descartados quiere decir que se eliman del many to many
                 updateCategory = Category.objects.get(name_category=category)
-                updateCategory.events_categories.remove(self.object.pk)   
+                updateCategory.events_categories.remove(self.object.pk) 
+            """
+                               Tratamiento de imágenes
+            .........................................................
+            
+            """
+            primalPhotos = list(Photo.objects.filter(event=self.object))
+            print("originales",str(primalPhotos))
+            print("finales",formset.cleaned_data)
+            for photo in formset.cleaned_data:
+                #comprobamos que la foto no este vacía
+                if photo:
+                    if photo['id'] not in primalPhotos:
+                        picture = photo['picture']
+                        photo = Photo(event=self.object, picture=picture)
+                        photo.save()
+                    else:
+                        primalPhotos.remove(photo['id'])
+            print("array a borrar",primalPhotos)
+            for removed_photo in primalPhotos:
+                picture = Photo.objects.get(pk=str(removed_photo))
+                picture.delete()
+                
+
             return redirect('eventDetails', pk=self.object.pk)  
         else:
+            print("\n\nfalla al validar los formularios\n\n")
             return self.render_to_response(
-              self.get_context_data(form=form,formGeo=formGeo))
+              self.get_context_data(form=form,formGeo=formGeo,formset=formset))
 
 @login_required
 def NewEvent(request):
     # se crea el formSet con el objeto y formulario deseado + configuraciones extra
-    PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm, extra=3)
+    PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm, extra=1)
     #formset=BasePhotoFormSet
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -324,7 +359,6 @@ def NewEvent(request):
             for form in formset.cleaned_data:
                 picture = form['picture']
                 photo = Photo(event=event, picture=picture)
-                print(photo)
                 photo.save()
             """
                                Tratamiento de los Tags

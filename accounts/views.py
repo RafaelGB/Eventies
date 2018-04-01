@@ -36,6 +36,7 @@ def my_login(request):
    
 @login_required
 def UserPreferences(request):
+    all_categories = Category.objects.all()
     if request.method == 'POST':
         picked_categories = request.POST.getlist('my_categories')
         previous_categories = request.POST.getlist('previous_categories')
@@ -52,11 +53,15 @@ def UserPreferences(request):
         for category in previous_categories:
             picked_category = Category.objects.get(name_category=category)
             user.preferences.remove(picked_category.pk)
-
         user.save()
-        return redirect('my_preferences')
+        feedback = "Tus preferencias se han guardado correctamente"
+        return render(request, 'accounts/preferences.html', 
+        {
+        'all_categories': all_categories,
+        'my_categories': request.POST.getlist('my_categories'),
+        'feedback': feedback
+        })
     else:
-        all_categories = Category.objects.all()
         my_categories = Category.for_user(request.user)
 
     return render(request, 'accounts/preferences.html', 

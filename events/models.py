@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
 import math
+import os
 from django.db import models, transaction
 from django.db.models import F , Q 
 from django.contrib.gis.measure import D
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
 from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
@@ -11,6 +14,7 @@ from django.utils.html import mark_safe
 from markdown import markdown
 from django.contrib.gis.db import models as gisModels
 from accounts.models import User
+
 
 """
 **********************************************************
@@ -111,7 +115,7 @@ class Event(models.Model):
     @classmethod
     #Busca los eventos que se encuentren en un rango de n metros de la posición actual , ambas pasadas por parametro
     def distance_range(self,location,meters):
-        return Event.objects.filter(geopos_at__coordinates__distance_lt=(location, D(m=meters))).order_by('-geopos_at__coordinates')
+        return Event.objects.filter(geopos_at__coordinates__distance_lt=(location, D(m=meters)))#.order_by('-geopos_at__coordinates')
 
     @classmethod
     #Busca los eventos que contengan una cadena dada en diferentes campos
@@ -142,7 +146,23 @@ class Photo(models.Model):
 
     """
     def __str__(self):
-        return self.picture.name
+        return str(self.pk)
+
+    @classmethod
+    #Devuelve el numero de fotos que tiene un evento
+    def number_of_photos_in(self,event):
+        return self.objects.filter(event=event).count()
+
+# borra la foto del sistema
+def _delete_file(path):
+    if os.path.isfile(path):
+        os.remove(path)
+
+#trigger que se activa antes de llamar a borrar foto
+@receiver(pre_delete, sender=Photo)
+def delete_img_pre_delete_post(sender, instance, *args, **kwargs):
+    if instance.picture:
+        _delete_file(instance.picture.path)
 """
 **********************************************************
                         Tag

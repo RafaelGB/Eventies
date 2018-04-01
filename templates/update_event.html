@@ -24,11 +24,35 @@
 
 {% block content %}
   <form method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
+    <button  type="submit" class="btn btn-success">Guardar cambios</button>
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
+    <br><br>
     {% csrf_token %}
     {% include 'includes/form.html' %}
     {% include 'includes/formGeo.html' %}
-    <button type="submit" class="btn btn-success">Guardar cambios</button>
-    <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
+    <label>Elige fotos:</label>
+    {{ formset.management_form }}
+    {% for subform in formset %}
+   <!-- 
+    de la manera que funciona el preview
+
+    <div id="image-preview">
+      <label for="image-upload" id="image-label">Elige una imagen</label>
+      <input type="file" name="image" id="image-upload" />
+    </div>
+
+    de la manera que se genera el codigo con el queryset
+    <div class="link-formset dynamic-form">
+      <input type="file" name="form-0-picture" id="id_form-0-picture"><input type="hidden" name="form-0-id" id="id_form-0-id">
+      <a class="delete-row" href="javascript:void(0)">quitar</a>
+    </div>
+    -->
+
+
+      <div class="link-formset">
+      {{subform}}
+      </div>
+    {% endfor %}
   </form>
   <hr>
   <h2>Categorías</h2>
@@ -42,8 +66,13 @@
   <button id="special" class="btn btn-default">Volvemos a empezar...</button>
   <button id="special2" class="btn btn-default">¡un momento! quería las de antes</button>
   <hr>
+
   <h2>Tags</h2><br>
   <input placeholder="nuevoTag (press enter...)" value = "{{valueTags}}" type="text"  value="" form="mainForm" name="myTags" id="tags_input" data-role="tagsinput" />
+
+  <br>
+  <button form="mainForm" type="submit" class="btn btn-success">Guardar cambios</button>
+  <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
 {% endblock %}
 
 {% block javascriptBottom %}

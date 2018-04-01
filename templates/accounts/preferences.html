@@ -26,8 +26,12 @@
 
 {% block subcontent %}
 
-
-
+<h1 class="display-1">Elige qué es lo que más te llama</h1>
+{% if feedback %}
+<div class="alert alert-success">
+  {{feedback}}
+</div>
+{% endif %}
 <form  method="post" id="mainForm" class="mb-4"  novalidate>
 	{% csrf_token %}
 	<button type="submit" id="save_button" class="btn btn-success">Guardar preferencias</button><br><br>
