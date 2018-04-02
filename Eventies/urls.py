@@ -58,6 +58,7 @@ urlpatterns = [
     url(r'^eventFilter/(?P<type>[0-9A-Za-z_\-]+)/$', events_views.EventFilterView.as_view(template_name='eventFilter.html'), name='eventFilter'),
     url(r'^newEvent/$', events_views.NewEvent, name='newEvent'),
     url(r'^updateEvent/(?P<pk>\d+)/$', events_views.EventUpdateView.as_view(), name='updateEvent'),
+    url(r'^eventFlowControl/(?P<type>[0-9A-Za-z_\-]+)/$', events_views.EventFlowControl, name='eventFlowControl'),
     ]
 
 

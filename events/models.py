@@ -59,9 +59,6 @@ class Event(models.Model):
 
     """
     views = models.PositiveIntegerField(default=0)
-    assistants = models.PositiveIntegerField(default=0)
-    interested = models.PositiveIntegerField(default=0)
-    score = models.IntegerField(default=0)
     """
                        Detalles
     ---------------------------------------------------------
@@ -85,6 +82,14 @@ class Event(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    """
+                       Relaciones ManyToMany
+    ---------------------------------------------------------
+    
+    """
+    interested_in = models.ManyToManyField(User,related_name='users_interested')
+    not_interested_in = models.ManyToManyField(User,related_name='users_not_interested')
+    signed_up = models.ManyToManyField(User,related_name='users_assistants')
     """
     ==========================================================
                     Servicios de la clase

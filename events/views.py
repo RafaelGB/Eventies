@@ -74,6 +74,12 @@ class EventObjectView(DetailView):
         """
         eventPhotos = Photo.objects.filter(event=self.object.pk)
         context["photos"] = eventPhotos
+        """
+            indicador de si el evento pertenece al usuario logueado
+        .........................................................
+            
+        """
+        context["is_own"] = (self.request.user == self.object.created_by)
         return context
 """
 **********************************************************
@@ -405,3 +411,9 @@ def NewEvent(request):
             'allCategories':allCategories 
             }
         )
+
+@login_required
+def EventFlowControl(request,**kwargs):
+    print("hola mundo")
+    print(kwargs)
+    return redirect('home')

@@ -105,7 +105,7 @@
 </div>
 
 <div class="container text-center">    
- 	 </h2>Maps Demo</h2>
+ 	 </h2>Lugar previsto</h2>
     <div id="map"></div>
 <hr>
 </div>
@@ -118,16 +118,18 @@
 	    	<div style="clear:both"></div> 
 			<div id="circle"><span class="count">{{ object.views }}</span></div>
 	    </div>
-	    <div class="col-sm-2"> 
-	    	<label>Estoy interesado</label>
-	    	<div style="clear:both"></div> 
-			<div id="circle"><span class="count">{{ object.interested }}</span></div>
-	    </div>
-	    <div class="col-sm-2"> 
-	    	<label>Voy a asistir</label>
-	    	<div style="clear:both"></div> 	
-			<div id="circle"><span class="count">{{ object.assistants }}</span></div>
-	    </div>
+      {% if not is_own %}
+
+      <a href="{% url 'eventFlowControl' type='interested' %}" class="btn btn-success" role="button">Estoy interesado<span class="badge">0</span></a>
+     
+      <a href="{% url 'eventFlowControl' type='assistants' %}" class="btn btn-success" role="button">Voy a asistir<span class="badge">0</span></a>
+
+      <a href="{% url 'eventFlowControl' type='not_interested' %}" class="btn btn-danger" role="button">No estoy interesado<span class="badge">0</span></a>
+
+      {% else %}
+        de momento 'x' asistiran y 'x' estan interesados
+        <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
+      {% endif %}
   	</div>
   	<hr>
 </div>
@@ -150,7 +152,6 @@
 
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>
-	<p>votos:(habilitar despues de la fecha del evento) {{ object.score }}</p>
 	<p>Fecha de creación: {{ object.created_at }}</p>
 	<p>Fecha de la última actualización: {{ object.updated_at }}</p>
 	<p>Creado por: {{ object.created_by }}</p>
@@ -165,7 +166,7 @@
 		initMap = function() {
 			var uluru = {lat: myLat, lng: myLng };
 			var map = new google.maps.Map(document.getElementById('map'), {
-			  zoom: 17,
+			  zoom: 16,
 			  center: uluru
 			});
 			var marker = new google.maps.Marker({

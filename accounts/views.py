@@ -26,12 +26,13 @@ def signup(request):
 
 def my_login(request):
     if request.method == 'POST':
-        form = CustomAuthenticationForm(request.POST)
+        form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
             return redirect('home')
-
+    else:
+        form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
    
 @login_required

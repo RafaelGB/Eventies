@@ -25,7 +25,7 @@
 {% block content %}
   <form method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
     <button  type="submit" class="btn btn-success">Guardar cambios</button>
-    <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
+    <a href="/event/{{object.pk}}" class="btn btn-info" role="button">ir al evento</a>
     <br><br>
     {% csrf_token %}
     {% include 'includes/form.html' %}
@@ -72,7 +72,7 @@
 
   <br>
   <button form="mainForm" type="submit" class="btn btn-success">Guardar cambios</button>
-  <a href="{% url 'home' %}" class="btn btn-outline-secondary" role="button">Cancelar</a>
+  <a href="/event/{{object.pk}}" class="btn btn-info" role="button">ir al evento</a>
 {% endblock %}
 
 {% block javascriptBottom %}
