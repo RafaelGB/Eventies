@@ -415,20 +415,38 @@ def NewEvent(request):
 @login_required
 def EventFlowControl(request,**kwargs):
     if request.method == 'POST':
-        print(kwargs)
-        print(request.POST['event_pk'])
+        id_event = request.POST['event_pk']
+        user = request.user
+        event = Event.objects.get(pk=id_event)
+
         option = None
+        remove_add = None
         if kwargs['type'] == "interested":
-            option ="interesado"
+            if user in event.interested_in.all():
+                event.interested_in.remove(user)
+                remove_add='removed'
+            else:
+                event.interested_in.add(user)
+                remove_add='added'
         elif kwargs['type'] == "assistants":
-            option ="asistente"
+            if user in event.signed_up.all():
+                event.signed_up.remove(user)
+                remove_add='removed'
+            else:
+                event.signed_up.add(user)
+                remove_add='added'
         elif kwargs['type'] == "not_interested":
-            option ="no interesado"
+            if user in event.not_interested.all():
+                event.not_interested_in.remove(user)
+                remove_add='removed'
+            else:
+                event.not_interested_in.add(user)
+                remove_add='added'
         else:
-            option = "no contemplado"
+            remove_add='nothing'
         data = {
-            'option': option
+            'remove_add' : remove_add
         }
     else:   
         data = {}
-        return JsonResponse(data)
+    return JsonResponse(data)

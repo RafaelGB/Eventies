@@ -37,8 +37,33 @@
 <script src="{% static 'js/eventDetailsActions.js' %}"></script>
 <script>
 
+  function up_down_count_badge(id,remove_add){
+    badge = document.getElementById(id);
+    alert(badge.innerHTML);
+    var number;
+    if(remove_add == 'removed'){
+      number = badge.innerHTML;
+      number--;
+      badge.innerHTML = number;
+    }else{
+      number = badge.innerHTML;
+      number++;
+      badge.innerHTML = number;
+    }
+  }
 
-   function ajax_vote(tipo){
+  function change_button_style(id,value,remove_add){
+    alert(value);
+    button = document.getElementById(id);
+    if(remove_add == 'removed'){
+      button.className = 'btn btn-success btn-lg';
+    }else{
+      button.className = 'btn btn-warning';
+    }
+    button.update(value);
+  }
+ 
+  function ajax_vote(tipo){
       $.ajax({
         type: "POST",
         url: '/eventFlowControl/'+tipo+'/',
@@ -48,7 +73,20 @@
         },
         dataType: 'json',
         success: function (data) {
-            alert(data.option);
+          if(data.remove_add=='nothing')
+            //en caso de opcion invalida
+            alert("turn down for what!");
+          else{
+            alert(data.remove_add);
+            if(tipo=="interested"){
+              var msg = (data.remove_add=="removed" ? "Estoy interesado" : "Ya no estoy interesado");
+              change_button_style("interested_button",msg,data.remove_add);
+              up_down_count_badge("interested_count",data.remove_add);
+              
+            }else if(tipo=='assistants'){
+
+            }
+          }
         }
       });
     }
@@ -131,17 +169,22 @@
   	
  	<div class="row">
 	    <div class="col-sm-2">
-	    	<label>Visitas</label>
 	    	<div style="clear:both"></div> 
-			<div id="circle"><span class="count">{{ object.views }}</span></div>
+			<div id="circle"><span class="count">{{ object.views }} </span> <p>visitas</p></div>
 	    </div>
       {% if not is_own %}
 
-      <button class="btn btn-success" onclick="ajax_vote('interested')">Estoy interesado <span class="badge">0</span></button>
+      <button id="interested_button" class="btn btn-success btn-lg" onclick="ajax_vote('interested')">
+        Estoy interesado <span id="interested_count" class="badge">0</span>
+      </button>
       
-      <button class="btn btn-success" onclick="ajax_vote('assistants')">Voy a asistir <span class="badge">0</span></button>
+      <button id="assistants_button" class="btn btn-success btn-lg" onclick="ajax_vote('assistants')">
+        Voy a asistir <span id="assistants_count" class="badge">0</span>
+      </button>
 
-      <button class="btn btn-danger" onclick="ajax_vote('not_interested')">No estoy interesado</button>
+      <button id="not_interested_button" class="btn btn-danger btn-md" onclick="ajax_vote('not_interested')">
+        No estoy interesado
+      </button>
 
       {% else %}
         de momento 'x' asistiran y 'x' estan interesados
@@ -335,6 +378,10 @@ function InitializeMap() {
       */
     }else{
       alert("no se ha dado permisos de localización");
+      var marker = new google.maps.Marker({
+        position: uluru,
+        map: map
+      });
     }
 }
 
