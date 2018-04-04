@@ -36,33 +36,29 @@
 {% block javascript %}
 <script src="{% static 'js/eventDetailsActions.js' %}"></script>
 <script>
-
+var lastButton;
   function up_down_count_badge(id,remove_add){
     badge = document.getElementById(id);
-    alert(badge.innerHTML);
-    var number;
-    if(remove_add == 'removed'){
-      number = badge.innerHTML;
+    var number = badge.innerHTML;
+    if(remove_add == 'removed')
       number--;
-      badge.innerHTML = number;
-    }else{
-      number = badge.innerHTML;
+    else
       number++;
-      badge.innerHTML = number;
-    }
+    badge.innerHTML = number;
   }
 
-  function change_button_style(id,value,remove_add){
-    alert(value);
-    button = document.getElementById(id);
+  function change_button_style(id_button,id_name,value,remove_add){
+    var name = document.getElementById(id_name);
+    var button = document.getElementById(id_button);
     if(remove_add == 'removed'){
       button.className = 'btn btn-success btn-lg';
     }else{
       button.className = 'btn btn-warning';
     }
-    button.update(value);
+    name.innerHTML = value;
+
   }
- 
+  
   function ajax_vote(tipo){
       $.ajax({
         type: "POST",
@@ -77,15 +73,44 @@
             //en caso de opcion invalida
             alert("turn down for what!");
           else{
-            alert(data.remove_add);
+
             if(tipo=="interested"){
               var msg = (data.remove_add=="removed" ? "Estoy interesado" : "Ya no estoy interesado");
-              change_button_style("interested_button",msg,data.remove_add);
+              change_button_style("interested_button","interested_name",msg,data.remove_add);
               up_down_count_badge("interested_count",data.remove_add);
-              
-            }else if(tipo=='assistants'){
+              //se pisa el boton de asistencia por si está pulsado, la logica se trata en el servidor
+              if(lastButton=="assistants"){
+                msg = "Voy a asistir";
+                change_button_style("assistants_button","assistants_name",msg,"removed");
+                up_down_count_badge("assistants_count","removed");
+              }
+              lastButton="interested";
 
+            }else if(tipo=='assistants'){
+              var msg = (data.remove_add=="removed" ? "Voy a asistir" : "Ya no asistiré");
+              change_button_style("assistants_button","assistants_name",msg,data.remove_add);
+              up_down_count_badge("assistants_count",data.remove_add);
+              //se pisa el boton de interesado por si está pulsado, la logica se trata en el servidor
+              if(lastButton=="interested"){
+                msg = "Estoy interesado";
+                change_button_style("interested_button","interested_name",msg,"removed");
+                up_down_count_badge("interested_count","removed");
+              }
+              lastButton="assistants";
+
+            }else if(tipo=='not_interested'){
+              var msg = (data.remove_add=="removed" ? "No estoy interesado" : "Dar otra oportunidad");
+              var button = document.getElementById("not_interested_button");
+              if(data.remove_add == 'removed')
+                button.className = 'btn btn-danger btn-md';
+              else
+                button.className = 'btn btn-success btn-lg';
+              
+              document.getElementById("assistants_button").disabled = !document.getElementById("assistants_button").disabled;
+              document.getElementById("interested_button").disabled = !document.getElementById("interested_button").disabled;
+              button.innerHTML = value;
             }
+
           }
         }
       });
@@ -175,11 +200,11 @@
       {% if not is_own %}
 
       <button id="interested_button" class="btn btn-success btn-lg" onclick="ajax_vote('interested')">
-        Estoy interesado <span id="interested_count" class="badge">0</span>
+        <span id="interested_name">Estoy interesado</span> <span id="interested_count" class="badge">{{interested_count}}</span>
       </button>
       
       <button id="assistants_button" class="btn btn-success btn-lg" onclick="ajax_vote('assistants')">
-        Voy a asistir <span id="assistants_count" class="badge">0</span>
+        <span id="assistants_name">Voy a asistir</span> <span id="assistants_count" class="badge">{{signed_up_count}}</span>
       </button>
 
       <button id="not_interested_button" class="btn btn-danger btn-md" onclick="ajax_vote('not_interested')">
@@ -187,7 +212,7 @@
       </button>
 
       {% else %}
-        de momento 'x' asistiran y 'x' estan interesados
+        de momento  asistiran y {{interested_count}} estan interesados
         <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
       {% endif %}
   	</div>
@@ -221,21 +246,25 @@
 
 {% block javascriptBottom %}
 	<script>
-  /*
-    var myLat = {{ coor.y }}
-    var myLng = {{ coor.x }}
-		initMap = function() {
-			var uluru = {lat: myLat, lng: myLng };
-			var map = new google.maps.Map(document.getElementById('map'), {
-			  zoom: 16,
-			  center: uluru
-			});
-			var marker = new google.maps.Marker({
-			  position: uluru,
-			  map: map
-			});
-		}
-    */
+  //inicializamos botones
+  {% if not_interested_clicked %}
+      lastButton = "not_interested";
+      var msg =  "Dar otra oportunidad";
+      var button = document.getElementById("not_interested_button");
+      button.className = 'btn btn-success btn-lg';
+
+      document.getElementById("assistants_button").disabled = !document.getElementById("assistants_button").disabled;
+      document.getElementById("interested_button").disabled = !document.getElementById("interested_button").disabled;
+      button.innerHTML = msg;
+  {% elif signed_up_clicked %}
+      lastButton = "assistants";
+      var msg = "Ya no asistiré";
+      change_button_style("assistants_button","assistants_name",msg,"added");
+  {% elif interested_clicked %}
+      lastButton = "interested";
+      var msg = "Ya no estoy interesado";
+      change_button_style("interested_button","interested_name",msg,"added");             
+  {% endif %}
 	</script>
 
 
@@ -378,14 +407,13 @@ function InitializeMap() {
       */
     }else{
       alert("no se ha dado permisos de localización");
+      var uluru = {lat: myLat, lng: myLng };
       var marker = new google.maps.Marker({
         position: uluru,
         map: map
       });
     }
 }
-
-
 
 </script>
 

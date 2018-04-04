@@ -80,6 +80,20 @@ class EventObjectView(DetailView):
             
         """
         context["is_own"] = (self.request.user == self.object.created_by)
+        """
+            obtención de los contadores del evento relevantes
+                                    +
+                        checks de opciones elegidas
+        .........................................................
+            
+        """
+        context["interested_count"]= self.object.interested_in.count()
+        context["signed_up_count"]= self.object.signed_up.count()
+
+
+        context["signed_up_clicked"] = (self.request.user in self.object.signed_up.all())
+        context["interested_clicked"] = (self.request.user in self.object.interested_in.all())
+        context["not_interested_clicked"] = (self.request.user in self.object.not_interested_in.all())
         return context
 """
 **********************************************************
@@ -420,28 +434,41 @@ def EventFlowControl(request,**kwargs):
         event = Event.objects.get(pk=id_event)
 
         option = None
+        tipo = kwargs['type']
         remove_add = None
-        if kwargs['type'] == "interested":
+        if tipo == "interested":
             if user in event.interested_in.all():
                 event.interested_in.remove(user)
                 remove_add='removed'
             else:
                 event.interested_in.add(user)
                 remove_add='added'
-        elif kwargs['type'] == "assistants":
+                #si se esta interesado se deja de asistir
+                if user in event.signed_up.all():
+                    event.signed_up.remove(user)
+        elif tipo == "assistants":
             if user in event.signed_up.all():
                 event.signed_up.remove(user)
                 remove_add='removed'
             else:
                 event.signed_up.add(user)
                 remove_add='added'
-        elif kwargs['type'] == "not_interested":
-            if user in event.not_interested.all():
+                #si se asiste se deja de estar interesado
+                if user in event.interested_in.all():
+                    event.interested_in.remove(user)
+        elif tipo == "not_interested":
+            print("hola")
+            if user in event.not_interested_in.all():
                 event.not_interested_in.remove(user)
                 remove_add='removed'
             else:
                 event.not_interested_in.add(user)
                 remove_add='added'
+                #si se deja de estar interesado se anula el resto de votos
+                if user in event.interested_in.all():
+                    event.interested_in.remove(user)
+                if user in event.signed_up.all():
+                    event.signed_up.remove(user)
         else:
             remove_add='nothing'
         data = {
