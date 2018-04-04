@@ -35,6 +35,25 @@
 {% endblock %} <!-- fin de opcion de estilo -->
 {% block javascript %}
 <script src="{% static 'js/eventDetailsActions.js' %}"></script>
+<script>
+
+
+   function ajax_vote(tipo){
+      $.ajax({
+        type: "POST",
+        url: '/eventFlowControl/'+tipo+'/',
+        data: {
+          'event_pk': '{{object.pk}}',
+          'csrfmiddlewaretoken' : '{{ csrf_token }}'
+        },
+        dataType: 'json',
+        success: function (data) {
+            alert(data.option);
+        }
+      });
+    }
+    
+</script>
 {% endblock %}
 
 
@@ -44,8 +63,6 @@
 {% endblock %}
 
 {% block content %}
-
-
 <div class="container text-center">    
   <h1>{{ object.title }}</h1>
   <br>
@@ -120,11 +137,11 @@
 	    </div>
       {% if not is_own %}
 
-      <a href="{% url 'eventFlowControl' type='interested' %}" class="btn btn-success" role="button">Estoy interesado<span class="badge">0</span></a>
-     
-      <a href="{% url 'eventFlowControl' type='assistants' %}" class="btn btn-success" role="button">Voy a asistir<span class="badge">0</span></a>
+      <button class="btn btn-success" onclick="ajax_vote('interested')">Estoy interesado <span class="badge">0</span></button>
+      
+      <button class="btn btn-success" onclick="ajax_vote('assistants')">Voy a asistir <span class="badge">0</span></button>
 
-      <a href="{% url 'eventFlowControl' type='not_interested' %}" class="btn btn-danger" role="button">No estoy interesado</a>
+      <button class="btn btn-danger" onclick="ajax_vote('not_interested')">No estoy interesado</button>
 
       {% else %}
         de momento 'x' asistiran y 'x' estan interesados

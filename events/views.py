@@ -16,8 +16,8 @@ from django.contrib.gis.geos import Point
 
 from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
-from django.http import HttpResponse
 
+from django.http import HttpResponse , JsonResponse
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
@@ -414,6 +414,21 @@ def NewEvent(request):
 
 @login_required
 def EventFlowControl(request,**kwargs):
-    print("hola mundo")
-    print(kwargs)
-    return redirect('home')
+    if request.method == 'POST':
+        print(kwargs)
+        print(request.POST['event_pk'])
+        option = None
+        if kwargs['type'] == "interested":
+            option ="interesado"
+        elif kwargs['type'] == "assistants":
+            option ="asistente"
+        elif kwargs['type'] == "not_interested":
+            option ="no interesado"
+        else:
+            option = "no contemplado"
+        data = {
+            'option': option
+        }
+    else:   
+        data = {}
+        return JsonResponse(data)
