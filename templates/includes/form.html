@@ -13,7 +13,11 @@
 {% endif %}
 
 {% for field in form.visible_fields %}
-  <div class="form-group">
+  <div class=
+  "form-group {% if form.is_bound %}
+	{% if field.errors %}has-error{% else %}has-success{% endif %}
+  {% endif %}
+  ">
     {% if field.field.required %}
     (*)
     {% endif %}
@@ -23,7 +27,7 @@
       {% if field.errors %}
         {% render_field field class="form-control is-invalid" %}
         {% for error in field.errors %}
-          <div class="invalid-feedback">
+          <div class="help-block">
             {{ error }}
           </div>
         {% endfor %}

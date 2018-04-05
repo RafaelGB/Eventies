@@ -9,6 +9,7 @@ from django.dispatch.dispatcher import receiver
 from accounts.models import User
 from decimal import Decimal
 from django.core.validators import MinValueValidator
+from datetime import datetime
 from django.template.defaultfilters import slugify
 from django.utils.html import mark_safe
 from markdown import markdown
@@ -60,10 +61,11 @@ class Event(models.Model):
     """
     views = models.PositiveIntegerField(default=0)
     """
-                       Detalles
+                       Fechas
     ---------------------------------------------------------
     
     """
+    date = models.DateTimeField(default=datetime.now, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(null=True)
     """

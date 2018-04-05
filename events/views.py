@@ -405,10 +405,11 @@ def NewEvent(request):
                 newCategory = Category.objects.get(name_category=category)
                 newCategory.events_categories.add(event.pk)
             return redirect('eventDetails', pk=event.pk)
-    
-    form = EventForm()
-    formGeo = GeolocationForm()
-    formset = PhotoFormSet(queryset=Photo.objects.none())
+    else:
+        form = EventForm()
+        formGeo = GeolocationForm()
+        formset = PhotoFormSet(queryset=Photo.objects.none())
+
     #obtencion de tags y darles formato para funcion de autocompletado
     autoTags = list(Tag.objects.values('name_tag'))
     autoTags = str(autoTags).replace("'name_tag'","name_tag")

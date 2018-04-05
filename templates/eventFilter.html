@@ -19,6 +19,8 @@
 
 {% block javascript %}
 	<script src="{% static 'js/bootstrap-select.js' %}"></script>
+
+
 {% endblock %}
 
 {% block breadcrumb %}
@@ -105,9 +107,26 @@
 				  		<a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">
 
 				  		<div class="col-sm-4">
-				      		<div class="panel panel-primary"><!-- panel-danger panel-success disponibles -->
+				      		<div class="
+				      		{% if user in event.interested_in.all %}
+				      			panel panel-info
+				      		{% elif user in event.signed_up.all %}
+				      			panel panel-primary
+				      		{% elif user in event.not_interested_in.all %}
+				      			panel panel-danger
+				      		{% else %}
+				      			panel panel-default
+				      		{% endif %}
+				      		"><!-- panel-danger panel-success disponibles -->
 						        <div class="panel-heading">{{ event.title }}</div>
-						        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
+
+						        <div class="panel-body"><img src="
+						        {% if event.photo_set.all %}
+						        	{{event.photo_set.all.0.picture.url}}
+						        {% else %}
+						        	https://placehold.it/200x130?text=IMAGE
+						        {% endif %}
+						        " class="img-responsive" style="width:100%;height: 130px" alt="Image"></div>
 						        <div class="panel-footer">{{event.summary}}</div>
 				      		</div>
 				    	</div>

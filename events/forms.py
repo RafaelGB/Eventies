@@ -1,11 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import BaseFormSet
-from .models import Event, Tag, Category, Photo, Geolocation
-
 from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticMapWidget, GoogleStaticOverlayMapWidget
-
-
+from .models import Event, Tag, Category, Photo, Geolocation
 class GeolocationForm(forms.ModelForm):
 
     class Meta:
@@ -28,18 +25,21 @@ class EventForm(forms.ModelForm):
         help_text='maximos caracteres permitidos: 5000.'
     )
 
+
     class Meta:
         model = Event
 
         fields = [
         	'title',
-        	'description',
         	'summary',
+            'date',
+            'description',
         	'budget',
         	'duration'
         ]
         #Cambia el nombre del campo por el que se desea mostrar en html
         labels = {
+            'date': _('Fecha'),
             'title': _('Título'),
             'summary': _('Resumen'),
             'budget': _('Precio aproximado'),
@@ -47,7 +47,6 @@ class EventForm(forms.ModelForm):
         }
 
         widgets = {
-            
         }
 class BasePhotoFormSet(BaseFormSet):
     def clean(self):

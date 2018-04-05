@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
   <link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
   <link rel="stylesheet" href="{% static 'css/previewUploadImages.css' %}">
+
+
 {% endblock %}
 
 {% block javascript %}
@@ -18,11 +20,6 @@
   
   <script src="{% static 'js/jquery.uploadPreview.js' %}"></script>
   <script src="{% static 'js/bootstrap-select.js' %}"></script>
-
-
-<script type="text/javascript">
-
-</script>
 
 {% endblock %}
 
@@ -38,6 +35,7 @@
   <button form="mainForm" type="submit" class="btn btn-success">Crear evento</button>
     <br><br>
   <form id="mainForm" method="post" class="form-group" enctype="multipart/form-data" novalidate>
+
     {% csrf_token %}
     {% include 'includes/form.html' %}
     {% include 'includes/formGeo.html' %}
@@ -83,6 +81,10 @@
       <input placeholder="nuevoTag (press enter...)" type="text"  value="" form="mainForm" name="myTags" id="tags_input" data-role="tagsinput" />
   <br><br>
   <button form="mainForm" type="submit" class="btn btn-success">Crear evento</button>
+
+
+            
+
 
 {% endblock %}
 {% block javascriptBottom %}

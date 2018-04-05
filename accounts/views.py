@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
-from django_gravatar.helpers import get_gravatar_url, has_gravatar, get_gravatar_profile_url, calculate_gravatar_hash
+from django_gravatar.helpers import get_gravatar_url
 
 from .forms import SignUpForm, CustomAuthenticationForm, UserForm
 from .models import User
@@ -99,7 +99,7 @@ class UserUpdateView(UpdateView):
         self.object = self.get_object()
         context = super(UserUpdateView, self).get_context_data(**kwargs)
         #sacamos la url de la foto de perfil del correo
-        url = get_gravatar_url(self.request.user.email, size=180)
+        url = get_gravatar_url(self.object.email, size=180)
         context["photo_user"] = url
 
         return self.render_to_response(context=context)
