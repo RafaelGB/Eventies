@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'sortedm2m',
     'mapwidgets',#mapa dinamico googlemaps
     'django_gravatar',#adquiere foto del correo
+    'datetimewidget',
     #APPs propias
     'events',
     'accounts',
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 #donde se guardan las traducciones de enlaces
 ROOT_URLCONF = 'Eventies.urls'
@@ -199,3 +201,7 @@ GEOIP_PATH = '/libarys/'
 
 #modelo predeterminado de usuario
 AUTH_USER_MODEL = 'accounts.User'
+
+USE_L10N = True
+USE_TZ = True
+USE_I18N = True

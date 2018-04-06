@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.formsets import BaseFormSet
 from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticMapWidget, GoogleStaticOverlayMapWidget
 from .models import Event, Tag, Category, Photo, Geolocation
+from datetimewidget.widgets import DateTimeWidget
 class GeolocationForm(forms.ModelForm):
 
     class Meta:
@@ -25,7 +26,6 @@ class EventForm(forms.ModelForm):
         help_text='maximos caracteres permitidos: 5000.'
     )
 
-
     class Meta:
         model = Event
 
@@ -47,6 +47,7 @@ class EventForm(forms.ModelForm):
         }
 
         widgets = {
+            'date': DateTimeWidget(attrs={'id':"id_date"}, usel10n = True, bootstrap_version=3)
         }
 class BasePhotoFormSet(BaseFormSet):
     def clean(self):

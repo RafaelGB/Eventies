@@ -172,12 +172,16 @@ var lastButton;
   </div>
   <div class="col-sm-4">
   	<label>resumen</label>
-    <div class="well">
+    <div class="well" style="background: rgb(22, 105, 173);">
       <p>{{ object.summary }}</p>
     </div>
     <label>Descripción</label>
     <div class="well">
        <p>{{ object.description }}</p>
+    </div>
+    <label>Fecha prevista</label>
+    <div class="well">
+       <p>{{ object.date }}</p>
     </div>
   </div>
 </div>
@@ -212,8 +216,10 @@ var lastButton;
       </button>
 
       {% else %}
-        de momento  asistiran y {{interested_count}} estan interesados
-        <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
+        <div class="container text-center">
+          <p>de momento  asistiran {{signed_up_count}} personas y  estan interesados otras {{interested_count}}.</p>
+          <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
+        </div>
       {% endif %}
   	</div>
   	<hr>
@@ -234,7 +240,7 @@ var lastButton;
   	{% endfor %}
   </div>
 </div>
-
+  <p> fecha del evento: {{object.date}}</p>
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>
 	<p>Fecha de creación: {{ object.created_at }}</p>
