@@ -5,33 +5,34 @@
 
 {% block title %}{{ object.title }}{% endblock %}
 {% block stylesheet %}<!-- opcion de estilo -->
-<style>
-	#circle
-	{
-	  	width: 100px;
-		height: 100px;
+  <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
+  <style>
+  	#circle
+  	{
+  	  	width: 100px;
+  		height: 100px;
 
-		background: blue;
-		-moz-border-radius: 50px;
-		-webkit-border-radius: 50px;
-		border-radius: 50px;
-		float:left;
-	 	margin:5px;
-	}
-	.count, .counted
-	{
-	  line-height: 100px;
-	  color:white;
-	  font-size:25px;
-	}
+  		background: blue;
+  		-moz-border-radius: 50px;
+  		-webkit-border-radius: 50px;
+  		border-radius: 50px;
+  		float:left;
+  	 	margin:5px;
+  	}
+  	.count, .counted
+  	{
+  	  line-height: 100px;
+  	  color:white;
+  	  font-size:25px;
+  	}
 
-	      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 400px;
-        width: 100%;
-       }
-</style>
+  	      /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+          height: 400px;
+          width: 100%;
+         }
+  </style>
 {% endblock %} <!-- fin de opcion de estilo -->
 {% block javascript %}
 <script src="{% static 'js/eventDetailsActions.js' %}"></script>
@@ -127,7 +128,7 @@ var lastButton;
 
 {% block content %}
 <div class="container text-center">    
-  <h1>{{ object.title }}</h1>
+  <h1>{{ object.title }} <small>(por {{ object.created_by }})</small></h1>
   <br>
 </div> 
 
@@ -148,10 +149,12 @@ var lastButton;
           
         <div class="item {% if forloop.first %} active {% endif %}">
         
-          <img src="{{photo.picture.url}}" style="width:100%" alt="Image">
+          <img src="{{photo.picture.url}}" style="width:100%; min-height:400px;max-height:400px;" alt="Image">
           <div class="carousel-caption">
-            <h3>Sell $</h3>
+            <!--
+            <h3>{{photo.picture.name}}</h3>
             <p>Money Money.</p>
+            -->
           </div>      
         </div>
         {% endfor %}
@@ -172,15 +175,17 @@ var lastButton;
   </div>
   <div class="col-sm-4">
   	<label>resumen</label>
-    <div class="well" style="background: rgb(22, 105, 173);">
+    <div class="well" style="background:  #ADD8E6;">
       <p>{{ object.summary }}</p>
     </div>
     <label>Descripción</label>
-    <div class="well">
-       <p>{{ object.description }}</p>
+    <div class="well" style="background:  #ADD8E6;">
+    <markdown-editor v-model="content" ref="markdownEditor">
+      {{ object.description }}
+    </markdown-editor>
     </div>
     <label>Fecha prevista</label>
-    <div class="well">
+    <div class="well" style="background:  #ADD8E6;">
        <p>{{ object.date }}</p>
     </div>
   </div>
@@ -240,13 +245,11 @@ var lastButton;
   	{% endfor %}
   </div>
 </div>
-  <p> fecha del evento: {{object.date}}</p>
 	<p>precio estimado: {{ object.budget }}</p>
 	<p>duracion estimada: {{ object.duration }}</p>
 	<p>Fecha de creación: {{ object.created_at }}</p>
 	<p>Fecha de la última actualización: {{ object.updated_at }}</p>
 	<p>Creado por: {{ object.created_by }}</p>
-	<p>Localizado en: {{ object.geopos_at.coordinates }}</p>
 
 {% endblock %}
 
@@ -426,6 +429,10 @@ function InitializeMap() {
 	<script async defer
 	    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOt21MFO0p-9eB7yNqwSKN76RjAEXNERE&callback=InitializeMap">
 	</script>
+
+<script>
+$('.markdown-editor')[0].SimpleMDE
+</script>
 {% endblock %}
 
 

@@ -245,12 +245,9 @@ class EventUpdateView(UpdateView):
         self.object = self.get_object()
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
-        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm,can_delete=True)
-        print("\n\nrequest.POST",request.POST)
-        print("\n\nrequest.FILES",request.FILES)
+        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm,formset=BasePhotoFormSet,can_delete=True)
         formset = PhotoFormSet(request.POST or None, request.FILES or None)
         if all([form.is_valid(),formGeo.is_valid(),formset.is_valid()]):
-            print("\n\nentro en el tratamiento de datos\n\n")
             """
                                Tratamiento de Event
             .........................................................
@@ -325,18 +322,16 @@ class EventUpdateView(UpdateView):
             
             """
             primalPhotos = list(Photo.objects.filter(event=self.object))
-            print("originales",str(primalPhotos))
-            print("finales",formset.cleaned_data)
             for photo in formset.cleaned_data:
                 #comprobamos que la foto no este vacía
                 if photo:
-                    if photo['id'] not in primalPhotos:
+                    print(photo)
+                    if photo['picture'] not in primalPhotos:
                         picture = photo['picture']
                         photo = Photo(event=self.object, picture=picture)
                         photo.save()
                     else:
                         primalPhotos.remove(photo['id'])
-            print("array a borrar",primalPhotos)
             for removed_photo in primalPhotos:
                 picture = Photo.objects.get(pk=str(removed_photo))
                 picture.delete()
@@ -344,7 +339,6 @@ class EventUpdateView(UpdateView):
 
             return redirect('eventDetails', pk=self.object.pk)  
         else:
-            print("\n\nfalla al validar los formularios\n\n")
             return self.render_to_response(
               self.get_context_data(form=form,formGeo=formGeo,formset=formset))
 
