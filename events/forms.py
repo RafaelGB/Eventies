@@ -49,6 +49,7 @@ class EventForm(forms.ModelForm):
         widgets = {
             'date': DateTimeWidget(attrs={'id':"id_date"}, usel10n = True, bootstrap_version=3)
         }
+        
 class BasePhotoFormSet(BaseFormSet):
     def clean(self):
         """

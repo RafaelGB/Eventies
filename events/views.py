@@ -201,8 +201,10 @@ class EventUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         #recuperamos argumentos ya inicializados
         context = super(EventUpdateView, self).get_context_data(**kwargs)
-        context['form'] = self.form_class(instance=self.object)  
-        context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
+
+        if not 'errors' in context:
+            context['form'] = self.form_class(instance=self.object)
+            context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
         """
             obtencion de las categorías relacionadas con el evento
                                         +
@@ -340,7 +342,7 @@ class EventUpdateView(UpdateView):
             return redirect('eventDetails', pk=self.object.pk)  
         else:
             return self.render_to_response(
-              self.get_context_data(form=form,formGeo=formGeo,formset=formset))
+              self.get_context_data(errors=True,form=form,formGeo=formGeo,formset=formset))
 
 @login_required
 def NewEvent(request):

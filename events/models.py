@@ -162,7 +162,9 @@ class Photo(models.Model):
 
 # borra la foto del sistema
 def _delete_file(path):
-    if os.path.isfile(path):
+    print(path)
+    suffix = "/media/none/no-img.jpg"
+    if os.path.isfile(path) and str(path).endswith(suffix):
         os.remove(path)
 
 #trigger que se activa antes de llamar a borrar foto

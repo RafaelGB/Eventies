@@ -35,7 +35,8 @@
   </style>
 {% endblock %} <!-- fin de opcion de estilo -->
 {% block javascript %}
-<script src="{% static 'js/eventDetailsActions.js' %}"></script>
+{{ form.media }}
+
 <script>
 var lastButton;
   function up_down_count_badge(id,remove_add){
@@ -116,7 +117,6 @@ var lastButton;
         }
       });
     }
-    
 </script>
 {% endblock %}
 
@@ -145,19 +145,31 @@ var lastButton;
 
       <!-- Wrapper for slides -->
       <div class="carousel-inner" role="listbox">
-        {% for photo in photos %}
+        {%if photos %}
+          {% for photo in photos %}
+            
+          <div class="item {% if forloop.first %} active {% endif %}">
           
-        <div class="item {% if forloop.first %} active {% endif %}">
-        
-          <img src="{{photo.picture.url}}" style="width:100%; min-height:400px;max-height:400px;" alt="Image">
-          <div class="carousel-caption">
-            <!--
-            <h3>{{photo.picture.name}}</h3>
-            <p>Money Money.</p>
-            -->
-          </div>      
-        </div>
-        {% endfor %}
+            <img src="{{photo.picture.url}}" style="width:100%; min-height:400px;max-height:400px;" alt="Image">
+            <div class="carousel-caption">
+              <!--
+              <h3>{{photo.picture.name}}</h3>
+              <p>Money Money.</p>
+              -->
+            </div>      
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="item active">
+            <img src="/media/none/no-img.jpg" style="width:100%; min-height:400px;max-height:400px;" alt="Image">
+            <div class="carousel-caption">
+              
+              <h3>Este evento no contiene imágenes</h3>
+              <p>Hmmm...</p>
+              
+            </div>      
+          </div>
+        {% endif %}
       </div>
 
       {%if photos.count > 1 %}
@@ -254,6 +266,15 @@ var lastButton;
 {% endblock %}
 
 {% block javascriptBottom %}
+  <script src="{% static 'js/simplemde.min.js' %}"></script>
+  <script>
+    var myLat = {{ coor.y }}
+    var myLng = {{ coor.x }}
+  </script>
+
+  <script src="{% static 'js/eventDetailsActions.js' %}"></script>
+
+
 	<script>
   //inicializamos botones
   {% if not_interested_clicked %}
@@ -276,155 +297,6 @@ var lastButton;
   {% endif %}
 	</script>
 
-
-<script>
-
-//paso 3
-//drawRoute() pintará la ruta entre 2 puntos
-function drawRoute(destinationAddress, originAddress, _waypoints,_directionsRenderer) {
-    //Define la variable request para route .
-    var _request = '';
-
-    var directionsService = new google.maps.DirectionsService();
-    //Esto es para más de 2 localizaciones por si se añaden con el listener
-    if (_waypoints.length > 0) {
-        _request = {
-            origin: originAddress,
-            destination: destinationAddress,
-            waypoints: _waypoints, //un array de waypoints
-            optimizeWaypoints: true, //set a true if si se quiere determinar la ruta mas corta.
-            travelMode: google.maps.DirectionsTravelMode.DRIVING
-        };
-    } else {
-        //para 1 o 2 direcciones, aqui no se usan puntos
-        _request = {
-            origin: originAddress,
-            destination: destinationAddress,
-            travelMode: google.maps.DirectionsTravelMode.DRIVING
-        };
-    }
- 
-    //This will take the request and draw the route and return response and status as output
-    directionsService.route(_request, function (_response, _status) {
-        if (_status == google.maps.DirectionsStatus.OK) {
-            _directionsRenderer.setDirections(_response);
-        }
-    });
-
-    return _directionsRenderer;
-}
-
-//paso 2
-//getRoutePointsAndWaypoints() calcula los puntos que usa drawRoute()
-function getRoutePointsAndWaypoints(_directionsRenderer,_mapPoints) {
-    //Define a variable for waypoints.
-    var _waypoints = new Array();
- 
-    if (_mapPoints.length > 2) //Waypoints will be come.
-    {
-        for (var j = 1; j < _mapPoints.length - 1; j++) {
-            var address = _mapPoints[j];
-            if (address !== "") {
-                _waypoints.push({
-                    location: address,
-                    stopover: true  //stopover is used to show marker on map for waypoints
-                });
-            }
-        }
-        //Call a drawRoute() function
-        _directionsRenderer = drawRoute(_mapPoints[0], _mapPoints[_mapPoints.length - 1], _waypoints,_directionsRenderer);
-    } else if (_mapPoints.length > 1) {
-        //Call a drawRoute() function only for start and end locations
-        _directionsRenderer = drawRoute(_mapPoints[_mapPoints.length - 2], _mapPoints[_mapPoints.length - 1], _waypoints,_directionsRenderer);
-    } else {
-        //Call a drawRoute() function only for one point as start and end locations.
-        _directionsRenderer = drawRoute(_mapPoints[_mapPoints.length - 1], _mapPoints[_mapPoints.length - 1], _waypoints,_directionsRenderer);
-    }
-    return _directionsRenderer;
-}
- 
-//paso 1
-//InitializeMap() inicializa el mapa que se carga en la API
-function InitializeMap() {
-    
-    //Define a variable with all map points.
-    var _mapPoints = new Array();
-
-    //Define a DirectionsRenderer variable.
-    var _directionsRenderer = '';
-
-    var myLat = {{ coor.y }}
-    var myLng = {{ coor.x }}
-    //DirectionsRenderer() is a used to render the direction
-    _directionsRenderer = new google.maps.DirectionsRenderer();
- 
-    //Set the your own options for map.
-    var myOptions = {
-        zoom: 14,
-        center: new google.maps.LatLng(myLat, myLng),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
- 
-    //Define the map.
-    var map = new google.maps.Map(document.getElementById("map"), myOptions);
-   
-    //Set the map for directionsRenderer
-    _directionsRenderer.setMap(map);
-    
-    if (navigator.geolocation) {
-
-
-      //Set different options for DirectionsRenderer mehtods.
-      //draggable option will used to drag the route.
-      _directionsRenderer.setOptions({
-          draggable: true
-      });
-      
-      navigator.geolocation.getCurrentPosition(function(position) {
-       var pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        var origen = new google.maps.LatLng(pos.lat, pos.lng);
-          _mapPoints.push(origen);
-          _directionsRenderer = getRoutePointsAndWaypoints(_directionsRenderer,_mapPoints);
-      });
-
-      var destino = new google.maps.LatLng(myLat, myLng);
-          _mapPoints.push(destino);
-          _directionsRenderer = getRoutePointsAndWaypoints(_directionsRenderer,_mapPoints);
-
-      
-       /*     //Add the doubel click event to map.
-      google.maps.event.addListener(map, "dblclick", function (event) {
-          //Check if Avg Speed value is enter.
-          if ($("#txtAvgSpeed").val() == '') {
-              alert("Please enter the Average Speed (km/hr).");
-              $("#txtAvgSpeed").focus();
-              return false;
-          }
-         
-          var _currentPoints = event.latLng;
-          _mapPoints.push(_currentPoints);
-          _directionsRenderer = getRoutePointsAndWaypoints(_directionsRenderer,_mapPoints);
-      });
-     
-      //Add an event to route direction. This will fire when the direction is changed.
-      google.maps.event.addListener(_directionsRenderer, 'directions_changed', function () {
-          computeTotalDistanceforRoute(_directionsRenderer.directions);
-      });
-      */
-    }else{
-      alert("no se ha dado permisos de localización");
-      var uluru = {lat: myLat, lng: myLng };
-      var marker = new google.maps.Marker({
-        position: uluru,
-        map: map
-      });
-    }
-}
-
-</script>
 
 	<script async defer
 	    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOt21MFO0p-9eB7yNqwSKN76RjAEXNERE&callback=InitializeMap">
