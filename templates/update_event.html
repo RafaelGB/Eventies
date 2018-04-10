@@ -26,6 +26,13 @@
 {% endblock %}
 
 {% block content %}
+
+{% if errors %}
+  <div class="alert alert-danger">
+    Uno de los campos ha fallado, <strong>pruebe de nuevo</strong>.
+  </div>
+{% endif %}
+
   <form method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
     <button  type="submit" class="btn btn-success">Guardar cambios</button>
     <a href="/event/{{object.pk}}" class="btn btn-info" role="button">ir al evento</a>

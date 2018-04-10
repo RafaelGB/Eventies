@@ -47,14 +47,16 @@ class EventForm(forms.ModelForm):
         }
 
         widgets = {
-            'date': DateTimeWidget(attrs={'id':"id_date"}, usel10n = True, bootstrap_version=3)
+            'date': DateTimeWidget(attrs={'id':"id_date"}, usel10n = True, bootstrap_version=3),
+            'duration': forms.TextInput(attrs={'placeholder': "ejemplo '52:06:07'  siendo horas:minutos:segundos"})
+        
         }
         
 class BasePhotoFormSet(BaseFormSet):
     def clean(self):
         """
-        Adds validation to check that no two photos have the same content
-        and that all photos have content.
+        COmprueba que no haya 2 fotos con el mismo contenido
+        y que todas las fotos tengan contenido.
         """
         if any(self.errors):
             return
@@ -66,7 +68,7 @@ class BasePhotoFormSet(BaseFormSet):
             if form.cleaned_data:
                 picture = form.cleaned_data['picture']
 
-                # Check that no two links have the same anchor or URL
+                # comprueba que no contengan el mismo URL
                 if picture:
                     if picture in pictures:
                         duplicates = True

@@ -26,6 +26,11 @@
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
   <li class="breadcrumb-item active">{% if view.kwargs.type == 'own' %}Mis{% else %}Filtro de{% endif %} eventos</li>
+  <style>
+  .grupoInteresesClass:focus {
+  	border: 5px solid green;
+	}
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -43,7 +48,13 @@
 				
 				
 				<hr>
-				
+		      	<div class="row text-center">
+				     <button type="button" onclick="setValueGroupIntereses('assistant');" class="btn btn-primary grupoInteresesClass">Asistiré</button>
+				     <button type="button" onclick="setValueGroupIntereses('interested');" class="btn btn-info grupoInteresesClass">Interesado</button>
+				     <button type="button"  onclick="setValueGroupIntereses('removed');" class="btn btn-danger grupoInteresesClass">Descartados</button>
+				     <input type="hidden" name="grupoIntereses"  id="id_grupoIntereses">
+		    	</div>
+		    	<hr>				
 				<div class="input-group">
 
 
@@ -95,57 +106,57 @@
 	    </div>
 
 	    <div class="col-sm-9">
-		{% include 'includes/pagination.html' %}
-	    {% if events %}
-	            
-	    <ul>
-	      {% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
-	      {% for event in events %}
-	      	{% ifequal count 0 %}    
-		  			<div class="row">
-	  		{% endifequal %}
-				  		<a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">
+			{% include 'includes/pagination.html' %}
+		    {% if events %}
+		            
+		    <ul>
+		      {% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
+		      {% for event in events %}
+		      	{% ifequal count 0 %}    
+			  			<div class="row">
+		  		{% endifequal %}
+					  		<a href="/{% if view.kwargs.type == 'own' %}updateEvent{% else %}event{% endif %}/{{ event.pk }}">
 
-				  		<div class="col-sm-4">
-				      		<div class="
-				      		{% if user in event.interested_in.all %}
-				      			panel panel-info
-				      		{% elif user in event.signed_up.all %}
-				      			panel panel-primary
-				      		{% elif user in event.not_interested_in.all %}
-				      			panel panel-danger
-				      		{% else %}
-				      			panel panel-default
-				      		{% endif %}
-				      		"><!-- panel-danger panel-success disponibles -->
-						        <div class="panel-heading">{{ event.title }}</div>
+					  		<div class="col-sm-4">
+					      		<div class="
+					      		{% if user in event.interested_in.all %}
+					      			panel panel-info
+					      		{% elif user in event.signed_up.all %}
+					      			panel panel-primary
+					      		{% elif user in event.not_interested_in.all %}
+					      			panel panel-danger
+					      		{% else %}
+					      			panel panel-default
+					      		{% endif %}
+					      		"><!-- panel-danger panel-success disponibles -->
+							        <div class="panel-heading">{{ event.title }}</div>
 
-						        <div class="panel-body"><img src="
-						        {% if event.photo_set.all %}
-						        	{{event.photo_set.all.0.picture.url}}
-						        {% else %}
-						        	https://placehold.it/200x130?text=IMAGE
-						        {% endif %}
-						        " class="img-responsive" style="width:100%;height: 130px" alt="Image"></div>
-						        <div class="panel-footer">{{event.summary}}</div>
-				      		</div>
-				    	</div>
-				    	</a>
-	    	{% ifequal count 2 %}
-		    		</div>
-	  			{% assign count 0 %}<!-- reseteamos contador -->
-	  		{% else %}
-	  			{% increment count %}<!-- count++ -->
-	  		{% endifequal %}
-	  		
-	      {% endfor %}
-			<br>
-	    </ul>
-	    {% else %}
-	      <p>No se han encontrado coincidencias con su búsqueda</p>
-	    {% endif %} 
+							        <div class="panel-body"><img src="
+							        {% if event.photo_set.all %}
+							        	{{event.photo_set.all.0.picture.url}}
+							        {% else %}
+							        	https://placehold.it/200x130?text=IMAGE
+							        {% endif %}
+							        " class="img-responsive" style="width:100%;height: 130px" alt="Image"></div>
+							        <div class="panel-footer">{{event.summary}}</div>
+					      		</div>
+					    	</div>
+					    	</a>
+		    	{% ifequal count 2 %}
+			    		</div>
+		  			{% assign count 0 %}<!-- reseteamos contador -->
+		  		{% else %}
+		  			{% increment count %}<!-- count++ -->
+		  		{% endifequal %}
+		  		
+		      {% endfor %}
+				<br>
+		    </ul>
+		    {% else %}
+		      <p>No se han encontrado coincidencias con su búsqueda</p>
+		    {% endif %} 
 
-		{% include 'includes/pagination.html' %}
+			{% include 'includes/pagination.html' %}
 
 	    </div>
 	  </div>
@@ -218,5 +229,12 @@
 		$("#distanceMeters").text(slideEvt.value);
 	});
 
+	</script>
+
+	<script>
+	 function setValueGroupIntereses(value){
+	 	var groupIntereses = document.getElementById("id_grupoIntereses");
+	 	groupIntereses.value = value;
+	 }
 	</script>
 {% endblock %}

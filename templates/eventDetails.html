@@ -190,11 +190,14 @@ var lastButton;
     <div class="well" style="background:  #ADD8E6;">
       <p>{{ object.summary }}</p>
     </div>
-    <label>Descripción</label>
+    <label>Información relevante</label>
     <div class="well" style="background:  #ADD8E6;">
-    <markdown-editor v-model="content" ref="markdownEditor">
-      {{ object.description }}
-    </markdown-editor>
+      <p>
+        <strong>precio estimado:</strong> {{ object.budget }} <span class="glyphicon glyphicon-euro"></span>
+      </p>
+      <p>
+        <strong>duracion estimada:</strong> {{ object.duration }}
+      </p>
     </div>
     <label>Fecha prevista</label>
     <div class="well" style="background:  #ADD8E6;">
@@ -210,6 +213,14 @@ var lastButton;
     <div id="map"></div>
 <hr>
 </div>
+
+<!-- 
+
+  <markdown-editor v-model="content" ref="markdownEditor">
+      {{ object.description }}
+  </markdown-editor>
+
+-->
 
 <div class="container text-center">   
   	
@@ -241,6 +252,9 @@ var lastButton;
   	</div>
   	<hr>
 </div>
+
+{% if eventCategories %}
+
 <h2>Categorías</h2>
 <div class="panel panel-default">
   <div class="panel-body">
@@ -249,6 +263,17 @@ var lastButton;
     {% endfor %}
   </div>
 </div>
+
+{% else %}
+
+  <div class="alert alert-warning">
+    Este evento no tiene asignada ninguna <strong>categoría!</strong>
+  </div>
+
+{% endif %}
+
+{% if eventTags %}
+
 <h2>Palabras clave</h2>
 <div class="panel panel-default">
   <div class="panel-body">
@@ -257,11 +282,22 @@ var lastButton;
   	{% endfor %}
   </div>
 </div>
-	<p>precio estimado: {{ object.budget }}</p>
-	<p>duracion estimada: {{ object.duration }}</p>
+
+{% else %}
+
+  <div class="alert alert-warning">
+    Este evento no tiene asignada ninguna <strong>palabra clave!</strong>
+  </div>
+
+{% endif %}
+
+<div class="alert alert-info">  
+{% if object.updated_at != 'None' %}
 	<p>Fecha de creación: {{ object.created_at }}</p>
+{% else %}
 	<p>Fecha de la última actualización: {{ object.updated_at }}</p>
-	<p>Creado por: {{ object.created_by }}</p>
+{% endif %}
+</div>
 
 {% endblock %}
 

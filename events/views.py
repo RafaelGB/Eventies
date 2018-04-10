@@ -160,7 +160,7 @@ class EventFilterView(ListView):
         if('search' in self.request.GET and self.request.GET['search']):
             contains = self.request.GET['search']
             queryset = (queryset & Event.search_string(contains))
-
+        #---
         if('distance' in self.request.GET):
             distance = self.request.GET['distance']
             if distance:
@@ -168,21 +168,26 @@ class EventFilterView(ListView):
                 lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
                 ref_location = Point(lat, lng )
                 queryset = (queryset & Event.distance_range(ref_location,distance))
-        
+        #---
         if 'tags' in self.request.GET and self.request.GET['tags']:
             tags = self.request.GET['tags'].split(',')
             for tag in tags:
                 queryset = queryset.filter(tags__name_tag=tag)
-
+        #---
         if 'categories' in self.request.GET and self.request.GET['categories']:
             categories = self.request.GET.getlist('categories')
             for category in categories:
                 queryset = queryset.filter(categories__name_category=category)
-
+        #---
         if 'budget' in self.request.GET and self.request.GET['budget']:
             budget = self.request.GET['budget'].split(',')
             queryset = (queryset & Event.range_prices(budget[0],budget[1]))
-
+        #---
+        if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
+            grupoIntereses = self.request.GET['grupoIntereses']
+            print(grupoIntereses)
+            queryset = ( queryset & Event.objects.filter(interested_in__users_interested=self.request.user.pk) )
+        #print("\n\n\n",queryset.query,"\n\n\n")
         return queryset
 
 @method_decorator(login_required, name='dispatch')
@@ -356,7 +361,6 @@ def NewEvent(request):
 
         dateform = request.POST["date"]
 
-        print("date",dateform)
         if all([form.is_valid(),formset.is_valid(),formGeo.is_valid()]):
 
             """
@@ -387,14 +391,17 @@ def NewEvent(request):
             """
             myTags = request.POST['myTags']
             arrayTags = myTags.split(',')
+
             for tag in arrayTags:
-                newTag = None
-                if not Tag.objects.filter(name_tag=tag).exists():
-                    newTag = Tag(name_tag=tag)
-                    newTag.save()
-                else:
-                    newTag = Tag.objects.get(name_tag=tag)
-                newTag.events_tags.add(event.pk)
+                if tag != '':
+                    newTag = None
+                    if not Tag.objects.filter(name_tag=tag).exists():
+                        newTag = Tag(name_tag=tag)
+                        newTag.save()
+                    else:
+                        newTag = Tag.objects.get(name_tag=tag)
+
+                    newTag.events_tags.add(event.pk)
             """
                                Tratamiento de las Categorias
             .........................................................
