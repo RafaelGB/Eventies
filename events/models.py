@@ -12,6 +12,7 @@ from django.core.validators import MinValueValidator
 from datetime import datetime
 from django.template.defaultfilters import slugify
 from django.utils.html import mark_safe
+from django.utils.translation import ugettext_lazy as _
 from markdown import markdown
 from django.contrib.gis.db import models as gisModels
 from accounts.models import User

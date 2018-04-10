@@ -185,9 +185,19 @@ class EventFilterView(ListView):
         #---
         if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
             grupoIntereses = self.request.GET['grupoIntereses']
-            print(grupoIntereses)
-            queryset = ( queryset & Event.objects.filter(interested_in__users_interested=self.request.user.pk) )
-        #print("\n\n\n",queryset.query,"\n\n\n")
+            if grupoIntereses =="assistant":
+                queryset = ( queryset & Event.objects.filter(signed_up__id=self.request.user.pk) )
+            elif grupoIntereses =="interested":
+                queryset = ( queryset & Event.objects.filter(interested_in__id=self.request.user.pk) )
+            elif grupoIntereses =="removed":
+                queryset = ( queryset & Event.objects.filter(not_interested_in__id=self.request.user.pk) )
+            else:
+                queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
+               
+        else:
+            queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
+        #*************************************************************************
+        print("\n\n\n",queryset.query,"\n\n\n")
         return queryset
 
 @method_decorator(login_required, name='dispatch')

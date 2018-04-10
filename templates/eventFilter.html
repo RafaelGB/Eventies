@@ -49,9 +49,9 @@
 				
 				<hr>
 		      	<div class="row text-center">
-				     <button type="button" onclick="setValueGroupIntereses('assistant');" class="btn btn-primary grupoInteresesClass">Asistiré</button>
-				     <button type="button" onclick="setValueGroupIntereses('interested');" class="btn btn-info grupoInteresesClass">Interesado</button>
-				     <button type="button"  onclick="setValueGroupIntereses('removed');" class="btn btn-danger grupoInteresesClass">Descartados</button>
+				     <button id="assistant" type="button" onclick="setValueGroupIntereses('assistant');" class="btn btn-primary grupoInteresesClass">Asistiré</button>
+				     <button id="interested"  type="button" onclick="setValueGroupIntereses('interested');" class="btn btn-info grupoInteresesClass">Interesado</button>
+				     <button id="removed"  type="button"  onclick="setValueGroupIntereses('removed');" class="btn btn-danger grupoInteresesClass">Descartados</button>
 				     <input type="hidden" name="grupoIntereses"  id="id_grupoIntereses">
 		    	</div>
 		    	<hr>				
@@ -69,8 +69,8 @@
 					<li>
 					    <label>Distancia</label><br>
 
-						100m<input id="distanceSlider" type="text" data-slider-min="100" data-slider-max="20000" name="distance" data-slider-step="1" data-slider-value="{{distance|default:'1000' }}"/>20km<br>
-						a <span id="ex6CurrentSliderValLabel"> <span id="distanceMeters">{{distance|default:'1000' }}</span> Metros</span>
+						100m<input id="distanceSlider" type="text" data-slider-min="100" data-slider-max="20000" name="distance" data-slider-step="1" data-slider-value="{{distance|default:'10000' }}"/>20km<br>
+						a <span id="ex6CurrentSliderValLabel"> <span id="distanceMeters">{{distance|default:'10000' }}</span> Metros</span>
 
 					    <input type="hidden" name="lng"  id="campo_lng">
 					    <input type="hidden" name="lat"  id="campo_lat">
@@ -236,5 +236,12 @@
 	 	var groupIntereses = document.getElementById("id_grupoIntereses");
 	 	groupIntereses.value = value;
 	 }
+	</script>
+
+	<script>
+	{% if grupoIntereses %}
+	var setFocus = "{{grupoIntereses}}"
+	document.getElementById(setFocus).focus();
+	{% endif %}
 	</script>
 {% endblock %}
