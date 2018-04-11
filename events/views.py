@@ -152,52 +152,83 @@ class EventFilterView(ListView):
             queryset = Event.objects.all()
 
         
-        """
-        ----------------------------------------------------------
-            filtros extra
-        ----------------------------------------------------------
-        """
-        if('search' in self.request.GET and self.request.GET['search']):
-            contains = self.request.GET['search']
-            queryset = (queryset & Event.search_string(contains))
-        #---
-        if('distance' in self.request.GET):
-            distance = self.request.GET['distance']
-            if distance:
+        try:
+
+            """
+            ----------------------------------------------------------
+                filtros extra
+            ----------------------------------------------------------
+            """
+
+            if('search' in self.request.GET and self.request.GET['search']):
+                contains = self.request.GET['search']
+                queryset = (queryset & Event.search_string(contains))
+            #---
+            if('distance' in self.request.GET and self.request.GET['distance']):
+                distance = self.request.GET['distance']
                 distance = int(distance)
+                distance =  distance if distance <= 200000 else 200000
                 lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
                 ref_location = Point(lat, lng )
                 queryset = (queryset & Event.distance_range(ref_location,distance))
-        #---
-        if 'tags' in self.request.GET and self.request.GET['tags']:
-            tags = self.request.GET['tags'].split(',')
-            for tag in tags:
-                queryset = queryset.filter(tags__name_tag=tag)
-        #---
-        if 'categories' in self.request.GET and self.request.GET['categories']:
-            categories = self.request.GET.getlist('categories')
-            for category in categories:
-                queryset = queryset.filter(categories__name_category=category)
-        #---
-        if 'budget' in self.request.GET and self.request.GET['budget']:
-            budget = self.request.GET['budget'].split(',')
-            queryset = (queryset & Event.range_prices(budget[0],budget[1]))
-        #---
-        if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
-            grupoIntereses = self.request.GET['grupoIntereses']
-            if grupoIntereses =="assistant":
-                queryset = ( queryset & Event.objects.filter(signed_up__id=self.request.user.pk) )
-            elif grupoIntereses =="interested":
-                queryset = ( queryset & Event.objects.filter(interested_in__id=self.request.user.pk) )
-            elif grupoIntereses =="removed":
-                queryset = ( queryset & Event.objects.filter(not_interested_in__id=self.request.user.pk) )
+            #---
+            if 'tags' in self.request.GET and self.request.GET['tags']:
+                tags = self.request.GET['tags'].split(',')
+                for tag in tags:
+                    queryset = queryset.filter(tags__name_tag=tag)
+            #---
+            if 'categories' in self.request.GET and self.request.GET['categories']:
+                categories = self.request.GET.getlist('categories')
+                for category in categories:
+                    queryset = queryset.filter(categories__name_category=category)
+            #---
+            if 'budget' in self.request.GET and self.request.GET['budget']:
+                budget = self.request.GET['budget'].split(',')
+                queryset = (queryset & Event.range_prices(budget[0],budget[1]))
+            """ 
+            -------------------------------------------------------
+            selecciona un tipo de grupo
+                    Ó
+            elimina de la busqueda los que no intersan
+            -------------------------------------------------------
+            """
+            if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
+                grupoIntereses = self.request.GET['grupoIntereses']
+                if grupoIntereses =="assistant":
+                    queryset = ( queryset & Event.objects.filter(signed_up__id=self.request.user.pk) )
+                elif grupoIntereses =="interested":
+                    queryset = ( queryset & Event.objects.filter(interested_in__id=self.request.user.pk) )
+                elif grupoIntereses =="removed":
+                    queryset = ( queryset & Event.objects.filter(not_interested_in__id=self.request.user.pk) )
+                else:
+                    queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
             else:
                 queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
-               
-        else:
-            queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
+
+            """
+            ----------------------------------------------------------
+                selecciona un tipo de orden
+            ----------------------------------------------------------
+            """
+            if 'orderBy' in self.request.GET and self.request.GET['orderBy']:  
+                orderBy = self.request.GET['orderBy']
+                if orderBy == "distance":
+                    print("entro en distance")
+                    lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
+                    ref_location = Point(lat, lng )
+                    queryset = (queryset & Event.distance_order(ref_location))
+                elif orderBy == "cost":
+                    print("entro en cost")
+                elif orderBy == "date":
+                    print("entro en date")
+                elif orderBy == "views":
+                    print("entro en views")
+                
+        except:
+            print("HA HABIDO UN ERROR")
+            queryset = Event.objects.all()
         #*************************************************************************
-        print("\n\n\n",queryset.query,"\n\n\n")
+        #print("\n\n\n",queryset.query,"\n\n\n")
         return queryset
 
 @method_decorator(login_required, name='dispatch')

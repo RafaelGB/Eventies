@@ -126,6 +126,11 @@ class Event(models.Model):
         return Event.objects.filter(geopos_at__coordinates__distance_lt=(location, D(m=meters)))#.order_by('-geopos_at__coordinates')
 
     @classmethod
+    #Ordena ,segun la posición actual, los eventos por distancia
+    def distance_order(self,location):
+        return Event.objects.annotate(distance=Distance('geopos_at__coordinates', location)).order_by('distance')
+
+    @classmethod
     #Busca los eventos que contengan una cadena dada en diferentes campos
     def range_prices(self,min_price,max_price):
         return Event.objects.filter(
