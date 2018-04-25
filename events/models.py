@@ -246,6 +246,19 @@ class Category(models.Model):
     def for_user(self, user):
         return self.objects.filter(user_categories=user).values_list('name_category', flat=True)
 
+"""
+**********************************************************
+                        Recommender
+**********************************************************
+"""
 class MyRecommender(models.Model):
-    name_category = models.IntegerField(primary_key=True)
-    id_events = ArrayField(models.IntegerField())
+    user = models.IntegerField(primary_key=True)
+    id_events = ArrayField(models.IntegerField(blank=True),default=list, null=True)
+    """
+    ==========================================================
+                    Servicios de la clase
+    ==========================================================
+
+    """
+    def __str__(self):
+        return str(self.user)

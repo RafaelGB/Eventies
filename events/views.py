@@ -13,7 +13,6 @@ from django.forms import modelformset_factory , DateTimeField
 from django.contrib.gis.db.models.functions import Distance
 
 from django.contrib.gis.geos import Point
-
 from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
 
@@ -23,13 +22,16 @@ from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
 from .recommender import Recomender
 def HomeView(request):
-    recommender = Recomender()
-    recommender.train()
+    recommender = Recomender(verbose=True)
+    if request.user.is_authenticated():
+        
+        recommender.train()
+        recommender.getRecommendedEvents(request.user.pk)
     return render(
         request,
         'home.html',
         {
-        'infoRecommender': recommender.toString()
+        'infoRecommender': recommender.info()
         }
     )
 
