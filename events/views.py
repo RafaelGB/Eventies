@@ -21,10 +21,17 @@ from django.http import HttpResponse , JsonResponse
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
-
-
+from .recommender import Recomender
 def HomeView(request):
-    return render(request, 'home.html')
+    recommender = Recomender()
+    recommender.train()
+    return render(
+        request,
+        'home.html',
+        {
+        'infoRecommender': recommender.toString()
+        }
+    )
 
 """
 **********************************************************
@@ -164,7 +171,9 @@ class EventFilterView(ListView):
                 contains = self.request.GET['search']
                 queryset = (queryset & Event.search_string(contains))
             #---
-            if('distance' in self.request.GET and self.request.GET['distance']):
+            if('lat' in self.request.GET and self.request.GET['lat'] \
+                and 'lng' in self.request.GET and self.request.GET['lng'] \
+                and 'distance' in self.request.GET and self.request.GET['distance']):
                 distance = self.request.GET['distance']
                 distance = int(distance)
                 distance =  distance if distance <= 200000 else 200000
@@ -216,7 +225,8 @@ class EventFilterView(ListView):
                     print("entro en distance")
                     lat , lng = [float(self.request.GET['lat']),float(self.request.GET['lng'])]
                     ref_location = Point(lat, lng )
-                    queryset = (queryset & Event.distance_order(ref_location))
+                    #queryset = queryset.annotate(distance=Distance('geopos_at__coordinates', ref_location)).order_by('distance')
+                    #queryset = (queryset & Event.distance_order(ref_location))
                 elif orderBy == "cost":
                     print("entro en cost")
                 elif orderBy == "date":
@@ -227,8 +237,9 @@ class EventFilterView(ListView):
         except:
             print("HA HABIDO UN ERROR")
             queryset = Event.objects.all()
+
         #*************************************************************************
-        #print("\n\n\n",queryset.query,"\n\n\n")
+        print("\n\n\n",queryset.query,"\n\n\n")
         return queryset
 
 @method_decorator(login_required, name='dispatch')
@@ -251,6 +262,7 @@ class EventUpdateView(UpdateView):
         if not 'errors' in context:
             context['form'] = self.form_class(instance=self.object)
             context['formGeo'] = self.formGeo_class(instance=self.object.geopos_at)
+
         """
             obtencion de las categorías relacionadas con el evento
                                         +
@@ -293,7 +305,7 @@ class EventUpdateView(UpdateView):
         self.object = self.get_object()
         form = self.form_class(request.POST)
         formGeo = self.formGeo_class(request.POST)
-        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm,formset=BasePhotoFormSet,can_delete=True)
+        PhotoFormSet = modelformset_factory(model=Photo,form=PhotoForm,formset=BasePhotoFormSet,can_delete=False)
         formset = PhotoFormSet(request.POST or None, request.FILES or None)
         if all([form.is_valid(),formGeo.is_valid(),formset.is_valid()]):
             """
@@ -372,8 +384,9 @@ class EventUpdateView(UpdateView):
             primalPhotos = list(Photo.objects.filter(event=self.object))
             for photo in formset.cleaned_data:
                 #comprobamos que la foto no este vacía
+                print("photo ",photo)
                 if photo:
-                    print(photo)
+                    print("ok")
                     if photo['picture'] not in primalPhotos:
                         picture = photo['picture']
                         photo = Photo(event=self.object, picture=picture)
@@ -421,7 +434,6 @@ def NewEvent(request):
             """
             for tmp_form in formset.cleaned_data:
                 if tmp_form:
-                    print(tmp_form)
                     picture = tmp_form['picture']
                     photo = Photo(event=event, picture=picture)
                     photo.save()

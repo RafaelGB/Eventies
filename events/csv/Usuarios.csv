@@ -1,0 +1,2 @@
+id,password,last_login,is_superuser,username,first_name,last_name,email,is_staff,is_active,date_joined,bio,location,birth_date
+1,pbkdf2_sha256$36000$WW6U8QxSGYtY$0lytoeeIfTKFWwTjM9qsG96CGrPwm0ZVt3X/gLqQzIg=,2018-04-16 16:22:04.668604+02,t,RafaGB,"","",ragom01@ucm.es,t,t,2018-04-16 16:21:04.510969+02,"","",1992-06-18

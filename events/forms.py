@@ -65,6 +65,8 @@ class BasePhotoFormSet(BaseFormSet):
         duplicates = False
 
         for form in self.forms:
+
+            print("ahora  ",form.cleaned_data)
             if form.cleaned_data:
                 picture = form.cleaned_data['picture']
 

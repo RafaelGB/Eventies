@@ -14,6 +14,8 @@ from django.template.defaultfilters import slugify
 from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from markdown import markdown
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.gis.db import models as gisModels
 from accounts.models import User
 
@@ -127,8 +129,8 @@ class Event(models.Model):
 
     @classmethod
     #Ordena ,segun la posición actual, los eventos por distancia
-    def distance_order(self,location):
-        return Event.objects.annotate(distance=Distance('geopos_at__coordinates', location)).order_by('distance')
+    def distance_order(self,location,meters):
+        return Event.objects.filter(geopos_at__coordinates__distance_lt=(location, D(m=meters))).annotate(distance=Distance('geopos_at__coordinates', location))
 
     @classmethod
     #Busca los eventos que contengan una cadena dada en diferentes campos
@@ -243,3 +245,7 @@ class Category(models.Model):
     #Llama a las categorías asignadas a un usuario en concreto
     def for_user(self, user):
         return self.objects.filter(user_categories=user).values_list('name_category', flat=True)
+
+class MyRecommender(models.Model):
+    name_category = models.IntegerField(primary_key=True)
+    id_events = ArrayField(models.IntegerField())
