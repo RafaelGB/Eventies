@@ -20,18 +20,16 @@ from django.http import HttpResponse , JsonResponse
 from .models import Event, Tag, Category, Photo, Geolocation
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
-from .recommender import Recomender
+from .recommender import getRecommendedEvents
 def HomeView(request):
-    recommender = Recomender(verbose=True)
     if request.user.is_authenticated():
         
-        recommender.train()
-        recommender.getRecommendedEvents(request.user.pk)
+        events = getRecommendedEvents(request.user.pk)
     return render(
         request,
         'home.html',
         {
-        'infoRecommender': recommender.info()
+        'events': events
         }
     )
 
@@ -540,3 +538,4 @@ def EventFlowControl(request,**kwargs):
     else:   
         data = {}
     return JsonResponse(data)
+

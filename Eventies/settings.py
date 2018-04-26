@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'sortedm2m',
     'mapwidgets',#mapa dinamico googlemaps
     'django_gravatar',#adquiere foto del correo
-    'datetimewidget',
+    'datetimewidget',#widget para formulario de calendario
+    'django_cron',
     #APPs propias
     'events',
     'accounts',
@@ -205,3 +206,8 @@ AUTH_USER_MODEL = 'accounts.User'
 USE_L10N = True
 USE_TZ = True
 USE_I18N = True
+
+
+CRON_CLASSES = [
+    "events.recommender.Recomender"
+]

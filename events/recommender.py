@@ -5,9 +5,10 @@ import math
 from sklearn import cross_validation as cv
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.metrics import mean_squared_error
+from django_cron import CronJobBase, Schedule
 from math import sqrt
 from .DAO import restart_csv
-from .models import MyRecommender
+from .models import MyRecommender,Event
 
 def predict(ratings, similarity, type='event'):
     if type == 'event':
@@ -36,68 +37,52 @@ def matrix_pos_assign(col):
             pos = pos + 1
     return result,colList
 
-class Recomender:
+class Recomender(CronJobBase):
+    RUN_EVERY_MINS = 30 # cada 30 minutos
+
+    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
+    code = "events.code_recommender"    # a unique code
+    csv_path = os.path.abspath("events/csv/event_recommender.csv")
+    verbose=False
     """
     Inicialización de la clase recomendador
     """
-    def __init__(self, **kwargs):
-        """
-                ZONA DE CHEQUEO DE ARGUMENTOS DE ENTRADA
-                ........................................
-            csv : para pasar por parametro la path de destino
-                  POR DEFECTO: events/csv/event_recommender.csv
-            
-            verbose : para indicar si se quiere información por consola
-                      POR DEFECTO: verbose=False
-        """
-
-        if "csv" not in kwargs:
-            self.csv_path = os.path.abspath("events/csv/event_recommender.csv")
-        else:
-            self.csv_path = os.path.abspath(kwargs["csv"])
-        if "verbose" in kwargs and isinstance(kwargs["verbose"], bool):
-            self.verbose=kwargs["verbose"]
-        else:
-            self.verbose=False
-        """
-                FIN DE ZONA DE CHEQUEO DE ARGUMENTOS DE ENTRADA
-        """
+    def do(self):
         #creamos o modificamos csv
         restart_csv(self.csv_path)
         header = ['event_id', 'user_signedUp_id', 'views']
-        self.df = pd.read_csv(self.csv_path, sep=',', names=header)
-        self.n_events = self.df["event_id"].nunique()
+        df = pd.read_csv(self.csv_path, sep=',', names=header)
+        n_events = df["event_id"].nunique()
         """
         if(self.df["event_id"].values.any()):
             self.n_events =  self.n_events-1
         """
-        self.n_items = self.df["user_signedUp_id"].nunique()
+        n_items = df["user_signedUp_id"].nunique()
         """
         if(self.df["user_signedUp"].values.any()):
             self.n_items =  self.n_items-1
         """
-    def info(self):
-        return str('Numero de eventos:' + str(self.n_events) + '\n\n Numero de usuarios que asisten al menos a algun evento:' + str(self.n_items))
+        if self.verbose:
+            print(str('Numero de eventos:' + str(n_events) + '\n\n Numero de usuarios que asisten al menos a algun evento:' + str(self.n_items)))
 
-    def train(self):
         #------------------------matrices------------------------
 
-        train_data_matrix = np.zeros((self.n_events, self.n_items))
-        test_data_matrix = np.zeros((self.n_events, self.n_items))
+        train_data_matrix = np.zeros((n_events, n_items))
+        test_data_matrix = np.zeros((n_events, n_items))
 
         #------------------------datos de usuario------------------------
 
-        user_signedUp_id_pos, unique_user_ids= matrix_pos_assign(self.df["user_signedUp_id"])
+        user_signedUp_id_pos, unique_user_ids= matrix_pos_assign(df["user_signedUp_id"])
 
         dictRecommenders = {}
         for x in unique_user_ids:
             dictRecommenders[x]=[]
         #------------------------datos de evento------------------------
 
-        event_id_pos, unique_event_ids= matrix_pos_assign(self.df["event_id"])
+        event_id_pos, unique_event_ids= matrix_pos_assign(df["event_id"])
 
         #------------------------creación de datasets con crossvalidation------------------------
-        train_data, test_data = cv.train_test_split(self.df, test_size=0.25)
+        train_data, test_data = cv.train_test_split(df, test_size=0.25)
 
         if self.verbose:
             print("para la lista de ids de eventos:"+str(unique_event_ids))
@@ -132,33 +117,44 @@ class Recomender:
         for event_id in unique_event_ids:
             event_pos = event_id_pos[event_id]
             row = train_data_matrix[event_id_pos[event_id],:]
-            tmpArray = []
+            pos_similar_users = []
             recommended_events=[]
             for index,elem in enumerate(row):
                 if int(elem)>0:
-                    tmpArray.append(index)
+                    pos_similar_users.append(index)
                     recommended_events.append(int(elem))
-            if len(tmpArray)>1:
-                for index,(posUser,idEvent) in enumerate(zip(tmpArray,recommended_events)):
-                    tmpArrayReduce = tmpArray
-                    tmpArrayReduce.remove(posUser)
-                    for j in tmpArrayReduce:
-                        col = train_data_matrix[:,posUser]
+            if len(pos_similar_users)>1:
+                for index,(posUser,idEvent) in enumerate(zip(pos_similar_users,recommended_events)):
+                    pos_other_similar_users = pos_similar_users
+                    pos_other_similar_users.remove(posUser)
+                    for j in pos_other_similar_users:
+                        col = train_data_matrix[:,j]
                         for y in col:
-                            if y>0 and y and y != idEvent not in dictRecommenders[unique_user_ids[posUser]]:
-                                dictRecommenders[unique_user_ids[posUser]].append(int(y))
+                            if y>0 and y != event_id and y not in dictRecommenders[unique_user_ids[posUser]]:
+                               dictRecommenders[unique_user_ids[posUser]].append(int(y))
         if self.verbose:
             print(dictRecommenders)
 
         for key, value in dictRecommenders.items():
-            print(value)
+            pos = user_signedUp_id_pos[key]
+            col = train_data_matrix[:,pos]
+            for i in col:
+                if int(i) in value:
+                    value.remove(i)
+
             tmpRecommender = MyRecommender(user=int(key),id_events=value)
             tmpRecommender.save()
 
-    def getRecommendedEvents(self,myId):
-        myObject = MyRecommender.objects.get(user=myId)
-        print(str(myObject.id_events))
+def getRecommendedEvents(myId):
+    myObject = MyRecommender.objects.get(user=myId)
+    print("elementos cogidos de la base de datos",myObject.id_events)
+    arrayEvents = []
+    for event in myObject.id_events:
+        aEvent = Event.objects.get(pk=event)
+        arrayEvents.append(aEvent)
+    return arrayEvents
 
-        
-                
+
+ 
+
 
