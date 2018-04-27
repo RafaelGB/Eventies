@@ -1,75 +1,66 @@
 {% extends 'base.html' %}
+
+{% load assign_tag %}
+
 {% block breadcrumb %}
   <li class="breadcrumb-item active">Inicio</li>
 {% endblock %}
 
 {% block content %}
 
-      <!-- Jumbotron Header -->
-      <header class="jumbotron my-4">
-        <h1 class="display-3">¡Bienvenido a Eventies!</h1>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
-        <a href="{% url 'eventFilter' type='all' %}" class="btn btn-primary btn-lg">¿Buscas un plan?</a>
-      </header>
+	<!-- Jumbotron Header -->
+	<header class="jumbotron my-4">
+		<h1 class="display-3">¡Bienvenido a Eventies!</h1>
+		<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
+		<a href="{% url 'eventFilter' type='all' %}" class="btn btn-primary btn-lg">¿Buscas un plan?</a>
+	</header>
 
-      <!-- Page Features -->
-      <div class="row text-center">
+	{% if events %}
+		<div class="text-center">
+		    <h2>Eventos que quizá te puedan interesar</h2>
+		</div>
+		<ul>
+		{% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
+		{% for event in events %}
+			{% ifequal count 0 %}    
+					<div class="row">
+			{% endifequal %}
+    	        	<div class="col-lg-6 col-md-12 mb-8">
+						<div class="card">
+							<img class="card-img-top" src="
+						        {% if event.photo_set.all %}
+						        	{{event.photo_set.all.0.picture.url}}
+						        {% else %}
+						        	https://placehold.it/400x260?text=IMAGE
+						        {% endif %}
+							" alt="">
+							<div class="card-body">
+								<h4 class="card-title">{{ event.title }}</h4>
+								<p class="card-text">{{event.summary}}</p>
+							</div>
+							<div class="card-footer">
+								<a href="/event/{{ event.pk }}" class="btn btn-primary">Detalles</a>
+							</div>
+						</div>
+			        </div>
+			{% ifequal count 2 %}
+				</div>
+				{% assign count 0 %}<!-- reseteamos contador -->
+			{% else %}
+				{% increment count %}<!-- count++ -->
+			{% endifequal %}
+		
+		{% endfor %}
+		</ul>
+		<hr>
+	{% else %}
+		<p>No se han encontrado coincidencias con su búsqueda</p>
+	{% endif %}
 
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="card">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-              <h4 class="card-title">Card title</h4>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="card">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-              <h4 class="card-title">Card title</h4>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente, tempore debitis beatae culpa natus architecto.</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="card">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-              <h4 class="card-title">Card title</h4>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-lg-3 col-md-6 mb-4">
-          <div class="card">
-            <img class="card-img-top" src="http://placehold.it/500x325" alt="">
-            <div class="card-body">
-              <h4 class="card-title">Card title</h4>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente, tempore debitis beatae culpa natus architecto.</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-primary">Find Out More!</a>
-            </div>
-          </div>
-        </div>
 
-      </div>
-      <!-- /.row -->
-	{% for event in events %}
-		<p>recomiendo {{event.title}}</p>
-	{% endfor %}
+
+
 {% endblock %}

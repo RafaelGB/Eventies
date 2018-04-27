@@ -14,7 +14,15 @@
 	<link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
 	<link rel="stylesheet" href="{% static 'css/bootstrap-select.css' %}">
-	
+	<style>
+.grupoInteresesClassactive{
+	opacity: 0.5;
+}
+.grupoInteresesClassactive:active, .selected{
+	border-width: 4px;
+	border-color: green;
+}
+	</style>
 {% endblock %} <!-- fin de opcion de estilo -->
 
 {% block javascript %}
@@ -26,11 +34,6 @@
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
   <li class="breadcrumb-item active">{% if view.kwargs.type == 'own' %}Mis{% else %}Filtro de{% endif %} eventos</li>
-  <style>
-  .grupoInteresesClass:focus {
-  	border: 5px solid green;
-	}
-  </style>
 {% endblock %}
 
 {% block content %}
@@ -241,7 +244,12 @@
 	<script>
 	{% if grupoIntereses %}
 	var setFocus = "{{grupoIntereses}}"
-	document.getElementById(setFocus).focus();
+	document.getElementById(setFocus).classList.add('selected');
 	{% endif %}
+	$('.grupoInteresesClass').click(function(e) {
+	    $('.grupoInteresesClass').not(this).removeClass('selected');    
+	    $(this).toggleClass('selected');
+	    e.preventDefault();
+	});
 	</script>
 {% endblock %}

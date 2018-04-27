@@ -10,13 +10,11 @@
   <link rel="stylesheet" href="{% static 'css/simplemde.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
   <link rel="stylesheet" href="{% static 'css/typeaheadjs.css' %}">
-  <link rel="stylesheet" href="{% static 'css/previewUploadImages.css' %}">
-
+sudo service postgresql start
 {% endblock %}
 
 {% block javascript %}
   {{ formGeo.media }}
-  
   <script src="{% static 'js/jquery.uploadPreview.js' %}"></script>
   <script src="{% static 'js/bootstrap-select.js' %}"></script>
   {{ form.media }}
