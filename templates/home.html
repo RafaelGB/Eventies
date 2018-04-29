@@ -1,6 +1,23 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+{% load static %}
+
 {% load assign_tag %}
+
+{% block stylesheet %}<!-- opcion de estilo -->
+<style>
+	.business-header {
+	  height: 50vh;
+	  min-height: 300px;
+	  background: url('{% static 'img/home.jpg' %}') center center no-repeat scroll;
+	  -webkit-background-size: cover;
+	  -moz-background-size: cover;
+	  background-size: cover;
+	  -o-background-size: cover;
+	}
+</style>
+{% endblock %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item active">Inicio</li>
@@ -8,17 +25,25 @@
 
 {% block content %}
 
-	<!-- Jumbotron Header -->
-	<header class="jumbotron my-4">
-		<h1 class="display-3">¡Bienvenido a Eventies!</h1>
-		<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
-		<a href="{% url 'eventFilter' type='all' %}" class="btn btn-primary btn-lg">¿Buscas un plan?</a>
-	</header>
+    <!-- Header with Background Image -->
+    <header class="business-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <h1 class="display-3 text-center text-white mt-4">
+            	<a href="{% url 'eventFilter' type='all' %}" class="btn btn-primary btn-lg">¿Buscas un plan?</a>
+            </h1>
+          </div>
+        </div>
+      </div>
+    </header>
 
 	{% if events %}
-		<div class="text-center">
-		    <h2>Eventos que quizá te puedan interesar</h2>
-		</div>
+	     <div class="card text-white bg-secondary my-4 text-center">
+	        <div class="card-body">
+	          <h1 class="text-white m-0">Eventos que quizá te puedan interesar</h1>
+	        </div>
+      	</div>
 		<ul>
 		{% assign count 0 %}<!-- creamos un contador para controlar la extension de la fila -->
 		{% for event in events %}
@@ -26,7 +51,8 @@
 					<div class="row">
 			{% endifequal %}
     	        	<div class="col-lg-6 col-md-12 mb-8">
-						<div class="card">
+						<div class="panel panel-default">
+							<div class="panel-body">{{ event.title }}</div>
 							<img class="card-img-top" src="
 						        {% if event.photo_set.all %}
 						        	{{event.photo_set.all.0.picture.url}}
@@ -34,11 +60,8 @@
 						        	https://placehold.it/400x260?text=IMAGE
 						        {% endif %}
 							" alt="">
-							<div class="card-body">
-								<h4 class="card-title">{{ event.title }}</h4>
+							<div class="panel-footer">
 								<p class="card-text">{{event.summary}}</p>
-							</div>
-							<div class="card-footer">
 								<a href="/event/{{ event.pk }}" class="btn btn-primary">Detalles</a>
 							</div>
 						</div>

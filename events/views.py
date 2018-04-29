@@ -24,14 +24,19 @@ from .recommender import getRecommendedEvents
 def HomeView(request):
     if request.user.is_authenticated():
         
-        events = getRecommendedEvents(request.user.pk)
-    return render(
-        request,
-        'home.html',
-        {
-        'events': events
-        }
-    )
+        events = getRecommendedEvents(request.user.pk) 
+        return render(
+            request,
+            'home.html',
+            {
+            'events': events
+            }
+        )
+    else:
+        return render(
+            request,
+            'aboutUs.html'
+        )
 
 """
 **********************************************************
@@ -239,7 +244,7 @@ class EventFilterView(ListView):
             queryset = Event.objects.all()
 
         #*************************************************************************
-        print("\n\n\n",queryset.query,"\n\n\n")
+        #print("\n\n\n",queryset.query,"\n\n\n")
         return queryset
 
 @method_decorator(login_required, name='dispatch')

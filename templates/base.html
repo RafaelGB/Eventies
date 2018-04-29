@@ -4,7 +4,9 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}Eventies{% endblock %}</title>
-      <link href="https://fonts.googleapis.com/css?family=Peralta" rel="stylesheet">
+      <!-- Favicons -->
+      <link href="{% static 'img/resources/favicon.png' %}" rel="icon">
+      <link href="{% static 'img/resources/apple-touch-icon.png' %}" rel="apple-touch-icon">
     {% block bootstrapcss %}<!-- opcion de estilo -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
@@ -21,6 +23,7 @@
   </head>
   <body>
     {% block body %}  <!-- opcion de bloqueo de cuerpo -->
+      {% block header %}
       <nav class="navbar navbar-default navbar-inverse" role="navigation">
         <div class="container-fluid">
           <!-- se agrupan para una mejor disribucion en movil -->
@@ -123,7 +126,7 @@
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
-
+      {% endblock %}
       <!--Aqui se organizan todos los templates que hereden de este -->
 
       <div class="container">

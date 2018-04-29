@@ -53,9 +53,9 @@ var lastButton;
     var name = document.getElementById(id_name);
     var button = document.getElementById(id_button);
     if(remove_add == 'removed'){
-      button.className = 'btn btn-success btn-lg';
+      button.classList.remove('btn-lg');
     }else{
-      button.className = 'btn btn-warning';
+      button.classList.add('btn-lg');
     }
     name.innerHTML = value;
 
@@ -231,15 +231,15 @@ var lastButton;
 	    </div>
       {% if not is_own %}
 
-      <button id="interested_button" class="btn btn-success btn-lg" onclick="ajax_vote('interested')">
+      <button id="interested_button" class="btn btn-info grupoInteresesClass" onclick="ajax_vote('interested')">
         <span id="interested_name">Estoy interesado</span> <span id="interested_count" class="badge">{{interested_count}}</span>
       </button>
       
-      <button id="assistants_button" class="btn btn-success btn-lg" onclick="ajax_vote('assistants')">
+      <button id="assistants_button" class="btn btn-primary grupoInteresesClass" onclick="ajax_vote('assistants')">
         <span id="assistants_name">Voy a asistir</span> <span id="assistants_count" class="badge">{{signed_up_count}}</span>
       </button>
 
-      <button id="not_interested_button" class="btn btn-danger btn-md" onclick="ajax_vote('not_interested')">
+      <button id="not_interested_button" class="btn btn-danger grupoInteresesClass" onclick="ajax_vote('not_interested')">
         No estoy interesado
       </button>
 
@@ -331,6 +331,14 @@ var lastButton;
       var msg = "Ya no estoy interesado";
       change_button_style("interested_button","interested_name",msg,"added");             
   {% endif %}
+
+  $('.grupoInteresesClass').click(function(e) {
+      $('.grupoInteresesClass').not(this).removeClass('btn-lg');    
+      $(this).toggleClass('btn-lg');
+      e.preventDefault();
+  });
+
+
 	</script>
 
 

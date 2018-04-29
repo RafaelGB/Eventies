@@ -38,10 +38,12 @@ def matrix_pos_assign(col):
     return result,colList
 
 class Recomender(CronJobBase):
-    RUN_EVERY_MINS = 30 # cada 30 minutos
+    RUN_EVERY_MINS = 5 # cada 30 minutos
+    RETRY_AFTER_FAILURE_MINS = 2
 
-    schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-    code = "events.code_recommender"    # a unique code
+    schedule = Schedule(run_every_mins=RUN_EVERY_MINS, retry_after_failure_mins=RETRY_AFTER_FAILURE_MINS)
+
+    code = "events.Recomender"    # a unique code
     csv_path = os.path.abspath("events/csv/event_recommender.csv")
     verbose=False
     """
@@ -147,7 +149,6 @@ class Recomender(CronJobBase):
 
 def getRecommendedEvents(myId):
     myObject = MyRecommender.objects.get(user=myId)
-    print("elementos cogidos de la base de datos",myObject.id_events)
     arrayEvents = []
     for event in myObject.id_events:
         aEvent = Event.objects.get(pk=event)
