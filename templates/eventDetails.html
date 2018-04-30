@@ -222,31 +222,38 @@ var lastButton;
 
 -->
 
-<div class="container text-center">   
-  	
- 	<div class="row">
-	    <div class="col-sm-2">
+<div class="container text-center">
+  <div class="row">   
+  {% if user.is_authenticated %}	
+ 		    <div class="col-sm-2">
 	    	<div style="clear:both"></div> 
 			<div id="circle"><span class="count">{{ object.views }} </span> <p>visitas</p></div>
 	    </div>
-      {% if not is_own %}
 
-      <button id="interested_button" class="btn btn-info grupoInteresesClass" onclick="ajax_vote('interested')">
-        <span id="interested_name">Estoy interesado</span> <span id="interested_count" class="badge">{{interested_count}}</span>
-      </button>
       
-      <button id="assistants_button" class="btn btn-primary grupoInteresesClass" onclick="ajax_vote('assistants')">
-        <span id="assistants_name">Voy a asistir</span> <span id="assistants_count" class="badge">{{signed_up_count}}</span>
-      </button>
+        {% if not is_own %}
 
-      <button id="not_interested_button" class="btn btn-danger grupoInteresesClass" onclick="ajax_vote('not_interested')">
-        No estoy interesado
-      </button>
+        <button id="interested_button" class="btn btn-info grupoInteresesClass" onclick="ajax_vote('interested')">
+          <span id="interested_name">Estoy interesado</span> <span id="interested_count" class="badge">{{interested_count}}</span>
+        </button>
+        
+        <button id="assistants_button" class="btn btn-primary grupoInteresesClass" onclick="ajax_vote('assistants')">
+          <span id="assistants_name">Voy a asistir</span> <span id="assistants_count" class="badge">{{signed_up_count}}</span>
+        </button>
 
+        <button id="not_interested_button" class="btn btn-danger grupoInteresesClass" onclick="ajax_vote('not_interested')">
+          No estoy interesado
+        </button>
+
+        {% else %}
+          <div class="container text-center">
+            <p>de momento  asistiran {{signed_up_count}} personas y  estan interesados otras {{interested_count}}.</p>
+            <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
+          </div>
+        {% endif %}
       {% else %}
-        <div class="container text-center">
-          <p>de momento  asistiran {{signed_up_count}} personas y  estan interesados otras {{interested_count}}.</p>
-          <a href="/updateEvent/{{object.pk}}" class="btn btn-info" role="button">Editar evento</a>
+        <div class="alert alert-info">  
+          <p>Para habilitar las opciones del evento debes estar logueado</p>
         </div>
       {% endif %}
   	</div>

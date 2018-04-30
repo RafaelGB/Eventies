@@ -35,7 +35,7 @@
   <section id="intro">
 
     <div class="intro-text">
-      <h2>Bienvenido a Eventies</h2>
+      <h2>EVENTIES</h2>
       <p>Tu rincón para crear y descubrir los mejores planes</p>
       <a href="{% url 'login' %}" class="btn-get-started scrollto">¡Entrar ya!</a>
       <a href="#about" class="btn-get-started scrollto">Echa un vistazo...</a>
@@ -44,15 +44,15 @@
     <div class="product-screens">
 
       <div class="product-screen-1 wow fadeInUp" data-wow-delay="0.4s" data-wow-duration="0.6s">
-        <img src="{% static 'img/resources/product-screen-1.png' %}" alt="">
+        <img style="height: 600px; width: 314px" src="{% static 'img/resources/product-screen-1.png' %}" alt="">
       </div>
 
       <div class="product-screen-2 wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="0.6s">
-        <img src="{% static 'img/resources/product-screen-2.png' %}" alt="">
+        <img style="height: 600px; width: 314px" src="{% static 'img/resources/product-screen-2.png' %}" alt="">
       </div>
 
       <div class="product-screen-3 wow fadeInUp" data-wow-duration="0.6s">
-        <img src="{% static 'img/resources/product-screen-3.png' %}" alt="">
+        <img style="height: 600px; width: 314px" src="{% static 'img/resources/product-screen-3.png' %}" alt="">
       </div>
 
     </div>
@@ -70,8 +70,8 @@
           <h3 class="section-title">Sobre nosotros</h3>
           <span class="section-divider"></span>
           <p class="section-description">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque<br>
-            sunt in culpa qui officia deserunt mollit anim id est laborum
+            Eventies es un proyecto universitario que trata de facilitar la gestión<br>
+            de tu tiempo libre aprendiendo de tus gustos 
           </p>
         </div>
 
@@ -81,20 +81,21 @@
           </div>
 
           <div class="col-lg-6 content wow fadeInRight">
-            <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elite storium paralate</h2>
-            <h3>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h3>
+            <h2>Una ventana a nuevas experiencias</h2>
+            <h3>descubre nuestro sistema de recomendaciones</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Eventies te premite crear tus propios planes además de una potente herramienta de búsqueda para<br>
+              encontrar los que más te puedan interesar.
             </p>
 
             <ul>
-              <li><i class="ion-android-checkmark-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-              <li><i class="ion-android-checkmark-circle"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-              <li><i class="ion-android-checkmark-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
+              <li><i class="ion-android-checkmark-circle"></i> Filtros como distancia o presupuesto.</li>
+              <li><i class="ion-android-checkmark-circle"></i> Mapa con guía de como llegar.</li>
+              <li><i class="ion-android-checkmark-circle"></i> Control de asistencia e interesados.</li>
             </ul>
-
             <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Libero justo laoreet sit amet cursus sit amet dictum sit. Commodo sed egestas egestas fringilla phasellus faucibus scelerisque eleifend donec
+              A medida que te diviertas y vayas asistiendo a dihos eventos nosotros aprenderemos y te recomendaremos
+               los planes más afines a ti.
             </p>
           </div>
         </div>
@@ -112,7 +113,7 @@
 
           <div class="col-lg-8 offset-lg-4">
             <div class="section-header wow fadeIn" data-wow-duration="1s">
-              <h3 class="section-title">Product Featuress</h3>
+              <h3 class="section-title">Tecnologías usadas</h3>
               <span class="section-divider"></span>
             </div>
           </div>
@@ -126,27 +127,26 @@
             <div class="row">
 
               <div class="col-lg-6 col-md-6 box wow fadeInRight">
-                <div class="icon"><i class="ion-ios-speedometer-outline"></i></div>
-                <h4 class="title"><a href="">Lorem Ipsum</a></h4>
-                <p class="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident clarida perendo.</p>
+                <div class="icon"><img style="height: 60px; width: 60px" src="{% static 'img/bootstrap.png' %}" alt=""></div>
+                <h4 class="title"><a href="https://getbootstrap.com/">Bootstrap</a></h4>
+                <p class="description">librería de diseño que permite compatibilizar visión web y móvil.</p>
               </div>
               <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.1s">
-                <div class="icon"><i class="ion-ios-flask-outline"></i></div>
-                <h4 class="title"><a href="">Dolor Sitema</a></h4>
-                <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata noble dynala mark.</p>
+                <div class="icon"><img style="height: 60px; width: 60px" src="{% static 'img/Django.png' %}" alt=""></div>
+                <h4 class="title"><a href="https://www.djangoproject.com/">Django</a></h4>
+                <p class="description">Framework web basado en python para front y back.</p>
               </div>
               <div class="col-lg-6 col-md-6 box wow fadeInRight data-wow-delay="0.2s">
-                <div class="icon"><i class="ion-social-buffer-outline"></i></div>
-                <h4 class="title"><a href="">Sed ut perspiciatis</a></h4>
-                <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur teleca starter sinode park ledo.</p>
+                <div class="icon"><img style="height: 60px; width: 60px" src="{% static 'img/postgreSQL.png' %}" alt=""></div>
+                <h4 class="title"><a href="https://www.postgresql.org/">posgreSQL</a></h4>
+                <p class="description">Base de datos SQL con soporte para datos geométricos.</p>
               </div>
               <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.3s">
-                <div class="icon"><i class="ion-ios-analytics-outline"></i></div>
-                <h4 class="title"><a href="">Magni Dolores</a></h4>
-                <p class="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum dinoun trade capsule.</p>
+                <div class="icon"><img style="height: 60px; width: 60px" src="{% static 'img/sklearn.png' %}" alt=""></div>
+                <h4 class="title"><a href="http://scikit-learn.org/stable/">Sklearn</a></h4>
+                <p class="description">Librería machine learning basada en python.</p>
               </div>
             </div>
-
           </div>
 
         </div>
@@ -157,7 +157,7 @@
 
     <!--==========================
       Product Advanced Featuress Section
-    ============================-->
+    ============================
     <section id="advanced-features">
 
       <div class="features-row section-bg">
@@ -211,7 +211,8 @@
           </div>
         </div>
       </div>
-    </section><!-- #advanced-features -->
+    </section>-->
+    <!-- #advanced-features -->
 
     <!--==========================
       Call To Action Section
@@ -282,113 +283,13 @@
     </section><!-- #more-features -->
 
     <!--==========================
-      Clients
-    ============================-->
-    <section id="clients">
-      <div class="container">
-
-        <div class="row wow fadeInUp">
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-1.png' %}" alt="">
-          </div>
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-2.png' %}" alt="">
-          </div>
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-3.png' %}" alt="">
-          </div>
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-4.png' %}" alt="">
-          </div>
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-5.png' %}" alt="">
-          </div>
-
-          <div class="col-md-2">
-            <img src="{% static 'img/resources/clients/client-6.png' %}" alt="">
-          </div>
-
-        </div>
-      </div>
-    </section><!-- #more-features -->
-
-    <!--==========================
-      Pricing Section
-    ============================-->
-    <section id="pricing" class="section-bg">
-      <div class="container">
-
-        <div class="section-header">
-          <h3 class="section-title">Pricing</h3>
-          <span class="section-divider"></span>
-          <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
-        </div>
-
-        <div class="row">
-
-          <div class="col-lg-4 col-md-6">
-            <div class="box wow fadeInLeft">
-              <h3>Free</h3>
-              <h4><sup>$</sup>0<span> month</span></h4>
-              <ul>
-                <li><i class="ion-android-checkmark-circle"></i> Quam adipiscing vitae proin</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nec feugiat nisl pretium</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nulla at volutpat diam uteera</li>
-                <li><i class="ion-android-checkmark-circle"></i> Pharetra massa massa ultricies</li>
-                <li><i class="ion-android-checkmark-circle"></i> Massa ultricies mi quis hendrerit</li>
-              </ul>
-              <a href="#" class="get-started-btn">Get Started</a>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6">
-            <div class="box featured wow fadeInUp">
-              <h3>Business</h3>
-              <h4><sup>$</sup>29<span> month</span></h4>
-              <ul>
-                <li><i class="ion-android-checkmark-circle"></i> Quam adipiscing vitae proin</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nec feugiat nisl pretium</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nulla at volutpat diam uteera</li>
-                <li><i class="ion-android-checkmark-circle"></i> Pharetra massa massa ultricies</li>
-                <li><i class="ion-android-checkmark-circle"></i> Massa ultricies mi quis hendrerit</li>
-              </ul>
-              <a href="#" class="get-started-btn">Get Started</a>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6">
-            <div class="box wow fadeInRight">
-              <h3>Developer</h3>
-              <h4><sup>$</sup>49<span> month</span></h4>
-              <ul>
-                <li><i class="ion-android-checkmark-circle"></i> Quam adipiscing vitae proin</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nec feugiat nisl pretium</li>
-                <li><i class="ion-android-checkmark-circle"></i> Nulla at volutpat diam uteera</li>
-                <li><i class="ion-android-checkmark-circle"></i> Pharetra massa massa ultricies</li>
-                <li><i class="ion-android-checkmark-circle"></i> Massa ultricies mi quis hendrerit</li>
-              </ul>
-              <a href="#" class="get-started-btn">Get Started</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section><!-- #pricing -->
-
-
-    <!--==========================
       Frequently Asked Questions Section
     ============================-->
     <section id="faq">
       <div class="container">
 
         <div class="section-header">
-          <h3 class="section-title">Frequently Asked Questions</h3>
+          <h3 class="section-title">Preguntas frecuentes</h3>
           <span class="section-divider"></span>
           <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
         </div>
@@ -459,58 +360,16 @@
     <section id="team" class="section-bg">
       <div class="container">
         <div class="section-header">
-          <h3 class="section-title">Our Team</h3>
+          <h3 class="section-title">  <nav>Equipo de eventies</nav></h3>
           <span class="section-divider"></span>
-          <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
+          <p class="section-description">se trata de un proyecto invidivual con aspiraciones de crecimiento</p>
         </div>
         <div class="row wow fadeInUp">
           <div class="col-lg-3 col-md-6">
             <div class="member">
               <div class="pic"><img src="{% static 'img/resources/team/team-1.jpg' %}" alt=""></div>
-              <h4>Walter White</h4>
-              <span>Chief Executive Officer</span>
-              <div class="social">
-                <a href=""><i class="fa fa-twitter"></i></a>
-                <a href=""><i class="fa fa-facebook"></i></a>
-                <a href=""><i class="fa fa-google-plus"></i></a>
-                <a href=""><i class="fa fa-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="member">
-              <div class="pic"><img src="{% static 'img/resources/team/team-2.jpg' %}" alt=""></div>
-              <h4>Sarah Jhinson</h4>
-              <span>Product Manager</span>
-              <div class="social">
-                <a href=""><i class="fa fa-twitter"></i></a>
-                <a href=""><i class="fa fa-facebook"></i></a>
-                <a href=""><i class="fa fa-google-plus"></i></a>
-                <a href=""><i class="fa fa-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="member">
-              <div class="pic"><img src="{% static 'img/resources/team/team-3.jpg' %}" alt=""></div>
-              <h4>William Anderson</h4>
-              <span>CTO</span>
-              <div class="social">
-                <a href=""><i class="fa fa-twitter"></i></a>
-                <a href=""><i class="fa fa-facebook"></i></a>
-                <a href=""><i class="fa fa-google-plus"></i></a>
-                <a href=""><i class="fa fa-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="member">
-              <div class="pic"><img src="{% static 'img/resources/team/team-4.jpg' %}" alt=""></div>
-              <h4>Amanda Jepson</h4>
-              <span>Accountant</span>
+              <h4>Rafael Gómez Bermejo</h4>
+              <span>Estudiante de ingeniería informática</span>
               <div class="social">
                 <a href=""><i class="fa fa-twitter"></i></a>
                 <a href=""><i class="fa fa-facebook"></i></a>

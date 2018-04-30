@@ -206,18 +206,19 @@ class EventFilterView(ListView):
             elimina de la busqueda los que no intersan
             -------------------------------------------------------
             """
-            if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
-                grupoIntereses = self.request.GET['grupoIntereses']
-                if grupoIntereses =="assistant":
-                    queryset = ( queryset & Event.objects.filter(signed_up__id=self.request.user.pk) )
-                elif grupoIntereses =="interested":
-                    queryset = ( queryset & Event.objects.filter(interested_in__id=self.request.user.pk) )
-                elif grupoIntereses =="removed":
-                    queryset = ( queryset & Event.objects.filter(not_interested_in__id=self.request.user.pk) )
+            if self.request.user.is_authenticated():
+                if 'grupoIntereses' in self.request.GET and self.request.GET['grupoIntereses']:
+                    grupoIntereses = self.request.GET['grupoIntereses']
+                    if grupoIntereses =="assistant":
+                        queryset = ( queryset & Event.objects.filter(signed_up__id=self.request.user.pk) )
+                    elif grupoIntereses =="interested":
+                        queryset = ( queryset & Event.objects.filter(interested_in__id=self.request.user.pk) )
+                    elif grupoIntereses =="removed":
+                        queryset = ( queryset & Event.objects.filter(not_interested_in__id=self.request.user.pk) )
+                    else:
+                        queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
                 else:
                     queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
-            else:
-                queryset = queryset.exclude(not_interested_in__id=self.request.user.pk)
 
             """
             ----------------------------------------------------------
@@ -238,7 +239,8 @@ class EventFilterView(ListView):
                     print("entro en date")
                 elif orderBy == "views":
                     print("entro en views")
-                
+            else:
+                queryset = queryset.order_by('views')
         except:
             print("HA HABIDO UN ERROR")
             queryset = Event.objects.all()
