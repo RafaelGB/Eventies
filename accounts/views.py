@@ -119,7 +119,7 @@ class UserUpdateView(UpdateView):
             self.object.birth_date = form.cleaned_data['birth_date']
             self.object.bio = form.cleaned_data['bio']
             self.object.location = form.cleaned_data['location']
-
+            self.object.avatar = request.FILES['avatar']
             self.object.save()
             return redirect('my_account')
         else:

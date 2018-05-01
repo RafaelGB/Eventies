@@ -1,8 +1,12 @@
 {% extends 'base_profile.html' %}
 
 {% load form_tags widget_tweaks %}
-{% load gravatar %}
+{% load staticfiles %}
+{% load static %}
 
+{% block javascript %}
+	{{ form.media }}
+{% endblock %}
 
 {% block breadcrumb %}
  <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
@@ -10,75 +14,75 @@
 {% endblock %}
 
 {% block subcontent %}
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{user.username}}</h3>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{user.username}}</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-3 col-lg-3 " align="center"> <img alt="Image" src="{{user.avatar.url}}" class="img-circle img-responsive"> </div>
+		<form  method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
+            <div class=" col-md-9 col-lg-9 "> 
+              <table class="table table-user-information">
+                <tbody>
+    				{% csrf_token %}
+                    {% for hidden_field in form.hidden_fields %}
+					  {{ hidden_field }}
+					{% endfor %}
+                    {% if form.non_field_errors %}
+					  <div class="alert alert-danger" role="alert">
+					    {% for error in form.non_field_errors %}
+					      {{ error }}
+					    {% endfor %}
+					  </div>
+					{% endif %}
+
+					{% for field in form.visible_fields %}
+
+					  <div class="form-group">
+					  	<tr>
+						    <td>
+							    {% if field.field.required %}
+							    (*)
+							    {% endif %}
+
+							     {{ field.label_tag }}
+						    </td>
+						    <td>
+						    	{% if form.is_bound %}
+							      {% if field.errors %}
+							        {% render_field field class="form-control is-invalid" %}
+							        {% for error in field.errors %}
+							          <div class="invalid-feedback">
+							            {{ error }}
+							          </div>
+							        {% endfor %}
+							      {% else %}
+							        {% render_field field class="form-control is-valid" %}
+							      {% endif %}
+							    {% else %}
+							      {% render_field field class="form-control" %}
+							    {% endif %}
+						    </td>
+
+						    {% if field.help_text %}
+						      <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+						    {% endif %}
+					    </tr>
+					  </div>
+					{% endfor %}  
+					<div class="form-group">
+					  	<tr>
+					  		<td><button type="button" id="enable_diable_button" class="btn" onclick="enable_disableForm()">Habilitar edicion</button></td>
+							<td><button type="submit" id="save_button" class="btn btn-success">Guardar cambios</button></td>
+						</tr>
+					</div>                           
+                </tbody>
+              </table>
             </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="{{photo_user}}" class="img-circle img-responsive"> </div>
-				<form  method="post" id="mainForm" class="mb-4" enctype="multipart/form-data" novalidate>
-	                <div class=" col-md-9 col-lg-9 "> 
-	                  <table class="table table-user-information">
-	                    <tbody>
-		    				{% csrf_token %}
-		                    {% for hidden_field in form.hidden_fields %}
-							  {{ hidden_field }}
-							{% endfor %}
-		                    {% if form.non_field_errors %}
-							  <div class="alert alert-danger" role="alert">
-							    {% for error in form.non_field_errors %}
-							      {{ error }}
-							    {% endfor %}
-							  </div>
-							{% endif %}
-
-							{% for field in form.visible_fields %}
-
-							  <div class="form-group">
-							  	<tr>
-								    <td>
-									    {% if field.field.required %}
-									    (*)
-									    {% endif %}
-
-									     {{ field.label_tag }}
-								    </td>
-								    <td>
-								    	{% if form.is_bound %}
-									      {% if field.errors %}
-									        {% render_field field class="form-control is-invalid" %}
-									        {% for error in field.errors %}
-									          <div class="invalid-feedback">
-									            {{ error }}
-									          </div>
-									        {% endfor %}
-									      {% else %}
-									        {% render_field field class="form-control is-valid" %}
-									      {% endif %}
-									    {% else %}
-									      {% render_field field class="form-control" %}
-									    {% endif %}
-								    </td>
-
-								    {% if field.help_text %}
-								      <small class="form-text text-muted">{{ field.help_text|safe }}</small>
-								    {% endif %}
-							    </tr>
-							  </div>
-							{% endfor %}  
-							<div class="form-group">
-							  	<tr>
-							  		<td><button type="button" id="enable_diable_button" class="btn" onclick="enable_disableForm()">Habilitar edicion</button></td>
-									<td><button type="submit" id="save_button" class="btn btn-success">Guardar cambios</button></td>
-								</tr>
-							</div>                           
-	                    </tbody>
-	                  </table>
-	                </div>
-				</form>   
-              </div>
-            </div>
+		</form>   
+      </div>
+    </div>
 {% endblock %}
 
 {% block javascriptBottom %}

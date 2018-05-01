@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
     email = forms.CharField(max_length=254, required=True, widget=forms.EmailInput())
     class Meta:
         model = User
-        fields = ('first_name','last_name','email', 'bio', 'birth_date', 'location')
+        fields = ('first_name','last_name','email', 'bio', 'birth_date', 'location','avatar')
         widgets = {
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -37,5 +37,6 @@ class UserForm(forms.ModelForm):
             'last_name': _('Apellidos'),
             'bio': _('Breve descripcion tuya'),
             'birth_date': _('Edad'),
-            'location': _('Ciudad')
+            'location': _('Ciudad'),
+            'avatar': _('Foto de avatar')
         }
