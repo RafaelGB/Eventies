@@ -148,11 +148,12 @@ class Recomender(CronJobBase):
             tmpRecommender.save()
 
 def getRecommendedEvents(myId):
-    myObject = MyRecommender.objects.get(user=myId)
     arrayEvents = []
-    for event in myObject.id_events:
-        aEvent = Event.objects.get(pk=event)
-        arrayEvents.append(aEvent)
+    if MyRecommender.objects.filter(user=myId).exists():
+        myObject = MyRecommender.objects.get(user=myId)
+        for event in myObject.id_events:
+            aEvent = Event.objects.get(pk=event)
+            arrayEvents.append(aEvent)
     return arrayEvents
 
 

@@ -12,6 +12,7 @@ from django.forms.formsets import formset_factory
 from django.forms import modelformset_factory , DateTimeField
 from django.contrib.gis.db.models.functions import Distance
 
+
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
@@ -97,7 +98,7 @@ class EventObjectView(DetailView):
         .........................................................
             
         """
-        eventComments = Comments.objects.filter(created_into=self.object.pk)
+        eventComments = Comments.objects.filter(created_into=self.object.pk).order_by('-created_at')
         context["comments"] = eventComments
         """
             obtención de los contadores del evento relevantes
@@ -538,7 +539,6 @@ def EventFlowControl(request,**kwargs):
                 if user in event.interested_in.all():
                     event.interested_in.remove(user)
         elif tipo == "not_interested":
-            print("hola")
             if user in event.not_interested_in.all():
                 event.not_interested_in.remove(user)
                 remove_add='removed'
@@ -565,13 +565,13 @@ def EventCommentsontrol(request,**kwargs):
         id_event = request.POST['event_pk']
         message = request.POST['message']
         user = request.user
+        newComment = Comments()
         if Event.objects.filter(pk=id_event).exists():
             event = Event.objects.get(pk=id_event)
             option = None
             tipo = kwargs['type']
             remove_add = None
             if tipo == "create":
-                newComment = Comments()
                 newComment.message = message
                 newComment.created_into= event
                 newComment.created_by=request.user
@@ -590,7 +590,9 @@ def EventCommentsontrol(request,**kwargs):
             data = {
                 'feedback' : feedback,
                 'message' : message,
-                'time' : timezone.now()
+                'time' : ' ahora mismo',
+                'type' : tipo,
+                'comment_pk': newComment.pk
             }
         else:
             print("evento NO existe")
