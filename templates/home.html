@@ -77,7 +77,10 @@
 		</ul>
 		<hr>
 	{% else %}
-		<p>No se han encontrado coincidencias con su búsqueda</p>
+	  	<div class="alert alert-warning">
+    		<h1>No tienes aún nada planeado. <a href="{% url 'eventFilter' type='all' %}"><strong>¡A que estás esperando!</strong><a></h1>
+  		</div>
+		
 	{% endif %}
 
 

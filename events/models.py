@@ -17,6 +17,8 @@ from markdown import markdown
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.gis.db import models as gisModels
+from django.utils.text import Truncator
+
 from accounts.models import User
 
 
@@ -103,6 +105,9 @@ class Event(models.Model):
     """
     def __str__(self):
         return self.title
+
+    def get_description_as_markdown(self):
+        return mark_safe(markdown(self.description, safe_mode='escape'))
 
     @classmethod
     #Llama a los eventos creados por un usuario en concreto
@@ -262,3 +267,23 @@ class MyRecommender(models.Model):
     """
     def __str__(self):
         return str(self.user)
+
+"""
+**********************************************************
+                      Comentarios
+**********************************************************
+"""
+class Comments(models.Model):
+    message = models.TextField(max_length=4000)
+    created_into  = models.ForeignKey(Event, related_name='posts')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(null=True)
+    created_by = models.ForeignKey(User, related_name='posts')
+    updated_by = models.ForeignKey(User, null=True, related_name='+')
+
+    def __str__(self):
+        truncated_message = Truncator(self.message)
+        return truncated_message.chars(30)
+
+    def get_message_as_markdown(self):
+        return mark_safe(markdown(self.message, safe_mode='escape'))

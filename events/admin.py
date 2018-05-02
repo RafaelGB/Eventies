@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 from mapwidgets.widgets import GooglePointFieldWidget, GooglePointFieldInlineWidget, GoogleStaticMapWidget, \
     GoogleStaticOverlayMapWidget
 
-from .models import Event, Tag, Category, Photo, Geolocation
+from .models import Event, Tag, Category, Photo, Geolocation , Comments
 
 
 class GeolocationAdminForm(forms.ModelForm):
@@ -39,7 +39,7 @@ class GeolocationAdmin(admin.ModelAdmin):
 
 
 
-myModels = [Event,Tag,Category, Photo]
+myModels = [Event,Tag,Category, Photo,Comments]
 
 admin.site.register(myModels)
 admin.site.register(Geolocation, GeolocationAdmin)

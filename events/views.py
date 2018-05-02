@@ -17,7 +17,7 @@ from django.contrib.gis.measure import D
 from django.utils.decorators import method_decorator
 
 from django.http import HttpResponse , JsonResponse
-from .models import Event, Tag, Category, Photo, Geolocation
+from .models import Event, Tag, Category, Photo, Geolocation, Comments
 from .forms import EventForm, PhotoForm, BasePhotoFormSet, GeolocationForm
 from .decorators import user_is_event_author
 from .recommender import getRecommendedEvents
@@ -92,6 +92,13 @@ class EventObjectView(DetailView):
             
         """
         context["is_own"] = (self.request.user == self.object.created_by)
+        """
+                    tratamiento de comentarios
+        .........................................................
+            
+        """
+        eventComments = Comments.objects.filter(created_into=self.object.pk)
+        context["comments"] = eventComments
         """
             obtención de los contadores del evento relevantes
                                     +
@@ -494,6 +501,12 @@ def NewEvent(request):
             }
         )
 
+"""
+    zona AJAX
+.........................................................
+EventFlowControl --> para guardar votos de asistencias,descartes,intereses...
+EventCommentsontrol --> para crear, editar o borrar comentarios en eventos
+"""
 @login_required
 def EventFlowControl(request,**kwargs):
     if request.method == 'POST':
@@ -545,4 +558,43 @@ def EventFlowControl(request,**kwargs):
     else:   
         data = {}
     return JsonResponse(data)
-
+#----
+@login_required
+def EventCommentsontrol(request,**kwargs):
+    if request.method == 'POST':
+        id_event = request.POST['event_pk']
+        message = request.POST['message']
+        user = request.user
+        if Event.objects.filter(pk=id_event).exists():
+            event = Event.objects.get(pk=id_event)
+            option = None
+            tipo = kwargs['type']
+            remove_add = None
+            if tipo == "create":
+                newComment = Comments()
+                newComment.message = message
+                newComment.created_into= event
+                newComment.created_by=request.user
+                newComment.created_at = timezone.now()
+                newComment.save()
+                feedback='created'
+            elif tipo == "edit":
+                print("dentro de edit")
+            elif tipo == "remove":
+                pkComment = request.POST['pk_comment']
+                deleteComment = Comments.objects.get(pk=pkComment)
+                deleteComment.delete()
+                feedback='deleted'
+            else:
+                feedback='error'
+            data = {
+                'feedback' : feedback,
+                'message' : message,
+                'time' : timezone.now()
+            }
+        else:
+            print("evento NO existe")
+            data = {}
+    else:   
+        data = {}
+    return JsonResponse(data)
