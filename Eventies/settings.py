@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'sortedm2m',
     'mapwidgets',#mapa dinamico googlemaps
-    'django_gravatar',#adquiere foto del correo
     'datetimewidget',#widget para formulario de calendario
     'django_cron',
     #APPs propias
@@ -209,5 +208,6 @@ USE_I18N = True
 
 
 CRON_CLASSES = [
+    "django_cron.cron.FailedRunsNotificationCronJob",
     "events.recommender.Recomender"
 ]

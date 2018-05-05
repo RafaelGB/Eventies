@@ -296,8 +296,10 @@
       }
       thumbnail.on("click", this.clicked);
       thumbnail.append(image);
+      var splited = this.label().split(":");
       if (this.opts.show_label) {
-        thumbnail.append(jQuery("<p/>").html(this.label()));
+        thumbnail.append(jQuery("<h3/>").html(splited[0]));
+        thumbnail.append(jQuery("<p/>").html(splited[1]));
       }
       this.node.append(thumbnail);
       return this.node;

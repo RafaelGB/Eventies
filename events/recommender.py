@@ -84,7 +84,7 @@ class Recomender(CronJobBase):
         event_id_pos, unique_event_ids= matrix_pos_assign(df["event_id"])
 
         #------------------------creación de datasets con crossvalidation------------------------
-        train_data, test_data = cv.train_test_split(df, test_size=0.25)
+        train_data, test_data = cv.train_test_split(df)
 
         if self.verbose:
             print("para la lista de ids de eventos:"+str(unique_event_ids))

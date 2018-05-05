@@ -41,14 +41,11 @@
 	 		{% ifequal forloop.counter|mod:2 0 %}
 			<div class="row">
 			{% endifequal %}
-				<option data-img-src='{{category.photo.url}}' value='{{category.name_category}}'>	
-				{{category.name_category}}--{{category.description}}
-				  	<!--
-				  	<div class="middle">
-   					 	<div class="text">{{category.description}}</div>
-  					</div>
-					-->
+			<label for="{{category.name_category}}_id"></label>
+				<option id="{{category.name_category}}_id" data-img-src='{{category.photo.url}}' value='{{category.name_category}}'>
+					{{category.name_category}}:{{category.description}}
 				</option>
+
 			{% ifequal forloop.counter|mod:2 0 %}
 			</div>
 			{% endifequal %}	

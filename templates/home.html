@@ -50,10 +50,12 @@
 			{% ifequal count 0 %}    
 					<div class="row">
 			{% endifequal %}
-    	        	<div class="col-lg-6 col-md-12 mb-8">
+    	        	<div class="col-lg-6 col-md-8 mb-8">
 						<div class="panel panel-default">
-							<div class="panel-body">{{ event.title }}</div>
-							<img class="card-img-top" src="
+							<div class="panel-body text-center">
+								<h2>{{ event.title }}</h2>
+							</div>
+							<img style="width: 100%" class="card-img-top" src="
 						        {% if event.photo_set.all %}
 						        	{{event.photo_set.all.0.picture.url}}
 						        {% else %}
@@ -66,7 +68,7 @@
 							</div>
 						</div>
 			        </div>
-			{% ifequal count 2 %}
+			{% ifequal count 1 %}
 				</div>
 				{% assign count 0 %}<!-- reseteamos contador -->
 			{% else %}

@@ -28,7 +28,7 @@
 
 {% endblock %}
 
-{% block content %}
+{% block base_container %}
   <!--==========================
     Intro Section
   ============================-->
@@ -97,6 +97,7 @@
               A medida que te diviertas y vayas asistiendo a dihos eventos nosotros aprenderemos y te recomendaremos
                los planes más afines a ti.
             </p>
+            <a href="#features" class="cta-btn align-middle scrollto">¿Que hemos usado?</a>
           </div>
         </div>
 
@@ -144,7 +145,7 @@
               <div class="col-lg-6 col-md-6 box wow fadeInRight" data-wow-delay="0.3s">
                 <div class="icon"><img style="height: 60px; width: 60px" src="{% static 'img/sklearn.png' %}" alt=""></div>
                 <h4 class="title"><a href="http://scikit-learn.org/stable/">Sklearn</a></h4>
-                <p class="description">Librería machine learning basada en python.</p>
+                <p class="description">Librería machine learning para el lenguaje de programación Python.</p>
               </div>
             </div>
           </div>
@@ -227,6 +228,9 @@
           <div class="col-lg-3 cta-btn-container text-center">
             <a class="cta-btn align-middle" href="{% url 'eventFilter' type='all' %}">Ir al buscador</a>
           </div>
+          <div class="col-lg-3 cta-btn-container text-center">
+            <a class="cta-btn align-middle scrollto" href="#more-features">Seguir curioseando</a>
+          </div>
         </div>
 
       </div>
@@ -241,24 +245,24 @@
         <div class="section-header">
           <h3 class="section-title">Algunas características extra</h3>
           <span class="section-divider"></span>
-          <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
+          <p class="section-description">Detalles que cimientan Eventies y funcionalidades con las que se define su filosofía</p>
         </div>
 
         <div class="row">
 
           <div class="col-lg-6">
             <div class="box wow fadeInLeft">
-              <div class="icon"><i class="ion-ios-stopwatch-outline"></i></div>
-              <h4 class="title"><a href="">Lorem Ipsum</a></h4>
-              <p class="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident etiro rabeta lingo.</p>
+              <div class="icon"><i class="ion-android-color-palette"></i></div>
+              <h4 class="title">widgets como <a href="https://github.com/erdem/django-map-widgets">mapwidgets</a> o <a href="https://github.com/asaglimbeni/django-datetime-widget"=>datetimewidget</a></h4>
+              <p class="description">Con Django es muy sencillo añadir algunas de las potentes herramientas que podrás disfrutar en Eventies.</p>
             </div>
           </div>
 
           <div class="col-lg-6">
             <div class="box wow fadeInRight">
               <div class="icon"><i class="ion-ios-bookmarks-outline"></i></div>
-              <h4 class="title"><a href="">Dolor Sitema</a></h4>
-              <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata nodera clas.</p>
+              <h4 class="title"><a href="">Comenta tus experiencias</a></h4>
+              <p class="description">Cada evento se entiende también como un foro donde los usuarios podrán compartir su hype, aventuras y desventuras con un completo editor de texto.</p>
             </div>
           </div>
 
@@ -291,7 +295,7 @@
         <div class="section-header">
           <h3 class="section-title">Preguntas frecuentes</h3>
           <span class="section-divider"></span>
-          <p class="section-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque</p>
+          <p class="section-description">Algunas de las dudas mas recurrentes de nuestra comunidad</p>
         </div>
 
         <ul id="faq-list" class="wow fadeInUp">

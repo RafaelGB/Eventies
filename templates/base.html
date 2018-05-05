@@ -24,7 +24,7 @@
   <body>
     {% block body %}  <!-- opcion de bloqueo de cuerpo -->
       {% block header %}
-      <nav class="navbar navbar-default navbar-inverse" role="navigation">
+      <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <div class="container-fluid">
           <!-- se agrupan para una mejor disribucion en movil -->
           <div class="navbar-header">
@@ -34,13 +34,12 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'home' %}">Eventies</a>
+            <a class="navbar-brand active" href="{% url 'home' %}">Eventies</a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Calendario</a></li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Eventos <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
@@ -56,9 +55,9 @@
             </ul>
             <form action="{% url 'eventFilter' type='all' %}" class="navbar-form navbar-left" role="search" novalidate>
               <div class="form-group">
-                <input type="text" class="form-control" name="search" placeholder="Search">
+                <input type="text" class="form-control" name="search" placeholder="¿que evento buscas?">
               </div>
-              <button type="submit" class="btn btn-default">Submit</button>
+              <button type="submit" class="btn btn-default">Buscar</button>
             </form>
             {% if user.is_authenticated %}
               <ul class="navbar-nav navbar-right">
@@ -84,12 +83,6 @@
                 <li>
                  <div class="row">
                     <div class="col-md-12">
-                      Login via
-                      <div class="social-buttons">
-                        <a href="#" class="btn btn-fb"><i class="fa fa-facebook"></i> Facebook</a>
-                        <a href="#" class="btn btn-tw"><i class="fa fa-twitter"></i> Twitter</a>
-                      </div>
-                                      or
                       <form class="form" role="form" method="post" action="{% url 'login' %}" accept-charset="UTF-8" id="login-nav" novalidate>
                           {% csrf_token %}
                           <input type="hidden" name="next" value="{{ next }}">
@@ -126,9 +119,10 @@
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
+      <br><br><br>
       {% endblock %}
       <!--Aqui se organizan todos los templates que hereden de este -->
-
+      {% block base_container %}
       <div class="container">
         <ol class="breadcrumb my-4">
           {% block breadcrumb %}
@@ -137,13 +131,14 @@
         {% block content %}
         {% endblock %}
       </div>
+      {% endblock %}
     {% endblock body %}  <!-- fin de opcion de bloqueo de cuerpo -->
     {% block footer %}
       <hr>
     <div class="copyright">
       <div class="container">
         <div class="col-md-6">
-          <p>© 2018 - Todos los derechos de la UCM</p>
+          <p>© 2018 - Todos los derechos reservados</p>
         </div>
         <div class="col-md-6">
           <ul class="bottom_ul">

@@ -249,10 +249,11 @@ var lastButton;
             new_row.appendChild(new_col_sm_5);
             new_row.appendChild(button_col_sm_5);
 
-            document.getElementById("comment_section").prepend(new_row);
-
+            //document.getElementById("comment_section").prepend(new_row);
+            $(new_row).hide().prependTo("#comment_section").fadeIn('slow');
             comments_size= comments_size+1;
-
+            simplemde.value("");
+            document.getElementById("comment_created_feedback").innerHTML="  <div class=\"alert alert-success alert-dismissable\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button> Mensaje <strong>guardado</strong> correctamente.  </div>";
           }
         }
       });
@@ -454,6 +455,9 @@ var lastButton;
 
 <hr>
 {% if user.is_authenticated %}
+<div id="comment_created_feedback" >
+
+</div>
   <div class="container"> 
     <div class="row">
       <div class="col-sm-9">
@@ -504,19 +508,7 @@ var lastButton;
     {% if post.created_by == user %}
       <div class="col-sm-1">
           <div class="mt-3">
-            <button id="assistants_button" class="btn btn-primary btn-sm" onclick="ajax_comment('assistants')">Editar
-            </button>
-          </div>
-          <br>
-          <div class="mt-3">
             <button id="assistants_button" class="btn btn-primary btn-sm" onclick="ajax_comment('remove','{{ forloop.counter0 }}','{{post.pk}}')">Borrar
-            </button>
-          </div>
-      </div>
-    {% else %}
-      <div class="col-sm-1">
-          <div class="mt-3">
-            <button id="assistants_button" class="btn btn-primary btn-sm" onclick="ajax_comment('assistants')">Contestar
             </button>
           </div>
       </div>
